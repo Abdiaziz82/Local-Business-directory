@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import BusinessOwnerSignup from './pages/BusinessOwnerSignup ';
 import CustomerSignup from './pages/CustomerSignup';
 import Login from './pages/Login';
+import BusinessOwnerDashboard from './pages/BusinessOwnerDashboard';
 
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
         <Route path="/browse"  />
         <Route path="/add-business"/>
         <Route path="/about" />
-        <Route path="/contact"  />
+        <Route path="/contact" element={<BusinessOwnerDashboard />} />
         <Route path="/signup/business-owner" element={<BusinessOwnerSignup />} /> {/* Business Owner Signup */}
         <Route path="/signup/customer" element={<CustomerSignup />} /> {/* Customer Signup */}
       </Routes>
