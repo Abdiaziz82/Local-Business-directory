@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // SweetAlert2 for beautiful popups
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // Import js-cookie
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -18,7 +22,6 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Send login request to backend
     axios.post('http://localhost:5000/api/login', formData)
       .then((response) => {
         Swal.fire({
@@ -26,7 +29,22 @@ const Login = () => {
           title: 'Login Successful!',
           text: 'You have been logged in!',
         });
-        // Redirect user based on role here (for example)
+        
+        const { role, imageFile } = response.data; // Get imageFile for avatar
+        
+        // Call the onLogin function to set the role and avatar in the parent component
+        onLogin(role, imageFile);
+
+        // Set cookies for user role and avatar
+        Cookies.set('userRole', role);
+        Cookies.set('userAvatar', imageFile);
+
+        // Redirect based on user role
+        if (role === 'business_owner') {
+          navigate('/business-owner-dashboard');
+        } else if (role === 'customer') {
+          navigate('/customer-dashboard');
+        }
       })
       .catch((error) => {
         Swal.fire({
@@ -39,7 +57,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full space-y-8"> {/* Increased width */}
+      <div className="max-w-3xl w-full space-y-8">
         <div className="text-center">
           <h2 className="text-4xl font-extrabold text-gray-900">Login to Your Account</h2>
           <p className="mt-2 text-lg text-gray-600">Please enter your credentials to access your account</p>
