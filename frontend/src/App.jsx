@@ -9,7 +9,7 @@ import StatsSection from './components/StatsSection';
 import HowItWorks from './components/HowItWorks';
 import FeaturedBusinesses from './components/FeaturedBusinesses';
 import Footer from './components/Footer';
-import BusinessOwnerSignup from './pages/BusinessOwnerSignup ';
+import BusinessOwnerSignup from './pages/BusinessOwnerSignup';
 import CustomerSignup from './pages/CustomerSignup';
 import CustomerDashboard from './pages/CustomerDashboard';
 import Login from './pages/Login';

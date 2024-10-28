@@ -1,38 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
-import logo from '../assets/react.svg';
+import logo from '../assets/react.svg'; // Adjust path as needed
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userImage, setUserImage] = useState(null); // User uploaded image state
-  const [isAvatarOpen, setIsAvatarOpen] = useState(false); // For avatar dropdown
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
-  const navigate = useNavigate();
-
-  // Simulate image upload (set image after signup/login)
-  const handleImageUpload = (imageUrl) => {
-    setUserImage(imageUrl); // Set the uploaded user image URL here
-    setIsLoggedIn(true); // Simulate user login
-  };
-
-  // Toggle avatar dropdown
-  const toggleAvatarDropdown = () => {
-    setIsAvatarOpen(!isAvatarOpen);
-  };
-
-  // Handle logout functionality
-  const handleLogout = () => {
-    setIsLoggedIn(false); // Set logged out state
-    setUserImage(null); // Clear user image
-  };
+  const [isOpen, setIsOpen] = useState(false); // For mobile menu
+  const [isModalOpen, setIsModalOpen] = useState(false); // For signup choice modal
+  const isLoggedIn = false; // Replace with actual login state
+  const navigate = useNavigate(); // To handle navigation after signup choice
 
   return (
     <header className="bg-white shadow-lg fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
+          {/* Logo (Image-based) */}
           <div className="flex-shrink-0">
             <Link to="/">
               <img src={logo} alt="LocalBiz Directory Logo" className="h-10 w-auto" />
@@ -47,38 +27,13 @@ const Header = () => {
             <Link to="/about" className="text-gray-800 hover:text-indigo-600 font-medium">About</Link>
             <Link to="/contact" className="text-gray-800 hover:text-indigo-600 font-medium">Contact Us</Link>
           </div>
-
-          {/* User Authentication and Avatar */}
+          
+          {/* User Authentication */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-                <div className="relative">
-                  {/* Show user image if logged in, else default avatar icon */}
-                  <div onClick={toggleAvatarDropdown} className="cursor-pointer">
-                    {userImage ? (
-                      <img 
-                        src={userImage} 
-                        alt="User Avatar" 
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      <FaUserCircle className="h-10 w-10 text-gray-500" />
-                    )}
-                  </div>
-
-                  {/* Avatar Dropdown */}
-                  {isAvatarOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2">
-                      <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</Link>
-                      <button 
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <Link to="/profile" className="text-gray-800 hover:text-indigo-600 font-medium">Profile</Link>
+                <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-500">Logout</button>
               </>
             ) : (
               <>
@@ -89,9 +44,6 @@ const Header = () => {
                 >
                   Sign Up
                 </button>
-
-                {/* Default avatar when not logged in */}
-                <FaUserCircle className="h-10 w-10 text-gray-500" />
               </>
             )}
           </div>
@@ -125,7 +77,7 @@ const Header = () => {
             {isLoggedIn ? (
               <>
                 <Link to="/profile" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profile</Link>
-                <button onClick={handleLogout} className="block w-full text-left text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Logout</button>
+                <button className="block w-full text-left text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Logout</button>
               </>
             ) : (
               <>
@@ -148,29 +100,33 @@ const Header = () => {
           <div className="bg-white rounded-xl shadow-xl p-10 max-w-xl w-full text-center transform transition-transform duration-300 ease-in-out">
             <h2 className="text-3xl font-extrabold text-gray-800 mb-8">Sign Up As</h2>
 
+            {/* Business Owner Button */}
             <button
               onClick={() => {
-                handleImageUpload('https://via.placeholder.com/150'); // Replace with actual signup flow
-                navigate('/signup/business-owner');
-                setIsModalOpen(false);
+                navigate('/signup/business-owner'); // Navigate to Business Owner signup
+                setIsModalOpen(false); // Close the modal after redirect
               }}
               className="block w-full px-6 py-4 mb-4 bg-indigo-600 text-white rounded-lg font-bold text-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
             >
               Business Owner
             </button>
 
+            {/* Customer Button */}
             <button
               onClick={() => {
-                handleImageUpload('https://via.placeholder.com/150'); // Replace with actual signup flow
-                navigate('/signup/customer');
-                setIsModalOpen(false);
+                navigate('/signup/customer'); // Navigate to Customer signup
+                setIsModalOpen(false); // Close the modal after redirect
               }}
-              className="block w-full px-6 py-4 mb-4 bg-indigo-600 text-white rounded-lg font-bold text-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
+              className="block w-full px-6 py-4 bg-indigo-600 text-white rounded-lg font-bold text-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
             >
               Customer
             </button>
 
-            <button onClick={() => setIsModalOpen(false)} className="block w-full text-gray-500 mt-4">
+            {/* Close Modal */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-6 text-gray-400 hover:text-gray-600 transition duration-300 text-sm"
+            >
               Cancel
             </button>
           </div>

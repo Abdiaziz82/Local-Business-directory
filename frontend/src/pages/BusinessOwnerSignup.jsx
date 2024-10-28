@@ -21,7 +21,7 @@ const BusinessOwnerSignup = () => {
     });
   };
 
-  // New function to handle image file selection
+  // Handle image file selection
   const handleImageUpload = (e) => {
     setAvatar(e.target.files[0]);
   };
@@ -29,20 +29,20 @@ const BusinessOwnerSignup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     // Use FormData to send both form fields and the avatar file
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
       formDataToSend.append(key, formData[key]);
     });
     if (avatar) {
-      formDataToSend.append('avatar', avatar);  // Append the avatar file to the FormData
+      formDataToSend.append('avatar', avatar); // Append the avatar file to the FormData
     }
-  
+
     // Send the data to the backend
     axios.post('http://localhost:5000/api/signup/business-owner', formDataToSend, {
       headers: {
-        'Content-Type': 'multipart/form-data',  // Ensure correct content type
+        'Content-Type': 'multipart/form-data', // Ensure correct content type
       },
     })
       .then((response) => {
@@ -54,7 +54,7 @@ const BusinessOwnerSignup = () => {
           text: 'Business owner account created successfully!',
           timer: 2000,
         });
-  
+
         // Save avatar URL to local storage for later use on login
         if (response.data.avatarUrl) {
           localStorage.setItem('userAvatar', response.data.avatarUrl);
@@ -69,11 +69,9 @@ const BusinessOwnerSignup = () => {
         });
       });
   };
-  
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Adjust the width for larger screens */}
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg lg:w-2/3 xl:w-3/4 2xl:w-2/3">
         <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">Sign Up as a Business Owner</h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -138,7 +136,7 @@ const BusinessOwnerSignup = () => {
             />
           </div>
 
-          {/* New Avatar Upload Field */}
+          {/* Avatar Upload Field */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-1">Upload Avatar</label>
             <input
