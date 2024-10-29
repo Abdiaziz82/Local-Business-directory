@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const BusinessOwnerSignup = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,8 @@ const BusinessOwnerSignup = () => {
     confirmPassword: '',
   });
 
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     setFormData({
@@ -24,16 +26,14 @@ const BusinessOwnerSignup = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Use FormData to send form fields
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
       formDataToSend.append(key, formData[key]);
     });
 
-    // Send the data to the backend
     axios.post('http://localhost:5000/api/signup/business-owner', formDataToSend, {
       headers: {
-        'Content-Type': 'multipart/form-data', // Ensure correct content type
+        'Content-Type': 'multipart/form-data',
       },
     })
       .then((response) => {
@@ -44,6 +44,15 @@ const BusinessOwnerSignup = () => {
           title: 'Success!',
           text: 'Business owner account created successfully!',
           timer: 2000,
+        }).then(() => {
+          setFormData({
+            fullName: '',
+            email: '',
+            businessName: '',
+            password: '',
+            confirmPassword: '',
+          });
+          navigate('/login'); // Redirect to login page
         });
       })
       .catch((error) => {
@@ -125,16 +134,15 @@ const BusinessOwnerSignup = () => {
           <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            disabled={loading} // Disable the button when loading
+            disabled={loading}
           >
             {loading ? (
-              <span>Signing up...</span> // Show "Signing up..." when loading
+              <span>Signing up...</span>
             ) : (
               <span>Sign Up</span>
             )}
           </button>
         </form>
-        {/* Add the "Already Registered? Login" text below the signup button */}
         <p className="mt-4 text-center text-sm text-gray-600">
           Already Registered?{' '}
           <a href="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">Login</a>

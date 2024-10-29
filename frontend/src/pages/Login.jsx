@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie'; // Import js-cookie
+import { useNavigate, Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -30,14 +30,13 @@ const Login = ({ onLogin }) => {
           text: 'You have been logged in!',
         });
         
-        const { role, imageFile } = response.data; // Get imageFile for avatar
+        const { role } = response.data; // Only get role now
         
-        // Call the onLogin function to set the role and avatar in the parent component
-        onLogin(role, imageFile);
+        // Call the onLogin function to set the role in the parent component
+        onLogin(role);
 
-        // Set cookies for user role and avatar
+        // Set a cookie for user role only
         Cookies.set('userRole', role);
-        Cookies.set('userAvatar', imageFile);
 
         // Redirect based on user role
         if (role === 'business_owner') {
@@ -103,9 +102,9 @@ const Login = ({ onLogin }) => {
               </label>
             </div>
             <div className="text-lg">
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -121,9 +120,9 @@ const Login = ({ onLogin }) => {
         <div className="text-center mt-6">
           <p className="text-lg text-gray-600">
             Don't have an account?{' '}
-            <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
