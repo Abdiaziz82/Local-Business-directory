@@ -17,18 +17,13 @@ import BusinessOwnerDashboard from './pages/BusinessOwnerDashboard';
 
 function App() {
   const [userRole, setUserRole] = useState(null);
-  const [userAvatar, setUserAvatar] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSessionData = () => {
       const storedRole = Cookies.get('userRole'); // Get role from cookies
-      const storedAvatar = Cookies.get('userAvatar'); // Get avatar from cookies
       if (storedRole) {
         setUserRole(storedRole);
-      }
-      if (storedAvatar) {
-        setUserAvatar(storedAvatar);
       }
       setLoading(false); // Done loading session data
     };
@@ -36,18 +31,14 @@ function App() {
     fetchSessionData();
   }, []);
 
-  const handleLogin = (role, avatar) => {
+  const handleLogin = (role) => {
     setUserRole(role);
-    setUserAvatar(avatar);
     Cookies.set('userRole', role);
-    Cookies.set('userAvatar', avatar);
   };
 
   const handleLogout = () => {
     setUserRole(null);
-    setUserAvatar(null);
     Cookies.remove('userRole');
-    Cookies.remove('userAvatar');
   };
 
   if (loading) {
@@ -56,7 +47,7 @@ function App() {
 
   return (
     <Router>
-      <Header userAvatar={userAvatar} onLogout={handleLogout} />
+      <Header onLogout={handleLogout} />
 
       <Routes>
         <Route 

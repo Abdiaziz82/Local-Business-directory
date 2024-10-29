@@ -11,7 +11,6 @@ const BusinessOwnerSignup = () => {
     confirmPassword: '',
   });
 
-  const [avatar, setAvatar] = useState(null); // Separate state for avatar image
   const [loading, setLoading] = useState(false); // Add loading state
 
   const handleChange = (e) => {
@@ -21,23 +20,15 @@ const BusinessOwnerSignup = () => {
     });
   };
 
-  // Handle image file selection
-  const handleImageUpload = (e) => {
-    setAvatar(e.target.files[0]);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Use FormData to send both form fields and the avatar file
+    // Use FormData to send form fields
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
       formDataToSend.append(key, formData[key]);
     });
-    if (avatar) {
-      formDataToSend.append('avatar', avatar); // Append the avatar file to the FormData
-    }
 
     // Send the data to the backend
     axios.post('http://localhost:5000/api/signup/business-owner', formDataToSend, {
@@ -54,11 +45,6 @@ const BusinessOwnerSignup = () => {
           text: 'Business owner account created successfully!',
           timer: 2000,
         });
-
-        // Save avatar URL to local storage for later use on login
-        if (response.data.avatarUrl) {
-          localStorage.setItem('userAvatar', response.data.avatarUrl);
-        }
       })
       .catch((error) => {
         setLoading(false);
@@ -133,17 +119,6 @@ const BusinessOwnerSignup = () => {
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Confirm your password"
-            />
-          </div>
-
-          {/* Avatar Upload Field */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Upload Avatar</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload} // Handle avatar upload
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
