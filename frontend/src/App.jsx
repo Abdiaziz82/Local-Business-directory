@@ -15,6 +15,8 @@ import CustomerDashboard from './pages/CustomerDashboard';
 import Login from './pages/Login';
 import BusinessOwnerDashboard from './pages/BusinessOwnerDashboard';
 import ForgetPassword from './pages/ForgotPassword';
+import ResetPasswordForm from './pages/ResetPasswordForm';
+
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -80,6 +82,7 @@ function App() {
           element={userRole === 'customer' ? <CustomerDashboard /> : <Navigate to="/login" />} 
         />
          <Route path="/forgot-password" element={<ForgetPassword />} />
+         <Route path="/reset-password" element={<ResetPasswordForm />} />
         
         <Route path="/browse" element={<div>Browse Businesses</div>} />
         <Route path="/add-business" element={<div>Add a Business</div>} />

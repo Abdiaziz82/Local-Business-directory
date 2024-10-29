@@ -14,6 +14,10 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(10), nullable=False)  # Either 'customer' or 'business_owner'
+    
+    # Add these fields for password reset functionality
+    reset_code = db.Column(db.String(6), nullable=True)  # Store 6-digit reset code
+    reset_code_expiration = db.Column(db.DateTime, nullable=True)  # Store code expiration timestamp
    
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.role}')"
