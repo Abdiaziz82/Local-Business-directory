@@ -237,6 +237,10 @@ def reset_password():
     if datetime.utcnow() > user.reset_code_expiration:
         return jsonify({"error": "Reset code has expired"}), 400
 
+    # Optional: Add password complexity validation
+    if len(new_password) < 8:
+        return jsonify({"error": "Password must be at least 8 characters long"}), 400
+
     # Correctly hash the new password before saving
     hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
     user.password = hashed_password

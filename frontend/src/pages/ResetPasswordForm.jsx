@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();  // Initialize navigate
 
   const handleChangeCode = (e) => {
     setCode(e.target.value);
@@ -15,8 +18,22 @@ const ResetPassword = () => {
     setNewPassword(e.target.value);
   };
 
+  const handleChangeConfirmPassword = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Password Mismatch',
+        text: 'Passwords do not match.',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     axios.post('http://localhost:5000/api/reset-password', { code, newPassword })
@@ -25,9 +42,13 @@ const ResetPassword = () => {
           icon: 'success',
           title: 'Password Reset!',
           text: 'Your password has been successfully updated.',
+        }).then(() => {
+          // Redirect to login page after successful reset
+          navigate('/login');
         });
         setCode('');
         setNewPassword('');
+        setConfirmPassword('');
       })
       .catch((error) => {
         Swal.fire({
@@ -70,6 +91,18 @@ const ResetPassword = () => {
                 onChange={handleChangePassword}
                 className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
                 placeholder="New Password"
+              />
+            </div>
+            <div>
+              <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
+              <input
+                name="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={handleChangeConfirmPassword}
+                className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
+                placeholder="Confirm Password"
               />
             </div>
           </div>
