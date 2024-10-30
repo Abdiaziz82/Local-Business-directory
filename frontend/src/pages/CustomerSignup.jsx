@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const CustomerSignup = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const CustomerSignup = () => {
   });
 
   const [loading, setLoading] = useState(false); // Loading state
+  const navigate = useNavigate(); // Initialize navigate function
 
   const handleChange = (e) => {
     setFormData({
@@ -27,11 +29,24 @@ const CustomerSignup = () => {
       .then((response) => {
         console.log(response.data);
         setLoading(false);
+
+        // Clear form fields
+        setFormData({
+          fullName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+        });
+
+        // Display success alert and navigate to login page
         Swal.fire({
           icon: 'success',
           title: 'Success!',
           text: 'Customer account created successfully!',
           timer: 2000,
+          didClose: () => {
+            navigate('/login'); // Redirect to login page
+          }
         });
       })
       .catch((error) => {

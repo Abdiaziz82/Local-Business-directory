@@ -217,11 +217,65 @@ def forgot_password():
     user.reset_code_expiration = expiration_time
     db.session.commit()
 
-    # Send the email with the reset code
-    msg = Message('Password Reset Code',
+    # Send the email with the reset code using an HTML template
+    subject = 'Password Reset Code'
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Password Reset Code</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f7f7f7;
+                color: #333;
+            }}
+            .container {{
+                width: 100%;
+                max-width: 600px;
+                margin: auto;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                padding: 20px;
+            }}
+            h1 {{
+                color: #007bff;
+                font-size: 24px;
+            }}
+            p {{
+                line-height: 1.5;
+            }}
+            .reset-code {{
+                font-weight: bold;
+                font-size: 24px;
+                color: #d9534f; /* Bootstrap danger color */
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Password Reset Request</h1>
+            <p>Hi {user.username},</p>
+            <p>Your password reset code is:</p>
+            <p class="reset-code">{reset_code}</p>
+            <p>This code will expire in 15 minutes. Please enter this code on the reset password page.</p>
+            <p>If you did not request this, please ignore this email.</p>
+            <p>Thank you!</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    msg = Message(subject,
                   sender=current_app.config['MAIL_USERNAME'],
                   recipients=[email])
-    msg.body = f'Hi {user.username},\n\nYour password reset code is: {reset_code}\n\nPlease enter this code on the reset password page.'
+    msg.html = html  # Set the HTML body of the email
 
     try:
         mail.send(msg)
