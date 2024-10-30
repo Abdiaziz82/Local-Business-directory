@@ -53,6 +53,10 @@ def business_owner_signup():
     if not full_name or not email or not business_name or not password or not confirm_password:
         return jsonify({'error': 'Missing required fields'}), 400
 
+    # Enforce password length requirement
+    if password is None or len(password) < 8:
+        return jsonify({'error': 'Password must be at least 8 characters long'}), 400
+
     # Check if username already exists
     existing_user_by_username = User.query.filter_by(username=full_name).first()
     if existing_user_by_username:
@@ -85,8 +89,6 @@ def business_owner_signup():
     return jsonify({'message': 'Business owner account created successfully'}), 201
 
 
-
-
 @main.route("/api/signup/customer", methods=['POST', 'OPTIONS'])
 @cross_origin()
 def customer_signup():
@@ -108,6 +110,10 @@ def customer_signup():
     # Check if all required fields are provided
     if not full_name or not email or not password or not confirm_password:
         return jsonify({'error': 'Missing required fields'}), 400
+
+    # Enforce password length requirement
+    if password is None or len(password) < 8:
+        return jsonify({'error': 'Password must be at least 8 characters long'}), 400
 
     # Check if username already exists
     existing_user_by_username = User.query.filter_by(username=full_name).first()
@@ -139,6 +145,7 @@ def customer_signup():
     db.session.commit()
 
     return jsonify({'message': 'Customer account created successfully'}), 201
+
 
 @main.route("/api/login", methods=['POST'])
 @cross_origin()  # Allow CORS for this route
