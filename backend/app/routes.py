@@ -7,7 +7,9 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask_login import login_user, current_user, logout_user
 from flask_cors import cross_origin
 from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash
 import random
+
 import os
 
 
@@ -229,15 +231,15 @@ def reset_password():
 
     user = User.query.filter_by(reset_code=code).first()
 
-    # Validate the code and expiration
     if not user:
         return jsonify({"error": "Invalid reset code"}), 400
-    
+
     if datetime.utcnow() > user.reset_code_expiration:
         return jsonify({"error": "Reset code has expired"}), 400
 
-    # Update the user's password
-    user.password = new_password  # Make sure to hash the password before saving
+    # Correctly hash the new password before saving
+    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    user.password = hashed_password
     user.reset_code = None
     user.reset_code_expiration = None
     db.session.commit()
