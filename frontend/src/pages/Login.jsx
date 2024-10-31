@@ -9,6 +9,7 @@ const Login = ({ onLogin }) => {
     email: '',
     password: '',
   });
+  const [rememberMe, setRememberMe] = useState(false); // New state for Remember Me checkbox
 
   const navigate = useNavigate();
 
@@ -19,10 +20,19 @@ const Login = ({ onLogin }) => {
     });
   };
 
+  const handleCheckboxChange = (e) => {
+    setRememberMe(e.target.checked); // Update rememberMe state when checkbox is toggled
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:5000/api/login', formData)
+    const loginData = {
+      ...formData,
+      remember: rememberMe,  // Include remember value in the request data
+    };
+
+    axios.post('http://localhost:5000/api/login', loginData)
       .then((response) => {
         Swal.fire({
           icon: 'success',
@@ -30,9 +40,8 @@ const Login = ({ onLogin }) => {
           text: 'You have been logged in!',
         });
         
-        const { role } = response.data; // Only get role now
-        
-        // Call the onLogin function to set the role in the parent component
+        const { role } = response.data;
+
         onLogin(role);
 
         // Set a cookie for user role only
@@ -95,6 +104,8 @@ const Login = ({ onLogin }) => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
+                checked={rememberMe}
+                onChange={handleCheckboxChange} // Add checkbox change handler
                 className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-lg text-gray-900">
@@ -120,7 +131,7 @@ const Login = ({ onLogin }) => {
         <div className="text-center mt-6">
           <p className="text-lg text-gray-600">
             Don't have an account?{' '}
-            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign Up
             </Link>
           </p>

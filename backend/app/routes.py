@@ -148,31 +148,29 @@ def customer_signup():
 
 
 @main.route("/api/login", methods=['POST'])
-@cross_origin()  # Allow CORS for this route
 def login():
     if current_user.is_authenticated:
         return jsonify({'message': 'Already logged in'}), 400
 
-    data = request.get_json()  # Get JSON data from the React frontend
-
+    data = request.get_json()
     user = User.query.filter_by(email=data['email']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
-        login_user(user)  # Log the user in using Flask-Login
-        
+        remember = data.get('remember', False)  # Get 'remember' value from request
+        login_user(user, remember=remember)  # Log the user in with 'remember' option
+
         response = make_response(jsonify({
             'message': 'Login successful',
             'role': user.role,
-            'imageFile': user.image_file  # Assuming `image_file` is the field storing avatar URL
+            'imageFile': user.image_file
         }), 200)
 
-        # Set cookies
-        response.set_cookie('userRole', user.role, httponly=True)  # Set the role cookie
-        response.set_cookie('userAvatar', user.image_file, httponly=True)  # Set the avatar cookie
+        response.set_cookie('userRole', user.role, httponly=True)
+        response.set_cookie('userAvatar', user.image_file, httponly=True)
 
         return response
     else:
         return jsonify({'error': 'Invalid email or password'}), 400
-
+    
 @main.route("/api/logout", methods=['POST'])
 @cross_origin()  # Allow CORS for this route
 def logout():

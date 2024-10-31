@@ -20,6 +20,7 @@ mail = Mail()  # Initialize the Mail instance
 def create_app():
     app = Flask(__name__)
     
+    
     app.config.from_object(Config)  # Load app configuration
     CORS(app)  # Enable CORS for the app to handle cross-origin requests
 

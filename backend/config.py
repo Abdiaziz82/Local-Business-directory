@@ -1,5 +1,5 @@
-# config.py
 import os
+from datetime import timedelta
 
 class Config:
     SECRET_KEY = 'your_secret_key'
@@ -13,5 +13,8 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME =  'abdiazizhared64@gmail.com'  # Set environment variable for security
-    MAIL_PASSWORD =  'zgdj edcr dtnz zugp'            # Set environment variable for security
+    MAIL_USERNAME = 'abdiazizhared64@gmail.com'  # Set environment variable for security
+    MAIL_PASSWORD = 'zgdj edcr dtnz zugp'       # Set environment variable for security
+
+    # Remember Me cookie duration
+    REMEMBER_COOKIE_DURATION = timedelta(days=30)
