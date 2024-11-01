@@ -1,18 +1,24 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/react.svg'; // Adjust the path as needed
-import ProfileDropdown from '../pages/ProfileDropdown'; // Adjust the import as needed
+import logo from '../assets/react.svg'; // Adjust path as needed
+import ProfileDropdown from '../pages/ProfileDropdown'; // Import the ProfileDropdown
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false); // For mobile menu
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For profile dropdown
+  const [isModalOpen, setIsModalOpen] = useState(false); // For signup choice modal
   const { isLoggedIn, logout } = useContext(AuthContext); // Access login state and logout function from context
-  const navigate = useNavigate(); // To handle navigation
+  const navigate = useNavigate(); // To handle navigation after signup choice
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
+  };
 
   const handleLogout = async () => {
     try {
       await logout(); // Call the logout function
-      navigate('/'); // Redirect to the homepage after logout
+      setIsDropdownOpen(false); // Close dropdown after logout
     } catch (error) {
       console.error("Logout failed:", error); // Handle any errors if needed
     }
@@ -28,7 +34,7 @@ const Header = () => {
               <img src={logo} alt="LocalBiz Directory Logo" className="h-10 w-auto" />
             </Link>
           </div>
-
+          
           {/* Navigation Links */}
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-800 hover:text-indigo-600 font-medium">Home</Link>
@@ -37,12 +43,18 @@ const Header = () => {
             <Link to="/about" className="text-gray-800 hover:text-indigo-600 font-medium">About</Link>
             <Link to="/contact" className="text-gray-800 hover:text-indigo-600 font-medium">Contact Us</Link>
           </div>
-
+          
           {/* User Authentication */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-                <Link to="/profile" className="text-gray-800 hover:text-indigo-600 font-medium">Profile</Link>
+                <button
+                  onClick={toggleDropdown} // Toggle dropdown for profile options
+                  className="relative text-gray-800 hover:text-indigo-600 font-medium"
+                >
+                  Profile
+                  <ProfileDropdown isOpen={isDropdownOpen} setIsOpen={setIsDropdownOpen} />
+                </button>
                 <button 
                   onClick={handleLogout} // Logout button functionality
                   className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-500"
@@ -54,7 +66,7 @@ const Header = () => {
               <>
                 <Link to="/login" className="text-gray-800 hover:text-indigo-600 font-medium">Login</Link>
                 <button
-                  onClick={() => navigate('/signup')} // Navigate to the signup page
+                  onClick={() => setIsModalOpen(true)} // Open the modal on click
                   className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-500"
                 >
                   Sign Up
@@ -103,13 +115,52 @@ const Header = () => {
               <>
                 <Link to="/login" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Login</Link>
                 <button
-                  onClick={() => navigate('/signup')} // Open the modal on click
+                  onClick={() => setIsModalOpen(true)} // Open the modal on click (for mobile as well)
                   className="block w-full text-center bg-indigo-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-500"
                 >
                   Sign Up
                 </button>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* SignUpChoiceModal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl p-10 max-w-xl w-full text-center transform transition-transform duration-300 ease-in-out">
+            <h2 className="text-3xl font-extrabold text-gray-800 mb-8">Sign Up As</h2>
+
+            {/* Business Owner Button */}
+            <button
+              onClick={() => {
+                navigate('/signup/business-owner'); // Navigate to Business Owner signup
+                setIsModalOpen(false); // Close the modal after redirect
+              }}
+              className="block w-full px-6 py-4 mb-4 bg-indigo-600 text-white rounded-lg font-bold text-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
+            >
+              Business Owner
+            </button>
+
+            {/* Customer Button */}
+            <button
+              onClick={() => {
+                navigate('/signup/customer'); // Navigate to Customer signup
+                setIsModalOpen(false); // Close the modal after redirect
+              }}
+              className="block w-full px-6 py-4 bg-indigo-600 text-white rounded-lg font-bold text-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
+            >
+              Customer
+            </button>
+
+            {/* Close Modal */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-6 text-gray-600 hover:text-indigo-600 transition duration-300"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
