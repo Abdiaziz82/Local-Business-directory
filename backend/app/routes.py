@@ -195,7 +195,7 @@ def session_status():
     else:
         return jsonify({'isLoggedIn': False}), 200
 
-# app.py (continued)
+
 
 @main.route('/api/forgot-password', methods=['POST'])
 def forgot_password():
