@@ -9,7 +9,7 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For profile dropdown
   const [isModalOpen, setIsModalOpen] = useState(false); // For signup choice modal
   const { isLoggedIn, logout } = useContext(AuthContext); // Access login state and logout function from context
-  const navigate = useNavigate(); // To handle navigation after signup choice
+  const navigate = useNavigate(); // To handle navigation after logout
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
@@ -19,6 +19,7 @@ const Header = () => {
     try {
       await logout(); // Call the logout function
       setIsDropdownOpen(false); // Close dropdown after logout
+      navigate('/'); // Redirect to login page after logout
     } catch (error) {
       console.error("Logout failed:", error); // Handle any errors if needed
     }
