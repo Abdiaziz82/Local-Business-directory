@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { AuthContext } from '../context/AuthContext'; // Import the AuthContext
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -10,8 +11,8 @@ const Login = ({ onLogin }) => {
     password: '',
   });
   const [rememberMe, setRememberMe] = useState(false); // New state for Remember Me checkbox
-
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // Access the login function from AuthContext
 
   const handleChange = (e) => {
     setFormData({
@@ -34,15 +35,16 @@ const Login = ({ onLogin }) => {
 
     axios.post('http://localhost:5000/api/login', loginData)
       .then((response) => {
+        const { role } = response.data;
+
+        // Use the login function from AuthContext
+        login(role);
+
         Swal.fire({
           icon: 'success',
           title: 'Login Successful!',
           text: 'You have been logged in!',
         });
-        
-        const { role } = response.data;
-
-        onLogin(role);
 
         // Set a cookie for user role only
         Cookies.set('userRole', role);

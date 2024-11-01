@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-
+import AuthProvider from './context/AuthContext';
 import Header from "./components/Header";
 import HeroSection from './components/HeroSection';
 import SearchComponent from './components/SearchComponent';
@@ -16,7 +16,6 @@ import Login from './pages/Login';
 import BusinessOwnerDashboard from './pages/BusinessOwnerDashboard';
 import ForgetPassword from './pages/ForgotPassword';
 import ResetPasswordForm from './pages/ResetPasswordForm';
-
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -49,6 +48,7 @@ function App() {
   }
 
   return (
+    <AuthProvider>
     <Router>
       <Header onLogout={handleLogout} />
 
@@ -92,7 +92,8 @@ function App() {
 
       <Footer />
     </Router>
+    </AuthProvider>
   );
 }
 
-export default App;
+export default App; 
