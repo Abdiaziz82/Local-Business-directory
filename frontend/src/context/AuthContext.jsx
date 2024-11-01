@@ -1,24 +1,35 @@
-// src/context/AuthContext.jsx
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null); // Track user role
+  const [userRole, setUserRole] = useState(null);
+
+  // Load initial auth state from localStorage
+  useEffect(() => {
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const storedUserRole = localStorage.getItem('userRole');
+
+    if (storedIsLoggedIn && storedUserRole) {
+      setIsLoggedIn(true);
+      setUserRole(storedUserRole);
+    }
+  }, []);
 
   const login = (role) => {
     setIsLoggedIn(true);
-    setUserRole(role); // Set user role on login
+    setUserRole(role);
     localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('userRole', role); // Save role to local storage
+    localStorage.setItem('userRole', role);
   };
 
   const logout = () => {
     setIsLoggedIn(false);
-    setUserRole(null); // Clear user role on logout
+    setUserRole(null);
     localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userRole'); // Remove role from local storage
+    localStorage.removeItem('userRole');
   };
 
   return (
@@ -28,4 +39,9 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthProvider; // Default export
+// Add propTypes validation
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired, // children is required and can be any renderable node
+};
+
+export default AuthProvider;
