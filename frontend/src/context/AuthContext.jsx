@@ -1,33 +1,65 @@
-import React, { createContext, useContext, useState } from 'react';
-import Cookies from 'js-cookie';
+import React, { createContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-// Create the AuthContext
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
-// Create the AuthProvider component
-export const AuthProvider = ({ children }) => {
-  const [userRole, setUserRole] = useState(Cookies.get('userRole') || null);
+const AuthProvider = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const navigate = useNavigate(); // Access navigate in the AuthProvider
 
-  const handleLogin = (role) => {
+  // Load initial auth state from localStorage
+  useEffect(() => {
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const storedUserRole = localStorage.getItem('userRole');
+
+    if (storedIsLoggedIn && storedUserRole) {
+      setIsLoggedIn(true);
+      setUserRole(storedUserRole);
+      handleRedirection(storedUserRole); // Redirect to the correct dashboard on load
+    }
+  }, []);
+
+  // Centralized redirection based on role
+  const handleRedirection = (role) => {
+    if (role === 'business_owner') {
+      navigate('/business-owner-dashboard');
+    } else if (role === 'customer') {
+      navigate('/customer-dashboard');
+    } else {
+      console.error("Invalid role. Redirecting to default.");
+      navigate('/default-dashboard'); // Redirect to a default page, or to login if preferred.
+    }
+  };
+  
+
+  const login = (role) => {
+    setIsLoggedIn(true);
     setUserRole(role);
-    Cookies.set('userRole', role);
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userRole', role);
+    handleRedirection(role); // Redirect immediately after login
   };
 
   const logout = () => {
+    setIsLoggedIn(false);
     setUserRole(null);
-    Cookies.remove('userRole');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userRole');
+    navigate('/login'); // Redirect to login after logout
   };
 
   return (
-    <AuthContext.Provider value={{ userRole, handleLogin, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook for accessing auth context
-export const useAuth = () => {
-  return useContext(AuthContext);
+// Add propTypes validation
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
-export default AuthContext;
+export default AuthProvider;
