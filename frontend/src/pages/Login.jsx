@@ -4,10 +4,13 @@ import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '../context/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
   const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -16,6 +19,10 @@ const Login = () => {
 
   const handleCheckboxChange = (e) => {
     setRememberMe(e.target.checked);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = (e) => {
@@ -74,16 +81,29 @@ const Login = () => {
                   placeholder="Email Address"
                 />
               </div>
-              <div>
+              <div style={{ position: 'relative' }}> {/* Container for icon positioning */}
                 <label htmlFor="password" className="sr-only">Password</label>
                 <input
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'} // Conditional type based on showPassword state
                   required
                   value={formData.password}
                   onChange={handleChange}
                   className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
                   placeholder="Password"
+                />
+                {/* Eye icon for toggling password visibility */}
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  onClick={togglePasswordVisibility}
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    cursor: 'pointer',
+                    color: '#6b7280', // Adjust icon color if needed
+                  }}
                 />
               </div>
             </div>
