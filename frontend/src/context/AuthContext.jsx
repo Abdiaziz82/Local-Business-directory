@@ -62,4 +62,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default AuthProvider;
+export default AuthProvider; 

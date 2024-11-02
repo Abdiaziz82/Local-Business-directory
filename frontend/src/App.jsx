@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import BusinessOwnerDashboard from './pages/BusinessOwnerDashboard';
 import ForgetPassword from './pages/ForgotPassword';
 import ResetPasswordForm from './pages/ResetPasswordForm';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   
@@ -51,7 +52,7 @@ function App() {
   return (
     
     <Router>
-      <AuthProvider>
+     <AuthProvider>
       <Header onLogout={handleLogout} />
 
       <Routes>
@@ -72,20 +73,26 @@ function App() {
         <Route path="/signup/business-owner" element={<BusinessOwnerSignup />} />
         <Route path="/signup/customer" element={<CustomerSignup />} />
         
-        {/* Protected route for business owner dashboard */}
-        <Route 
-  path="/business-owner-dashboard" 
-  element={userRole === 'business_owner' ? <BusinessOwnerDashboard /> : <Navigate to="/login" />} 
-/>
+         {/* Protected routes */}
+         <Route
+            path="/business-owner-dashboard"
+            element={
+              <ProtectedRoute role="business_owner">
+                <BusinessOwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer-dashboard"
+            element={
+              <ProtectedRoute role="customer">
+                <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-
-        {/* Protected route for customer dashboard */}
-        <Route 
-          path="/customer-dashboard" 
-          element={userRole === 'customer' ? <CustomerDashboard /> : <Navigate to="/login" />} 
-        />
-            {/* Default redirect for unknown routes */}
-      <Route path="*" element={<Navigate to="/login" />} />
+          {/* Redirect unknown routes */}
+          <Route path="*" element={<Navigate to="/" replace />} />
          <Route path="/forgot-password" element={<ForgetPassword />} />
          <Route path="/reset-password" element={<ResetPasswordForm />} />
         
@@ -98,6 +105,7 @@ function App() {
       <Footer />
       </AuthProvider>
     </Router>
+    
    
   );
 }
