@@ -1,4 +1,4 @@
-import  { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
@@ -7,10 +7,17 @@ import { AuthContext } from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
+  </div>
+);
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
   const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -27,125 +34,131 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     const loginData = { ...formData, remember: rememberMe };
 
-    axios.post('http://localhost:5000/api/login', loginData)
-      .then((response) => {
-        if (!response.data || !response.data.role) {
+    setTimeout(() => {
+      axios
+        .post('http://localhost:5000/api/login', loginData)
+        .then((response) => {
+          setLoading(false); // Stop loading
+          if (!response.data || !response.data.role) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Login Failed',
+              text: 'Unexpected response from the server.',
+            });
+            return;
+          }
+
+          const { role } = response.data;
+          login(role);
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successful!',
+            text: 'You have been logged in!',
+          });
+
+          Cookies.set('userRole', role);
+        })
+        .catch((error) => {
+          setLoading(false); // Stop loading
           Swal.fire({
             icon: 'error',
             title: 'Login Failed',
-            text: 'Unexpected response from the server.',
+            text: error.response
+              ? error.response.data.error
+              : 'An error occurred. Please try again.',
           });
-          return;
-        }
-
-        const { role } = response.data;
-        login(role); // Use the login function from AuthContext to handle role-based redirection
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful!',
-          text: 'You have been logged in!',
         });
-
-        // Set a cookie for user role
-        Cookies.set('userRole', role);
-      })
-      .catch((error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: error.response ? error.response.data.error : 'An error occurred. Please try again.',
-        });
-      });
+    }, 3000); // Wait 3 seconds
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl w-full space-y-8">
-      <div className="text-center">
-            <h2 className="text-4xl font-extrabold text-gray-900">Login to Your Account</h2>
-            <p className="mt-2 text-lg text-gray-600">Please enter your credentials to access your account</p>
-          </div>
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm space-y-6">
-              <div>
-                <label htmlFor="email" className="sr-only">Email Address</label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
-                  placeholder="Email Address"
-                />
-              </div>
-              <div style={{ position: 'relative' }}> {/* Container for icon positioning */}
-                <label htmlFor="password" className="sr-only">Password</label>
-                <input
-                  name="password"
-                  type={showPassword ? 'text' : 'password'} // Conditional type based on showPassword state
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
-                  placeholder="Password"
-                />
-                {/* Eye icon for toggling password visibility */}
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  onClick={togglePasswordVisibility}
-                  style={{
-                    position: 'absolute',
-                    right: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    cursor: 'pointer',
-                    color: '#6b7280', // Adjust icon color if needed
-                  }}
-                />
-              </div>
-            </div>
-  
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={handleCheckboxChange}
-                  className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-lg text-gray-900">
-                  Remember me
-                </label>
-              </div>
-              <div className="text-lg">
-                <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
-  
+        <div className="text-center">
+          <h2 className="text-4xl font-extrabold text-gray-900">Login to Your Account</h2>
+          <p className="mt-2 text-lg text-gray-600">Please enter your credentials to access your account</p>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm space-y-6">
             <div>
-              <button
-                type="submit"
-                className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-bold rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Sign in
-              </button>
+              <label htmlFor="email" className="sr-only">Email Address</label>
+              <input
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
+                placeholder="Email Address"
+              />
             </div>
-          </form>
-          <div className="text-center mt-6">
-            <p className="text-lg text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Sign Up
-              </Link>
-            </p>
+            <div style={{ position: 'relative' }}>
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={formData.password}
+                onChange={handleChange}
+                className="appearance-none rounded-md relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-lg"
+                placeholder="Password"
+              />
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                onClick={togglePasswordVisibility}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  color: '#6b7280',
+                }}
+              />
+            </div>
           </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={handleCheckboxChange}
+                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-lg text-gray-900">
+                Remember me
+              </label>
+            </div>
+            <div className="text-lg">
+              <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+              </Link>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-bold rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {loading ? <LoadingSpinner /> : 'Sign in'} {/* Show spinner or button text */}
+            </button>
+          </div>
+        </form>
+        <div className="text-center mt-6">
+          <p className="text-lg text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Sign Up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
