@@ -9,7 +9,11 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
+    <div className="flex space-x-2">
+      <div className="h-6 w-6 bg-blue-600 rounded-full animate-bounce"></div>
+      <div className="h-6 w-6 bg-blue-500 rounded-full animate-bounce200"></div>
+      <div className="h-6 w-6 bg-blue-400 rounded-full animate-bounce300"></div>
+    </div>
   </div>
 );
 
