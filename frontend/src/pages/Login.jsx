@@ -8,12 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const LoadingSpinner = () => (
-  <div className="flex justify-center items-center">
-    <div className="flex space-x-2">
-      <div className="h-6 w-6 bg-blue-600 rounded-full animate-bounce"></div>
-      <div className="h-6 w-6 bg-blue-500 rounded-full animate-bounce200"></div>
-      <div className="h-6 w-6 bg-blue-400 rounded-full animate-bounce300"></div>
-    </div>
+  <div className="flex justify-center items-center space-x-2">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-500"></div>
   </div>
 );
 
@@ -21,7 +17,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -38,14 +34,14 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
     const loginData = { ...formData, remember: rememberMe };
 
     setTimeout(() => {
       axios
         .post('http://localhost:5000/api/login', loginData)
         .then((response) => {
-          setLoading(false); // Stop loading
+          setLoading(false);
           if (!response.data || !response.data.role) {
             Swal.fire({
               icon: 'error',
@@ -66,7 +62,7 @@ const Login = () => {
           Cookies.set('userRole', role);
         })
         .catch((error) => {
-          setLoading(false); // Stop loading
+          setLoading(false);
           Swal.fire({
             icon: 'error',
             title: 'Login Failed',
@@ -75,7 +71,7 @@ const Login = () => {
               : 'An error occurred. Please try again.',
           });
         });
-    }, 3000); // Wait 3 seconds
+    }, 3000); // 3-second loading simulation
   };
 
   return (
@@ -151,7 +147,7 @@ const Login = () => {
               type="submit"
               className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-bold rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {loading ? <LoadingSpinner /> : 'Sign in'} {/* Show spinner or button text */}
+              {loading ? <LoadingSpinner /> : 'Sign in'}
             </button>
           </div>
         </form>
