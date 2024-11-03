@@ -18,6 +18,7 @@ import ForgetPassword from './pages/ForgotPassword';
 import ResetPasswordForm from './pages/ResetPasswordForm';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
 function App() {
   
   const [userRole, setUserRole] = useState(null);
@@ -78,6 +79,7 @@ function App() {
             path="/business-owner-dashboard"
             element={
               <ProtectedRoute role="business_owner">
+                
                 <BusinessOwnerDashboard />
               </ProtectedRoute>
             }
