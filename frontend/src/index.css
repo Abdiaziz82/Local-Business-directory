@@ -2,26 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Keyframes for a faster bounce */
-@keyframes fast-bounce {
-  0%, 100% {
-    transform: translateY(0);
+@keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px); /* Increase bounce height */
+    }
   }
-  50% {
-    transform: translateY(-10px); /* Smaller bounce for quick effect */
+  
+  .animate-bounce {
+    animation: bounce 0.6s infinite;
   }
-}
-
-/* Base animation with shorter duration */
-.animate-fast-bounce {
-  animation: fast-bounce 0.2s ease-in-out infinite; /* Faster animation */
-}
-
-/* Slightly different delays for interchanging effect */
-.animate-fast-bounce-delay1 {
-  animation-delay: 0.05s;
-}
-
-.animate-fast-bounce-delay2 {
-  animation-delay: 0.1s;
-}
+  
+  .animate-bounce200 {
+    animation: bounce 0.6s infinite;
+    animation-delay: 0.2s;
+  }
+  
+  .animate-bounce300 {
+    animation: bounce 0.6s infinite;
+    animation-delay: 0.4s;
+  }

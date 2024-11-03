@@ -10,13 +10,12 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center">
     <div className="flex space-x-2">
-      <div className="h-6 w-6 bg-white rounded-full animate-fast-bounce"></div>
-      <div className="h-6 w-6 bg-white rounded-full animate-fast-bounce-delay1"></div>
-      <div className="h-6 w-6 bg-white rounded-full animate-fast-bounce-delay2"></div>
+      <div className="h-6 w-6 bg-white rounded-full animate-bounce"></div>
+      <div className="h-6 w-6 bg-white rounded-full animate-bounce200"></div>
+      <div className="h-6 w-6 bg-white rounded-full animate-bounce300"></div>
     </div>
   </div>
 );
-
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
