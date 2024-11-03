@@ -8,8 +8,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const LoadingSpinner = () => (
-  <div className="flex justify-center items-center space-x-2">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-500"></div>
+  <div className="flex justify-center items-center">
+    <div className="flex space-x-2">
+      <div className="h-6 w-6 bg-white rounded-full animate-bounce"></div>
+      <div className="h-6 w-6 bg-white rounded-full animate-bounce200"></div>
+      <div className="h-6 w-6 bg-white rounded-full animate-bounce300"></div>
+    </div>
   </div>
 );
 
@@ -71,7 +75,7 @@ const Login = () => {
               : 'An error occurred. Please try again.',
           });
         });
-    }, 3000); // 3-second loading simulation
+    }, 3000);
   };
 
   return (
