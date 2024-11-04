@@ -1,4 +1,13 @@
 import React, { useState } from "react";
+import Select from "react-select";
+
+const categoryOptions = [
+  { value: "food", label: "Food" },
+  { value: "clothing", label: "Clothing" },
+  { value: "electronics", label: "Electronics" },
+  { value: "services", label: "Services" },
+  // Add more options as needed
+];
 
 const BusinessForm = ({ setBusinessData }) => {
   const [formData, setFormData] = useState({
@@ -6,147 +15,144 @@ const BusinessForm = ({ setBusinessData }) => {
     logo: "",
     products: "",
     website: "",
-    description: "",
-    location: "",
-    categories: [],
     email: "",
-    phone: "",
+    phoneNumber: "",
+    category: null,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, selectedOptions } = e.target;
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    if (type === "select-multiple") {
-      const values = Array.from(selectedOptions, (option) => option.value);
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: values,
-      }));
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+  const handleCategoryChange = (selectedOption) => {
+    setFormData({ ...formData, category: selectedOption });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setBusinessData(formData);
+    setFormData({
+      name: "",
+      logo: "",
+      products: "",
+      website: "",
+      email: "",
+      phoneNumber: "",
+      category: null,
+    });
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-8 rounded-lg shadow-lg w-full mx-auto mt-20 space-y-6"
-    >
-      <h2 className="text-2xl font-bold text-center mb-4">Business Information Form</h2>
-
+    <form className="w-full max-w-full bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6">Business Information</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block font-semibold">Business Name</label>
+          <label className="block text-sm font-medium mb-2">Business Name</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 border rounded-lg p-3"
+            placeholder="Enter your business name"
             required
           />
         </div>
         <div>
-          <label className="block font-semibold">Logo URL</label>
+          <label className="block text-sm font-medium mb-2">Logo URL</label>
           <input
             type="text"
             name="logo"
             value={formData.logo}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 border rounded-lg p-3"
+            placeholder="Enter logo URL"
+            required
           />
         </div>
-        <div>
-          <label className="block font-semibold">Products</label>
-          <input
-            type="text"
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-2">Products</label>
+          <textarea
             name="products"
             value={formData.products}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 border rounded-lg p-3"
+            placeholder="Describe your products"
+            rows="4"
+            required
           />
         </div>
         <div>
-          <label className="block font-semibold">Website</label>
+          <label className="block text-sm font-medium mb-2">Website</label>
           <input
             type="url"
             name="website"
             value={formData.website}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 border rounded-lg p-3"
+            placeholder="Enter your website URL"
+            required
           />
         </div>
         <div>
-          <label className="block font-semibold">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows="3"
-          ></textarea>
-        </div>
-        <div>
-          <label className="block font-semibold">Location</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block font-semibold">Categories</label>
-          <select
-            name="categories"
-            multiple
-            value={formData.categories}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="Retail">Retail</option>
-            <option value="Food & Beverage">Food & Beverage</option>
-            <option value="Health & Wellness">Health & Wellness</option>
-            <option value="Technology">Technology</option>
-            <option value="Finance">Finance</option>
-          </select>
-        </div>
-        <div>
-          <label className="block font-semibold">Email Address</label>
+          <label className="block text-sm font-medium mb-2">Email Address</label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 border rounded-lg p-3"
+            placeholder="Enter your email address"
             required
           />
         </div>
         <div>
-          <label className="block font-semibold">Phone Number</label>
+          <label className="block text-sm font-medium mb-2">Phone Number</label>
           <input
             type="tel"
-            name="phone"
-            value={formData.phone}
+            name="phoneNumber"
+            value={formData.phoneNumber}
             onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-gray-300 border rounded-lg p-3"
+            placeholder="Enter your phone number"
             required
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-2">Category</label>
+          <Select
+            options={categoryOptions}
+            className="basic-single"
+            classNamePrefix="select"
+            onChange={handleCategoryChange}
+            placeholder="Select a category"
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                borderColor: 'gray',
+                boxShadow: 'none',
+                '&:hover': {
+                  borderColor: 'blue',
+                },
+              }),
+              menu: (provided) => ({
+                ...provided,
+                zIndex: 9999,
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isFocused ? 'lightgray' : 'white',
+                color: 'black',
+              }),
+            }}
           />
         </div>
       </div>
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
+        className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition mt-6"
       >
         Submit
       </button>
