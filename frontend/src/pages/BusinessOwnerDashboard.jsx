@@ -1,47 +1,51 @@
 import React, { useState } from "react";
-import { FaListAlt, FaPen } from "react-icons/fa";
+import { FaClipboardList, FaEdit } from "react-icons/fa";
 import BusinessForm from "./BusinessForm";
 import BusinessCard from "./BusinessCard";
 
 const BusinessOwnerDashboard = () => {
-  const [activeTab, setActiveTab] = useState("form");
+  const [activeSection, setActiveSection] = useState("form");
   const [businessData, setBusinessData] = useState(null);
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-50">
+    <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Sidebar */}
-      <div className="w-full md:w-1/4 bg-white text-gray-800 p-5 border-r border-gray-200">
-        <h2 className="text-2xl font-bold mb-8 text-center">Business Dashboard</h2>
-        <div className="space-y-4">
-          <button
-            onClick={() => setActiveTab("form")}
-            className={`flex items-center w-full p-3 rounded-lg transition-colors ${
-              activeTab === "form" ? "bg-gray-200" : "hover:bg-gray-100"
-            }`}
-          >
-            <FaPen className="text-blue-500 mr-3" />
-            <span className="text-lg font-medium">Filling Form</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("listings")}
-            className={`flex items-center w-full p-3 rounded-lg transition-colors ${
-              activeTab === "listings" ? "bg-gray-200" : "hover:bg-gray-100"
-            }`}
-          >
-            <FaListAlt className="text-blue-500 mr-3" />
-            <span className="text-lg font-medium">Your Listings</span>
-          </button>
-        </div>
-      </div>
+      <aside className="lg:w-1/4 w-full lg:h-screen bg-gray-900 text-white flex flex-col items-center py-12 lg:py-16 space-y-8 mt-16 lg:mt-0"> {/* Added mt-16 */}
+        <h1 className="text-4xl font-bold mb-6 text-center">Dashboard</h1> {/* Centered header */}
+        <button
+          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+            activeSection === "form" ? "bg-gray-700" : ""
+          }`}
+          onClick={() => setActiveSection("form")}
+        >
+          <FaEdit className="mr-3 text-blue-500" /> Filling Form
+        </button>
+        <button
+          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+            activeSection === "listings" ? "bg-gray-700" : ""
+          }`}
+          onClick={() => setActiveSection("listings")}
+        >
+          <FaClipboardList className="mr-3 text-blue-500" /> Your Listings
+        </button>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 flex justify-center items-center overflow-auto">
-        {activeTab === "form" ? (
-          <BusinessForm setBusinessData={setBusinessData} />
-        ) : (
-          businessData && <BusinessCard data={businessData} />
+      <main className="flex-grow p-4 lg:p-8 bg-gray-100 overflow-y-auto">
+        {activeSection === "form" && (
+          <div className="flex justify-center">
+            <BusinessForm setBusinessData={setBusinessData} />
+          </div>
         )}
-      </div>
+        {activeSection === "listings" && businessData && (
+          <div className="flex flex-wrap justify-center gap-4">
+            <BusinessCard businessData={businessData} />
+          </div>
+        )}
+        {activeSection === "listings" && !businessData && (
+          <p className="text-center text-gray-600 text-lg mt-10">No listings available. Fill out the form to add your listing.</p>
+        )}
+      </main>
     </div>
   );
 };
