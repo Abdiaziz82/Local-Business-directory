@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaClipboardList, FaEdit } from "react-icons/fa";
 import BusinessForm from "./BusinessForm";
 import BusinessCard from "./BusinessCard";
 
 const BusinessOwnerDashboard = () => {
   const [activeSection, setActiveSection] = useState("form");
-  const [businessData, setBusinessData] = useState(null);
+  const [businessData, setBusinessData] = useState([]);
+
+  // Load existing data from local storage on component mount
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("businessListings")) || [];
+    setBusinessData(savedData);
+  }, []);
+
+  // Function to handle form submission data
+  const handleNewBusinessData = (newData) => {
+    const updatedData = [...businessData, newData];
+    setBusinessData(updatedData);
+    localStorage.setItem("businessListings", JSON.stringify(updatedData));
+  };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
@@ -34,15 +47,17 @@ const BusinessOwnerDashboard = () => {
       <main className="flex-grow p-4 lg:p-8 bg-gray-100 overflow-y-auto mt-16">
         {activeSection === "form" && (
           <div className="flex justify-center">
-            <BusinessForm setBusinessData={setBusinessData} />
+            <BusinessForm setBusinessData={handleNewBusinessData} />
           </div>
         )}
-        {activeSection === "listings" && businessData && (
+        {activeSection === "listings" && businessData.length > 0 && (
           <div className="flex flex-wrap justify-center gap-4">
-            <BusinessCard data={businessData} />
+            {businessData.map((data, index) => (
+              <BusinessCard key={index} data={data} />
+            ))}
           </div>
         )}
-        {activeSection === "listings" && !businessData && (
+        {activeSection === "listings" && businessData.length === 0 && (
           <p className="text-center text-gray-600 text-lg mt-10">
             No listings available. Fill out the form to add your listing.
           </p>
