@@ -39,7 +39,7 @@ const BusinessOwnerDashboard = () => {
         )}
         {activeSection === "listings" && businessData && (
           <div className="flex flex-wrap justify-center gap-4">
-            <BusinessCard businessData={businessData} />
+            <BusinessCard data={businessData} />
           </div>
         )}
         {activeSection === "listings" && !businessData && (

@@ -16,6 +16,15 @@ const BusinessCard = ({ data }) => {
       <p className="text-gray-600">
         <strong>Products:</strong> {data.products}
       </p>
+      <p className="text-gray-600">
+        <strong>Categories:</strong> {data.categories}
+      </p>
+      <p className="text-gray-600">
+        <strong>Email:</strong> {data.email}
+      </p>
+      <p className="text-gray-600">
+        <strong>Phone:</strong> {data.phone}
+      </p>
       {data.website && (
         <a
           href={data.website}
