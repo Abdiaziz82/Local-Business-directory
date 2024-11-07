@@ -1,4 +1,3 @@
-# app/models.py
 from datetime import datetime
 from app import db, login_manager
 from flask_login import UserMixin
@@ -21,3 +20,33 @@ class User(db.Model, UserMixin):
    
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.role}')"
+    
+    business_cards = db.relationship('BusinessCard', backref='user', lazy=True)
+
+class BusinessCard(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    logo = db.Column(db.String(200), nullable=True)  # New field for logo URL
+    description = db.Column(db.String(500), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    products = db.Column(db.String(500), nullable=True)  # New field for products
+    website = db.Column(db.String(200), nullable=True)
+    categories = db.Column(db.String(100), nullable=True)  # New field for categories
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+
+    def __init__(self, user_id, name, logo, description, location, products, website, categories, email, phone):
+        self.user_id = user_id
+        self.name = name
+        self.logo = logo
+        self.description = description
+        self.location = location
+        self.products = products
+        self.website = website
+        self.categories = categories
+        self.email = email
+        self.phone = phone
+
+    def __repr__(self):
+        return f"BusinessCard('{self.name}', '{self.location}', '{self.email}', '{self.phone}')"

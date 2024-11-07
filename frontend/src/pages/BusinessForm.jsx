@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const BusinessForm = ({ setBusinessData }) => {
   const [formData, setFormData] = useState({
@@ -12,17 +13,32 @@ const BusinessForm = ({ setBusinessData }) => {
     email: "",
     phone: "",
   });
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setBusinessData(formData);
+    try {
+      const response =  axios.post('http://localhost:5000/business_card'
+, formData);
+      setSuccess("Business card created successfully!");
+      setError(null);
+      setBusinessData(formData);
+    } catch (err) {
+      console.error("Error response:", err.response);  // Add this line to log the error
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(`Failed to create business card: ${err.response.data.error}`);
+      } else {
+        setError("Failed to create business card.");
+      }
+      setSuccess(null);
+    }
   };
-
+  
   return (
     <form
       onSubmit={handleSubmit}
@@ -40,6 +56,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -51,6 +68,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
         <div className="lg:w-1/2 p-2">
           <textarea
             name="description"
@@ -61,6 +79,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           ></textarea>
         </div>
+
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -72,6 +91,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -83,6 +103,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -94,6 +115,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
         <div className="lg:w-1/2 p-2">
           <select
             name="categories"
@@ -108,9 +130,9 @@ const BusinessForm = ({ setBusinessData }) => {
             <option value="Technology">Technology</option>
             <option value="Manufacturing">Manufacturing</option>
             <option value="Food & Beverage">Food & Beverage</option>
-            {/* Add more options as needed */}
           </select>
         </div>
+
         <div className="lg:w-1/2 p-2">
           <input
             type="email"
@@ -122,6 +144,7 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
         <div className="lg:w-1/2 p-2">
           <input
             type="tel"
@@ -134,6 +157,7 @@ const BusinessForm = ({ setBusinessData }) => {
           />
         </div>
       </div>
+
       <div className="p-2">
         <button
           type="submit"
@@ -142,6 +166,9 @@ const BusinessForm = ({ setBusinessData }) => {
           Submit
         </button>
       </div>
+
+      {success && <p className="text-green-500">{success}</p>}
+      {error && <p className="text-red-500">{error}</p>}
     </form>
   );
 };
