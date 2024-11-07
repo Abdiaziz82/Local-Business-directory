@@ -1,70 +1,70 @@
 import React from "react";
-import { FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-icons/fa";
 
 const BusinessCard = ({ data }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:scale-105 max-w-2xl mx-auto mb-6">
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-auto mb-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
       
-      {/* Image as a Banner */}
-      {data.logo && (
-        <div className="relative">
+      {/* Image Section with "OPEN" Label */}
+      <div className="relative bg-gray-100">
+        {data.logo && (
           <img
             src={data.logo}
             alt={`${data.name} Logo`}
             className="w-full h-48 object-cover"
           />
-          <div className="absolute inset-0 bg-black opacity-20"></div> {/* Overlay for text contrast */}
+        )}
+        
+        {/* "OPEN" Badge */}
+        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md">
+          OPEN
         </div>
-      )}
+      </div>
       
+      {/* Divider between image and content */}
+      <div className="h-1 bg-indigo-500"></div>
+      
+      {/* Content Section */}
       <div className="p-6">
+        
         {/* Business Name */}
-        <h3 className="text-2xl font-bold text-gray-900 mt-4 text-center">{data.name}</h3>
-
-        {/* Description */}
-        <p className="mt-3 text-sm text-gray-700 leading-snug text-center line-clamp-3">
-          {data.description}
-        </p>
-
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">{data.name}</h3>
+        
         {/* Location */}
-        <div className="mt-3 text-sm text-indigo-600 flex items-center justify-center">
-          <FaMapMarkerAlt className="mr-1 text-indigo-500" />
+        <div className="text-sm text-gray-600 mb-4 flex items-center justify-center">
+          <FaMapMarkerAlt className="mr-2 text-indigo-500" />
           {data.location}
         </div>
-
-        {/* Category */}
-        {data.categories && (
-          <div className="mt-2 text-center">
-            <span className="bg-indigo-500 text-white px-3 py-1 rounded-full text-xs">
-              {data.categories}
-            </span>
+        
+        {/* Products and Categories */}
+        <div className="flex justify-around text-center text-sm text-gray-600 mb-4">
+          <div className="flex items-center">
+            <FaBoxOpen className="mr-1 text-indigo-500" />
+            <span>{data.products} products</span>
           </div>
-        )}
-
-        {/* Products */}
-        {data.products && (
-          <p className="mt-2 text-sm text-gray-700 text-center">
-            <strong>Products:</strong> {data.products}
-          </p>
-        )}
-
+          <div className="flex items-center">
+            <FaTag className="mr-1 text-indigo-500" />
+            <span>{data.categories}</span>
+          </div>
+        </div>
+        
         {/* Contact Information */}
-        <div className="mt-4 space-y-2 text-center">
+        <div className="flex justify-around text-center text-sm text-gray-600 mb-4">
           {data.email && (
-            <p className="flex items-center justify-center text-sm text-gray-700">
+            <div className="flex items-center">
               <FaEnvelope className="mr-1 text-indigo-500" />
-              {data.email}
-            </p>
+              <span>{data.email}</span>
+            </div>
           )}
           {data.phone && (
-            <p className="flex items-center justify-center text-sm text-gray-700">
+            <div className="flex items-center">
               <FaPhone className="mr-1 text-indigo-500" />
-              {data.phone}
-            </p>
+              <span>{data.phone}</span>
+            </div>
           )}
         </div>
-
-        {/* Website Link */}
+        
+        {/* Visit Website Button */}
         {data.website && (
           <div className="mt-4">
             <a
@@ -83,5 +83,3 @@ const BusinessCard = ({ data }) => {
 };
 
 export default BusinessCard;
-
-
