@@ -22,7 +22,8 @@ def create_app():
     
     
     app.config.from_object(Config)  # Load app configuration
-    CORS(app)  # Enable CORS for the app to handle cross-origin requests
+    CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+ # Enable CORS for the app to handle cross-origin requests
 
     db.init_app(app)  # Initialize database with app
     migrate.init_app(app, db)

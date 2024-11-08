@@ -4,7 +4,7 @@ from app.models import User
 from flask_cors import CORS  # Import CORS
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
-from flask_login import login_user, current_user, logout_user,  login_required
+from flask_login import login_user, current_user, logout_user
 from flask_cors import cross_origin
 from datetime import datetime, timedelta
 from app.models import BusinessCard
@@ -30,7 +30,8 @@ def get_serializer():
     return URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
 
 main = Blueprint('main', __name__)
-CORS(main)  # Enable CORS for this blueprint
+CORS(main, supports_credentials=True, origins="http://localhost:5173")
+  # Enable CORS for this blueprint
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -146,6 +147,8 @@ def customer_signup():
     db.session.commit()
 
     return jsonify({'message': 'Customer account created successfully'}), 201
+
+
 
 
 @main.route("/api/login", methods=['POST'])
@@ -310,63 +313,3 @@ def reset_password():
 
     return jsonify({"message": "Password has been updated successfully"}), 200
 
-@main.route('/business_card', methods=['POST'])
-@login_required  # Ensure that the user is logged in
-def create_business_card():
-    # Check if the request has the required fields
-    data = request.get_json()
-
-    name = data.get('name')
-    logo = data.get('logo')
-    description = data.get('description')
-    location = data.get('location')
-    products = data.get('products')
-    website = data.get('website')
-    categories = data.get('categories')
-    email = data.get('email')
-    phone = data.get('phone')
-
-    # Ensure that all fields are provided
-    if not all([name, description, location, email, phone]):
-        return jsonify({"error": "Missing required fields"}), 400
-
-    # Create a new BusinessCard instance
-    new_card = BusinessCard(
-        user_id=current_user.id,  # Associate with logged-in user
-        name=name,
-        logo=logo,
-        description=description,
-        location=location,
-        products=products,
-        website=website,
-        categories=categories,
-        email=email,
-        phone=phone
-    )
-
-    # Add to session and commit to the database
-    db.session.add(new_card)
-    db.session.commit()
-
-    return jsonify({"message": "Business card created successfully!"}), 201
-
-@main.route('/api/business_cards', methods=['GET'])
-@login_required
-def get_business_cards():
-    # Query the database for the current user's business cards
-    user_cards = BusinessCard.query.filter_by(user_id=current_user.id).all()
-
-    # Convert the result to a list of dictionaries
-    cards = [{
-        'name': card.name,
-        'logo': card.logo,
-        'description': card.description,
-        'location': card.location,
-        'products': card.products,
-        'website': card.website,
-        'categories': card.categories,
-        'email': card.email,
-        'phone': card.phone
-    } for card in user_cards]
-
-    return jsonify({"business_cards": cards}), 200
