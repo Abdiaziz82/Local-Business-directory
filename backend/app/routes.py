@@ -7,7 +7,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask_login import login_user, current_user, logout_user
 from flask_cors import cross_origin
 from datetime import datetime, timedelta
-from app.models import BusinessCard
+
 from werkzeug.security import generate_password_hash
 import random
 
