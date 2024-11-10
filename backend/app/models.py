@@ -14,11 +14,20 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(10), nullable=False)  # Either 'customer' or 'business_owner'
     
-    # Add these fields for password reset functionality
+    # Fields for password reset functionality
     reset_code = db.Column(db.String(6), nullable=True)  # Store 6-digit reset code
     reset_code_expiration = db.Column(db.DateTime, nullable=True)  # Store code expiration timestamp
    
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.role}')"
-    
-  
+
+class UserForm(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<UserForm {self.name}>'
