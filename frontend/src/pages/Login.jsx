@@ -43,7 +43,7 @@ const Login = () => {
 
     setTimeout(() => {
       axios
-        .post('http://localhost:5000/api/login', loginData)
+        .post('http://localhost:5000/api/login', loginData,)
         .then((response) => {
           setLoading(false);
           if (!response.data || !response.data.role) {

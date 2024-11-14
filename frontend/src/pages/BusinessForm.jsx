@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const BusinessForm = ({ setBusinessData }) => {
   const [formData, setFormData] = useState({
@@ -18,10 +19,43 @@ const BusinessForm = ({ setBusinessData }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setBusinessData(formData);
+  
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/api/business-info",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // This ensures cookies are sent with the request
+        }
+      );
+      
+      console.log("Form submitted successfully:", response.data);
+      alert("Business information added successfully!");
+      setBusinessData(response.data);
+  
+    } catch (error) {
+      if (error.response) {
+        console.error(
+          "Server responded with an error:",
+          error.response.status,
+          error.response.data
+        );
+        alert(`Error: ${error.response.data.message || "Failed to submit form."}`);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        alert("No response received from the server.");
+      } else {
+        console.error("Error setting up request:", error.message);
+        alert("Error setting up request.");
+      }
+    }
   };
+  
 
   return (
     <form
@@ -146,4 +180,4 @@ const BusinessForm = ({ setBusinessData }) => {
   );
 };
 
-export default BusinessForm; 
+export default BusinessForm;

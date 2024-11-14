@@ -7,6 +7,7 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
   const navigate = useNavigate(); // Access navigate in the AuthProvider
 
   // Load initial auth state from localStorage
@@ -19,6 +20,9 @@ const AuthProvider = ({ children }) => {
       setUserRole(storedUserRole);
       handleRedirection(storedUserRole); // Redirect to the correct dashboard on load
     }
+    
+    // Set loading to false once the check is complete
+    setIsLoading(false);
   }, []);
 
   // Centralized redirection based on role
@@ -32,7 +36,6 @@ const AuthProvider = ({ children }) => {
       navigate('/default-dashboard'); // Redirect to a default page, or to login if preferred.
     }
   };
-  
 
   const login = (role) => {
     setIsLoggedIn(true);
@@ -50,6 +53,11 @@ const AuthProvider = ({ children }) => {
     navigate('/login'); // Redirect to login after logout
   };
 
+  // Return loading state until auth check is done
+  if (isLoading) {
+    return <div>Loading...</div>; // Display loading message or spinner
+  }
+
   return (
     <AuthContext.Provider value={{ isLoggedIn, userRole, login, logout }}>
       {children}
@@ -62,4 +70,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default AuthProvider; 
+export default AuthProvider;
