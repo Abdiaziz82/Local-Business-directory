@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import PropTypes from "prop-types";
 
 const BusinessForm = ({ setBusinessData }) => {
   const [formData, setFormData] = useState({
@@ -21,46 +21,37 @@ const BusinessForm = ({ setBusinessData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting form with data:", formData);
   
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/api/business-info",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, // This ensures cookies are sent with the request
-        }
-      );
-      
-      console.log("Form submitted successfully:", response.data);
+      const response = await fetch("http://127.0.0.1:5000/api/business-info", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.json();
+        throw new Error(errorText.error || `Error ${response.status}`);
+      }
+  
+      const data = await response.json();
       alert("Business information added successfully!");
-      setBusinessData(response.data);
+      setBusinessData(data);
   
     } catch (error) {
-      if (error.response) {
-        console.error(
-          "Server responded with an error:",
-          error.response.status,
-          error.response.data
-        );
-        alert(`Error: ${error.response.data.message || "Failed to submit form."}`);
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-        alert("No response received from the server.");
-      } else {
-        console.error("Error setting up request:", error.message);
-        alert("Error setting up request.");
-      }
+      console.error("Submission error:", error.message);
+      alert(`Failed to submit form: ${error.message}`);
     }
   };
   
-
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto space-y-4 pt"
+      className="bg-white p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto space-y-4"
     >
       <div className="flex flex-col lg:flex-row lg:flex-wrap lg:space-y-0 space-y-4">
         <div className="lg:w-1/2 p-2">
@@ -142,7 +133,6 @@ const BusinessForm = ({ setBusinessData }) => {
             <option value="Technology">Technology</option>
             <option value="Manufacturing">Manufacturing</option>
             <option value="Food & Beverage">Food & Beverage</option>
-            {/* Add more options as needed */}
           </select>
         </div>
         <div className="lg:w-1/2 p-2">
@@ -178,6 +168,11 @@ const BusinessForm = ({ setBusinessData }) => {
       </div>
     </form>
   );
+};
+
+// Add prop type validation
+BusinessForm.propTypes = {
+  setBusinessData: PropTypes.func.isRequired,
 };
 
 export default BusinessForm;

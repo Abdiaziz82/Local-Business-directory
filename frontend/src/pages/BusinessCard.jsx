@@ -1,24 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-icons/fa";
 
-const BusinessCard = ({ data }) => {
+const BusinessCard = () => {
+  const [data, setData] = useState(null); // State to store fetched data
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    // Fetch business info from the API
+    const fetchBusinessInfo = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/business-info"); // Adjust the endpoint if needed
+        if (response.ok) {
+          const businessData = await response.json();
+          setData(businessData);
+        } else {
+          console.error("Failed to fetch business information.");
+        }
+      } catch (error) {
+        console.error("Error fetching business information:", error);
+      }
+    };
+
+    fetchBusinessInfo();
+
+    // Check if business is open or closed
     const openingHour = 9; // 9 AM
     const closingHour = 17; // 5 PM
-
     const checkOpenStatus = () => {
       const currentHour = new Date().getHours();
       const open = currentHour >= openingHour && currentHour < closingHour;
       setIsOpen(open);
     };
 
-    checkOpenStatus(); // Check status on component mount
+    checkOpenStatus(); // Initial status check
     const intervalId = setInterval(checkOpenStatus, 60000); // Check every minute
 
-    return () => clearInterval(intervalId); // Clear interval on component unmount
+    return () => clearInterval(intervalId); // Clean up interval on component unmount
   }, []);
+
+  if (!data) return <p>Loading...</p>;
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-auto mb-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
