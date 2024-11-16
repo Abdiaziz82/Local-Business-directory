@@ -60,7 +60,7 @@ const CustomerSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 spartan">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg lg:w-2/3 xl:w-3/4 2xl:w-2/3">
         <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">Sign Up as a Customer</h2>
         <form onSubmit={handleSubmit}>

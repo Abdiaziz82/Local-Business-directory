@@ -8,8 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const LoadingSpinner = () => (
-  <div className="flex justify-center items-center">
-    <div className="flex space-x-2">
+  <div className="flex justify-center items-center ">
+    <div className="flex space-x-2 ">
       <div className="h-6 w-6 bg-white rounded-full animate-bounce"></div>
       <div className="h-6 w-6 bg-white rounded-full animate-bounce200"></div>
       <div className="h-6 w-6 bg-white rounded-full animate-bounce300"></div>
@@ -43,7 +43,7 @@ const Login = () => {
 
     setTimeout(() => {
       axios
-        .post('http://localhost:5000/api/login', loginData,)
+        .post('http://127.0.0.1:5000/api/login', loginData,)
         .then((response) => {
           setLoading(false);
           if (!response.data || !response.data.role) {
@@ -61,6 +61,10 @@ const Login = () => {
             icon: 'success',
             title: 'Login Successful!',
             text: 'You have been logged in!',
+            customClass: {
+              title: 'swal-title',
+              htmlContainer: 'swal-text',
+            },
           });
 
           Cookies.set('userRole', role);
@@ -79,7 +83,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 spartan">
       <div className="max-w-3xl w-full space-y-8">
         <div className="text-center">
           <h2 className="text-4xl font-extrabold text-gray-900">Login to Your Account</h2>

@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeroSection = () => {
   return (
-    <div className="relative h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
+    <div className="relative h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden spartan">
       <img
         src="https://images.unsplash.com/photo-1728768247049-347a4740a70e?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // Replace with your desired image source
         alt="Local Business Background"

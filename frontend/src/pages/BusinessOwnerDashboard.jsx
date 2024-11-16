@@ -21,7 +21,7 @@ const BusinessOwnerDashboard = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col lg:flex-row min-h-screen spartan">
       {/* Sidebar */}
       <aside className="lg:w-1/4 w-full lg:h-screen bg-gray-900 text-white flex flex-col items-center py-8 lg:py-16 space-y-6 pt-20 lg:pt-28">
         <h1 className="text-3xl font-bold mb-6">Dashboard</h1>

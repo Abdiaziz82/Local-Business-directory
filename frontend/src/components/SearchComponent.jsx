@@ -10,7 +10,7 @@ const SearchableDropdown = ({ label, options, selectedValue, onSelect }) => {
   );
 
   return (
-    <div className="relative">
+    <div className="relative spartan" >
       <label className="block text-gray-700 mb-2 font-medium">{label}</label>
       {/* Display selected value and toggle dropdown */}
       <div

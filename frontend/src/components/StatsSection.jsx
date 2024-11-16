@@ -3,7 +3,7 @@ import { FaStore, FaUsers, FaStar, FaRegHandshake } from 'react-icons/fa'; // Im
 
 const StatsSection = () => {
   return (
-    <div className="bg-gray-100 py-16 px-6">
+    <div className="bg-gray-100 py-16 px-6 spartan">
       <div className="max-w-7xl mx-auto text-center">
         {/* Heading */}
         <h2 className="text-4xl font-extrabold text-gray-800 mb-8">Our Impact in Numbers</h2>

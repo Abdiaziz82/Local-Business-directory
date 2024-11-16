@@ -5,7 +5,7 @@ const SignUpChoiceModal = ({ onClose }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center spartan">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
         <h2 className="text-xl font-bold mb-4">Sign Up As</h2>
 

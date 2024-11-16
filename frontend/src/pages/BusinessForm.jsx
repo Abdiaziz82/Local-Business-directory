@@ -53,7 +53,7 @@ const BusinessForm = ({ setBusinessData }) => {
       onSubmit={handleSubmit}
       className="bg-white p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto space-y-4"
     >
-      <div className="flex flex-col lg:flex-row lg:flex-wrap lg:space-y-0 space-y-4">
+      <div className="flex flex-col lg:flex-row lg:flex-wrap lg:space-y-0 space-y-4 spartan">
         <div className="lg:w-1/2 p-2">
           <input
             type="text"

@@ -4,40 +4,45 @@ import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-ico
 const BusinessCard = () => {
   const [data, setData] = useState(null); // State to store fetched data
   const [isOpen, setIsOpen] = useState(false);
-
+  const [error, setError] = useState(null); // State for error messages
+  const [userId, setUserId] = useState(1); // Assuming userId is 1, replace with actual user ID logic
+  
   useEffect(() => {
-    // Fetch business info from the API
+    // Fetch the user's business information
     const fetchBusinessInfo = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/business-info"); // Adjust the endpoint if needed
+        const response = await fetch(`http://127.0.0.1:5000/api/business-info/${userId}`); // Using user_id dynamically
         if (response.ok) {
           const businessData = await response.json();
           setData(businessData);
+          setError(null); // Clear any previous errors
         } else {
-          console.error("Failed to fetch business information.");
+          setError("Failed to fetch business information.");
         }
       } catch (error) {
         console.error("Error fetching business information:", error);
+        setError("An error occurred while fetching data.");
       }
     };
 
-    fetchBusinessInfo();
+    fetchBusinessInfo(); // Fetch business info on component mount
 
-    // Check if business is open or closed
-    const openingHour = 9; // 9 AM
-    const closingHour = 17; // 5 PM
+    // Check if the business is open or closed
     const checkOpenStatus = () => {
+      const openingHour = 9; // 9 AM
+      const closingHour = 17; // 5 PM
       const currentHour = new Date().getHours();
-      const open = currentHour >= openingHour && currentHour < closingHour;
-      setIsOpen(open);
+      setIsOpen(currentHour >= openingHour && currentHour < closingHour);
     };
 
-    checkOpenStatus(); // Initial status check
+    checkOpenStatus(); // Check open status
+
     const intervalId = setInterval(checkOpenStatus, 60000); // Check every minute
 
     return () => clearInterval(intervalId); // Clean up interval on component unmount
-  }, []);
+  }, [userId]); // Trigger effect when userId changes
 
+  if (error) return <p className="text-red-500 text-center">{error}</p>;
   if (!data) return <p>Loading...</p>;
 
   return (
@@ -66,10 +71,7 @@ const BusinessCard = () => {
 
       {/* Content Section */}
       <div className="p-6">
-        {/* Business Name - Centered */}
         <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">{data.name}</h3>
-
-        {/* Truncated Business Description */}
         <div className="text-sm text-gray-600 mb-4 text-center">
           <p>{data.description}</p>
         </div>

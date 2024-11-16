@@ -11,18 +11,13 @@ function About() {
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           {/* Content */}
           <div className="flex flex-col gap-8 lg:w-3/5">
-            <h2 className="mb-8 text-3xl font-bold md:text-5xl">About us</h2>
+            <h2 className="mb-8 text-3xl font-bold md:text-5xl pt-16">About us</h2>
             <p className="text-sm sm:text-base">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Proin
-              fermentum leo vel orci. Dui faucibus in ornare quam viverra orci
-              sagittis eu. Viverra nam libero justo laoreet sit amet. Vulputate
-              odio ut enim blandit volutpat maecenas volutpat blandit. A lacus
-              vestibulum sed arcu non odio euismod. Feugiat pretium nibh ipsum
-              consequat. Cum sociis natoque penatibus et. Leo in vitae turpis
-              massa sed. Neque aliquam vestibulum morbi blandit cursus.
-              Facilisis sed odio morbi quis. A pellentesque sit amet porttitor
-              eget.
+            At [Directory Name], we are committed to connecting businesses with their local communities. Our platform serves as a comprehensive directory, helping customers discover trusted businesses, services, and professionals in their area. Whether you're looking for the best dining spots, reliable contractors, or niche local services, we've got you covered.
+
+We empower small businesses by providing them with a space to showcase their services, gain visibility, and attract new customers. Our user-friendly interface ensures that searching for a business is quick, seamless, and efficient.
+
+Join thousands of satisfied users and businesses who trust [Directory Name] as their go-to resource for local discoveries. Start exploring today and support the growth of your community by choosing local!
             </p>
             <a
               href="#"

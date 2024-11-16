@@ -18,6 +18,7 @@ import ForgetPassword from './pages/ForgotPassword';
 import ResetPasswordForm from './pages/ResetPasswordForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import About from './pages/About';
+import ContactUs from './pages/ContactUs';
 
 
 function App() {
@@ -103,7 +104,7 @@ function App() {
         <Route path="/browse" element={<div>Browse Businesses</div>} />
         <Route path="/add-business" element={<div>Add a Business</div>} />
         <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<div>Contact Us</div>} />
+        <Route path="/contact" element={<ContactUs />} />
       </Routes>
 
       <Footer />
