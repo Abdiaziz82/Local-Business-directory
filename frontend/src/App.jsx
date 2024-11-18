@@ -102,7 +102,7 @@ function App() {
          <Route path="/reset-password" element={<ResetPasswordForm />} />
         
         <Route path="/browse" element={<div>Browse Businesses</div>} />
-        <Route path="/add-business" element={<div>Add a Business</div>} />
+        <Route path="/add-business" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<ContactUs />} />
       </Routes>

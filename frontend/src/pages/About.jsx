@@ -6,12 +6,12 @@ function About() {
 
 <section>
       {/* Container */}
-      <div className="mx-auto w-full max-w-7xl px-5 py-12 md:px-10 md:py-16 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-5 py-12 md:px-10 md:py-16 lg:py-20 spartan">
         {/* Component */}
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           {/* Content */}
           <div className="flex flex-col gap-8 lg:w-3/5">
-            <h2 className="mb-8 text-3xl font-bold md:text-5xl pt-16">About us</h2>
+            <h2 className="mb-8 text-3xl font-bold md:text-5xl pt-16 text-indigo-600">About us</h2>
             <p className="text-sm sm:text-base">
             At [Directory Name], we are committed to connecting businesses with their local communities. Our platform serves as a comprehensive directory, helping customers discover trusted businesses, services, and professionals in their area. Whether you're looking for the best dining spots, reliable contractors, or niche local services, we've got you covered.
 
@@ -21,7 +21,7 @@ Join thousands of satisfied users and businesses who trust [Directory Name] as t
             </p>
             <a
               href="#"
-              className="w-36 rounded-md bg-black px-6 py-3 text-center font-semibold text-white"
+              className="w-36 rounded-md bg-indigo-600 px-6 py-3 text-center font-semibold text-white"
             >
               Learn More
             </a>
@@ -43,13 +43,13 @@ Join thousands of satisfied users and businesses who trust [Directory Name] as t
                       className="h-12 w-12 rounded-full object-cover"
                     />
                     <p className="text-sm font-semibold sm:text-base">
-                      Alleyah
+                      Abdiaiz
                     </p>
                   </div>
                   {/* Divider */} <div className="h-5 w-px bg-gray-300"></div>
                   <div className="flex items-center gap-x-2">
                     <p className="text-sm font-semibold sm:text-base">5.0</p>
-                    <div className="flex text-orange-500">
+                    <div className="flex text-indigo-600">
                       <svg
                         className="h-4 w-4"
                         xmlns="http://www.w3.org/2000/svg"
@@ -134,13 +134,13 @@ Join thousands of satisfied users and businesses who trust [Directory Name] as t
                       className="h-12 w-12 rounded-full object-cover"
                     />
                     <p className="text-sm font-semibold sm:text-base">
-                      Alleyah
+                      Ahmed
                     </p>
                   </div>
                   {/* Divider */} <div className="h-5 w-px bg-gray-300"></div>
                   <div className="flex items-center gap-x-2">
                     <p className="text-sm font-semibold sm:text-base">5.0</p>
-                    <div className="flex text-orange-500">
+                    <div className="flex text-indigo-600">
                       <svg
                         className="h-4 w-4"
                         xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const BusinessOwnerSignup = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ const BusinessOwnerSignup = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -37,7 +37,6 @@ const BusinessOwnerSignup = () => {
       },
     })
       .then((response) => {
-        console.log(response.data);
         setLoading(false);
         Swal.fire({
           icon: 'success',
@@ -52,7 +51,7 @@ const BusinessOwnerSignup = () => {
             password: '',
             confirmPassword: '',
           });
-          navigate('/login'); // Redirect to login page
+          navigate('/login');
         });
       })
       .catch((error) => {
@@ -66,87 +65,132 @@ const BusinessOwnerSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 spartan">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg lg:w-2/3 xl:w-3/4 2xl:w-2/3">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">Sign Up as a Business Owner</h2>
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your full name"
-            />
+    <div className="flex flex-col justify-center items-center font-[sans-serif] bg-gradient-to-r bg-white lg:h-screen p-6 spartan">
+      <div className="grid md:grid-cols-2 items-center gap-y-8 bg-white max-w-7xl w-full shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md overflow-hidden">
+        <div className="max-md:order-1 flex flex-col justify-center sm:p-8 p-4 bg-indigo-600 w-full h-full">
+          <div className="max-w-md space-y-12 mx-auto">
+            <div>
+              <h4 className="text-white text-lg font-semibold">Create Your Account</h4>
+              <p className="text-[13px] text-white mt-2">
+                Welcome to our registration page! Get started by creating your account.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white text-lg font-semibold">Simple & Secure Registration</h4>
+              <p className="text-[13px] text-white mt-2">
+                Our registration process is designed to be straightforward and secure.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white text-lg font-semibold">Terms and Conditions Agreement</h4>
+              <p className="text-[13px] text-white mt-2">
+                Require users to accept the terms and conditions of your service during registration.
+              </p>
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Email Address</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Business Name</label>
-            <input
-              type="text"
-              name="businessName"
-              value={formData.businessName}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your business name"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Create a password"
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Confirm your password"
-            />
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="sm:p-8 p-4 w-full"
+          encType="multipart/form-data"
+        >
+          <div className="mb-12">
+            <h3 className="text-indigo-600 text-3xl font-extrabold max-md:text-center">Register</h3>
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            disabled={loading}
-          >
-            {loading ? (
-              <span>Signing up...</span>
-            ) : (
-              <span>Sign Up</span>
-            )}
-          </button>
+          <div className="grid lg:grid-cols-2 gap-6">
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Full Name</label>
+              <input
+                name="fullName"
+                type="text"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-3 rounded-md outline-blue-500"
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Email</label>
+              <input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-3 rounded-md outline-blue-500"
+                placeholder="Enter your email"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Business Name</label>
+              <input
+                name="businessName"
+                type="text"
+                value={formData.businessName}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-3 rounded-md outline-blue-500"
+                placeholder="Enter your business name"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Password</label>
+              <input
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-3 rounded-md outline-blue-500"
+                placeholder="Create a password"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Confirm Password</label>
+              <input
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-3 rounded-md outline-blue-500"
+                placeholder="Confirm your password"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center mt-6">
+            <input
+              id="terms"
+              name="terms"
+              type="checkbox"
+              className="h-4 w-4 shrink-0 rounded"
+              required
+            />
+            <label
+              htmlFor="terms"
+              className="ml-3 block text-sm text-gray-800"
+            >
+              I accept the{' '}
+              <a href="#" className="text-blue-500 font-semibold hover:underline">
+                Terms and Conditions
+              </a>
+            </label>
+          </div>
+
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="py-3 px-6 text-sm tracking-wide font-semibold rounded-md text-white bg-indigo-600 hover:bg-blue-700 focus:outline-none transition-all"
+              disabled={loading}
+            >
+              {loading ? 'Signing up...' : 'Sign up'}
+            </button>
+          </div>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Already Registered?{' '}
-          <a href="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">Login</a>
-        </p>
       </div>
     </div>
   );

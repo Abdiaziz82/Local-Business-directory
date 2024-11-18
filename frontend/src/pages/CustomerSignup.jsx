@@ -60,75 +60,85 @@ const CustomerSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 spartan">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg lg:w-2/3 xl:w-3/4 2xl:w-2/3">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">Sign Up as a Customer</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your full name"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Email Address</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Create a password"
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-medium mb-1">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Confirm your password"
-            />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 spartan px-4 sm:px-6 md:px-8">
+      <div className="grid lg:grid-cols-2 items-center gap-6 max-w-7xl w-full pt-16">
+        <form onSubmit={handleSubmit} className="lg:max-w-md w-full px-6 py-8 ">
+          <h3 className="text-gray-800 text-3xl font-extrabold mb-12 text-center">Sign Up as a Customer</h3>
+          <div className="space-y-6">
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
+                placeholder="Enter your email"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
+                placeholder="Create a password"
+              />
+            </div>
+            <div>
+              <label className="text-gray-800 text-sm mb-2 block">Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
+                placeholder="Confirm your password"
+              />
+            </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            disabled={loading}
-          >
-            {loading ? (
-              <span>Signing up...</span>
-            ) : (
-              <span>Sign Up</span>
-            )}
-          </button>
+          <div className="mt-12">
+            <button
+              type="submit"
+              className="py-4 px-8 text-sm font-semibold text-white tracking-wide bg-indigo-600 hover:bg-blue-700 focus:outline-none w-full rounded-md"
+              disabled={loading}
+            >
+              {loading ? 'Signing up...' : 'Create an Account'}
+            </button>
+          </div>
+          <p className="text-sm text-gray-800 mt-6 text-center">
+            Already Registered?{' '}
+            <a href="/login" className="text-indigo-600 font-semibold hover:underline">
+              Login here
+            </a>
+          </p>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Already Registered?{' '}
-          <a href="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">Login</a>
-        </p>
+
+        <div className="h-full max-w-full">
+          <img
+            src="https://readymadeui.com/login-image.webp"
+            className="w-full h-full object-cover rounded-lg"
+            alt="Signup Illustration"
+          />
+        </div>
       </div>
     </div>
   );

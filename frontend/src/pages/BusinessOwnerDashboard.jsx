@@ -52,8 +52,8 @@ const BusinessOwnerDashboard = () => {
         )}
         {activeSection === "listings" && businessData.length > 0 && (
           <div className="flex flex-wrap justify-center gap-4">
-            {businessData.map((data, index) => (
-              <BusinessCard key={index} data={data} />
+            {businessData.map((data, userId) => (
+              <BusinessCard key={userId} data={data} />
             ))}
           </div>
         )}

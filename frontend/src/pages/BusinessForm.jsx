@@ -26,7 +26,7 @@ const BusinessForm = ({ setBusinessData }) => {
     try {
       const response = await fetch("http://127.0.0.1:5000/api/business-info", {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // Ensures cookies (session) are sent with the request
         headers: {
           "Content-Type": "application/json",
         },
