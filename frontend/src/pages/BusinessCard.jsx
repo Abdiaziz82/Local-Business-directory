@@ -3,31 +3,29 @@ import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-ico
 
 const BusinessCard = () => {
   const [data, setData] = useState(null); // State to store fetched data
-  const [isOpen, setIsOpen] = useState(false);
-  const [error, setError] = useState(null); // State for error messages
-  const [userId, setUserId] = useState(1); // Assuming userId is 1, replace with actual user ID logic
-  
+  const [isOpen, setIsOpen] = useState(false); // State for open/closed status
+  const [error, setError] = useState(null); // State for error handling
+
   useEffect(() => {
-    // Fetch the user's business information
+    // Fetch business information from the Flask API
     const fetchBusinessInfo = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/api/business-info/${userId}`); // Using user_id dynamically
-        if (response.ok) {
-          const businessData = await response.json();
-          setData(businessData);
-          setError(null); // Clear any previous errors
-        } else {
-          setError("Failed to fetch business information.");
+        const response = await fetch("http://127.0.0.1:5000/api/business-info");
+        if (!response.ok) {
+          throw new Error("Failed to fetch business information");
         }
+        const businessData = await response.json();
+        setData(businessData); // Set the fetched data to state
+        setError(null); // Clear any existing errors
       } catch (error) {
         console.error("Error fetching business information:", error);
-        setError("An error occurred while fetching data.");
+        setError("An error occurred while fetching business data.");
       }
     };
 
-    fetchBusinessInfo(); // Fetch business info on component mount
+    fetchBusinessInfo(); // Call the function when the component mounts
 
-    // Check if the business is open or closed
+    // Determine if the business is open or closed
     const checkOpenStatus = () => {
       const openingHour = 9; // 9 AM
       const closingHour = 17; // 5 PM
@@ -35,19 +33,18 @@ const BusinessCard = () => {
       setIsOpen(currentHour >= openingHour && currentHour < closingHour);
     };
 
-    checkOpenStatus(); // Check open status
-
+    checkOpenStatus(); // Check open/closed status
     const intervalId = setInterval(checkOpenStatus, 60000); // Check every minute
 
-    return () => clearInterval(intervalId); // Clean up interval on component unmount
-  }, [userId]); // Trigger effect when userId changes
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
 
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
-  if (!data) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500 text-center">{error}</p>; // Show error if any
+  if (!data) return <p>Loading...</p>; // Show loading state
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-auto mb-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
-      {/* Image Section with "OPEN" or "CLOSED" Label */}
+      {/* Business Logo */}
       <div className="relative bg-gray-100">
         {data.logo && (
           <img
@@ -56,25 +53,25 @@ const BusinessCard = () => {
             className="w-full h-48 object-cover"
           />
         )}
-
-        {/* "OPEN" or "CLOSED" Badge */}
+        {/* Open/Closed Badge */}
         <div
-          className={`absolute top-2 right-2 px-2 py-1 rounded-full shadow-md text-xs font-semibold 
-                      ${isOpen ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}
+          className={`absolute top-2 right-2 px-2 py-1 rounded-full shadow-md text-xs font-semibold ${
+            isOpen ? "bg-green-500 text-white" : "bg-red-500 text-white"
+          }`}
         >
           {isOpen ? "OPEN" : "CLOSED"}
         </div>
       </div>
 
-      {/* Divider between image and content */}
+      {/* Divider */}
       <div className="h-1 bg-indigo-500"></div>
 
-      {/* Content Section */}
+      {/* Business Info */}
       <div className="p-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">{data.name}</h3>
-        <div className="text-sm text-gray-600 mb-4 text-center">
-          <p>{data.description}</p>
-        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+          {data.name}
+        </h3>
+        <p className="text-sm text-gray-600 mb-4 text-center">{data.description}</p>
 
         {/* Location */}
         <div className="text-sm text-gray-600 mb-4 flex items-center justify-center">
@@ -110,7 +107,7 @@ const BusinessCard = () => {
           )}
         </div>
 
-        {/* Visit Website Button */}
+        {/* Website Link */}
         {data.website && (
           <div className="mt-4">
             <a

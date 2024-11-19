@@ -8,7 +8,7 @@ class Config:
 
     # UPLOAD_FOLDER = os.path.join('static', 'profile_pics')
     # MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # Limit upload size to 16MB
-
+    
     # Flask-Mail configuration
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
