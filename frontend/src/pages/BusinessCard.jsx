@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaPhone,
+  FaEnvelope,
+  FaBoxOpen,
+  FaTag,
+} from "react-icons/fa";
 
-const BusinessCard = () => {
-  const [data, setData] = useState(null); // State to store fetched data
+const BusinessCard = ({ userId }) => {
+  const [data, setData] = useState(null); // State to store fetched business data
   const [isOpen, setIsOpen] = useState(false); // State for open/closed status
   const [error, setError] = useState(null); // State for error handling
 
   useEffect(() => {
-    // Fetch business information from the Flask API
+    // Fetch business information from the API
     const fetchBusinessInfo = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/business-info");
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/business-info/${userId}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch business information");
         }
@@ -23,24 +31,24 @@ const BusinessCard = () => {
       }
     };
 
-    fetchBusinessInfo(); // Call the function when the component mounts
+    fetchBusinessInfo(); // Fetch data when the component mounts
 
     // Determine if the business is open or closed
     const checkOpenStatus = () => {
-      const openingHour = 9; // 9 AM
-      const closingHour = 17; // 5 PM
+      const openingHour = 9; // Business opens at 9 AM
+      const closingHour = 17; // Business closes at 5 PM
       const currentHour = new Date().getHours();
       setIsOpen(currentHour >= openingHour && currentHour < closingHour);
     };
 
-    checkOpenStatus(); // Check open/closed status
+    checkOpenStatus(); // Check open/closed status on mount
     const intervalId = setInterval(checkOpenStatus, 60000); // Check every minute
 
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  }, [userId]);
 
-  if (error) return <p className="text-red-500 text-center">{error}</p>; // Show error if any
-  if (!data) return <p>Loading...</p>; // Show loading state
+  if (error) return <p className="text-red-500 text-center">{error}</p>; // Display error message
+  if (!data) return <p>Loading...</p>; // Display loading state
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-auto mb-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
@@ -71,7 +79,9 @@ const BusinessCard = () => {
         <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
           {data.name}
         </h3>
-        <p className="text-sm text-gray-600 mb-4 text-center">{data.description}</p>
+        <p className="text-sm text-gray-600 mb-4 text-center">
+          {data.description}
+        </p>
 
         {/* Location */}
         <div className="text-sm text-gray-600 mb-4 flex items-center justify-center">
