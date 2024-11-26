@@ -37,6 +37,7 @@ class BusinessInfo(db.Model):
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(15), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
+    
+ 
     def __repr__(self):
         return f"BusinessInfo('{self.name}', '{self.user.username}')"

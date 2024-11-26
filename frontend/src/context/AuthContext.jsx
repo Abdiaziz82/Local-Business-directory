@@ -1,31 +1,30 @@
 import React, { createContext, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
-  const navigate = useNavigate(); // Access navigate in the AuthProvider
+  const [isLoading, setIsLoading] = useState(true); 
+  const navigate = useNavigate();
 
-  // Load initial auth state from localStorage
+  // Load initial auth state from cookies
   useEffect(() => {
-    const storedIsLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const token = Cookies.get('access_token');
     const storedUserRole = localStorage.getItem('userRole');
 
-    if (storedIsLoggedIn && storedUserRole) {
+    if (token && storedUserRole) {
       setIsLoggedIn(true);
       setUserRole(storedUserRole);
-      handleRedirection(storedUserRole); // Redirect to the correct dashboard on load
+      handleRedirection(storedUserRole);
     }
-    
-    // Set loading to false once the check is complete
+
     setIsLoading(false);
   }, []);
 
-  // Centralized redirection based on role
   const handleRedirection = (role) => {
     if (role === 'business_owner') {
       navigate('/business-owner-dashboard');
@@ -33,29 +32,28 @@ const AuthProvider = ({ children }) => {
       navigate('/customer-dashboard');
     } else {
       console.error("Invalid role. Redirecting to default.");
-      navigate('/default-dashboard'); // Redirect to a default page, or to login if preferred.
+      navigate('/default-dashboard');
     }
   };
 
-  const login = (role) => {
+  const login = (role, token) => {
     setIsLoggedIn(true);
     setUserRole(role);
-    localStorage.setItem('isLoggedIn', 'true');
+    Cookies.set('access_token', token, { expires: 1 }); 
     localStorage.setItem('userRole', role);
-    handleRedirection(role); // Redirect immediately after login
+    handleRedirection(role); 
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUserRole(null);
-    localStorage.removeItem('isLoggedIn');
+    Cookies.remove('access_token');
     localStorage.removeItem('userRole');
-    navigate('/login'); // Redirect to login after logout
+    navigate('/login');
   };
 
-  // Return loading state until auth check is done
   if (isLoading) {
-    return <div>Loading...</div>; // Display loading message or spinner
+    return <div>Loading...</div>;
   }
 
   return (
@@ -63,11 +61,6 @@ const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Add propTypes validation
-AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export default AuthProvider;

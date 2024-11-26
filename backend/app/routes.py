@@ -5,6 +5,7 @@ from flask_cors import CORS ,cross_origin
 from flask_mail import Message
 from flask_login import login_user, current_user, logout_user ,login_required
 from datetime import datetime, timedelta
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import random
 import os
 
@@ -117,50 +118,49 @@ def customer_signup():
     return jsonify({'message': 'Customer account created successfully'}), 201
 
 
-@main.route("/api/login", methods=['GET', 'POST'])
+@main.route("/api/login", methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return jsonify({'message': 'Please provide your login credentials.'}), 200
-
-    if current_user.is_authenticated:
-        return jsonify({'message': 'Already logged in'}), 400
+    # Validate JSON payload
+    if not request.is_json:
+        return jsonify({'error': 'Invalid JSON payload'}), 400
 
     data = request.get_json()
-    user = User.query.filter_by(email=data['email']).first()
-    if user and bcrypt.check_password_hash(user.password, data['password']):
-        remember = data.get('remember', False)
-        login_user(user, remember=remember)
+    if not data or 'email' not in data or 'password' not in data:
+        return jsonify({'error': 'Email and password are required.'}), 400
 
-        response = make_response(jsonify({
+    # Retrieve user from the database
+    user = User.query.filter_by(email=data['email']).first()
+
+    # Validate credentials
+    if user and bcrypt.check_password_hash(user.password, data['password']):
+        remember = data.get('remember', False)  # Default to False if not provided
+
+        # Generate JWT token
+        access_token = create_access_token(
+            identity={"id": user.id, "email": user.email, "role": user.role},
+            expires_delta=timedelta(days=30) if remember else timedelta(hours=12)  # Longer expiry for "remember me"
+        )
+
+        # Prepare the response
+        response = jsonify({
             'message': 'Login successful',
+            'token': access_token,
             'role': user.role,
             'imageFile': user.image_file
-        }), 200)
+        })
 
-        # Set secure cookies with SameSite and HttpOnly attributes for security
-        response.set_cookie('userRole', user.role, httponly=True, samesite='Lax', secure=True)
-        response.set_cookie('userAvatar', user.image_file, httponly=True, samesite='Lax', secure=True)
-
-        return response
+        return response, 200
     else:
+        # Invalid credentials
         return jsonify({'error': 'Invalid email or password'}), 400
 
 
 @main.route("/api/logout", methods=['POST'])
-@login_required
-@cross_origin()
+@jwt_required()
 def logout():
-    if current_user.is_authenticated:
-        logout_user()  # Log the user out
-        response = make_response(jsonify({'message': 'Logout successful'}), 200)
-        
-        # Delete the secure cookies
-        response.delete_cookie('userRole')
-        response.delete_cookie('userAvatar')
-        
-        return response
-    else:
-        return jsonify({'error': 'No user logged in'}), 400
+    # JWT is stateless, so no explicit server-side logout
+    # Inform the client to discard the token
+    return jsonify({'message': 'Logout successful. Please discard your token.'}), 200
 
 @main.route("/api/session_status", methods=['GET'])
 @cross_origin()
@@ -288,87 +288,100 @@ def reset_password():
 
 
 
-@main.route('/api/business-info', methods=['GET' ,'POST'])
+@main.route('/api/business-info', methods=[ 'POST'])
 @cross_origin(origins="http://localhost:5173", supports_credentials=True)
-@login_required
+@jwt_required()
 def save_business_info():
-    # Debugging user authentication and session state
-    print(f"Session Keys: {list(session.keys())}")
-    print(f"Request Cookies: {request.cookies}")
-    print(f"User Authenticated: {current_user.is_authenticated}")
-    print(f"User Role: {getattr(current_user, 'role', None)}")
-    print(f"Existing Business Info: {getattr(current_user, 'business_info', None)}")
-
-    # If the user is not authenticated, return a 401 error
-    if not current_user.is_authenticated:
-        return jsonify({"error": "User is not authenticated."}), 401
-
-    # Check if the user has the correct role
-    if getattr(current_user, 'role', None) != 'business_owner':
-        return jsonify({"error": "Access denied. Only business owners can access this endpoint."}), 403
-
-    # Check if business info already exists
-    if getattr(current_user, 'business_info', None):
-        return jsonify({"error": "Business information has already been submitted."}), 400
-
-    # Parse and validate incoming JSON data
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data provided."}), 400
-
-    # Extract fields
-    name = data.get('name')
-    email = data.get('email')
-    if not name or not email:
-        return jsonify({"error": "Name and email are required fields."}), 400
-
-    # Create a new BusinessInfo object
-    business_info = BusinessInfo(
-        user_id=current_user.id,
-        name=name,
-        description=data.get('description'),
-        location=data.get('location'),
-        products=data.get('products'),
-        website=data.get('website'),
-        categories=data.get('categories'),
-        email=email,
-        phone=data.get('phone'),
-        logo=data.get('logo', "default_logo.jpg"),
-        created_at=datetime.utcnow()
-    )
-
-    # Save the object to the database
     try:
+        # Extract user identity from JWT
+        user_identity = get_jwt_identity()
+        user_id = user_identity.get("id")
+        user_role = user_identity.get("role")
+
+        if not user_id or not user_role:
+            return jsonify({"error": "Invalid token."}), 401
+
+        if user_role != 'business_owner':
+            return jsonify({"error": "Access denied. Only business owners can submit business info."}), 403
+
+        # Validate request data
+        if not request.is_json:
+            return jsonify({"error": "Invalid content type, expected JSON."}), 400
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided."}), 400
+
+        # Validate required fields
+        name = data.get('name')
+        email = data.get('email')
+        if not name or not email:
+            return jsonify({"error": "Name and email are required fields."}), 400
+
+        # Save business info
+        business_info = BusinessInfo(
+            user_id=user_id,
+            name=name,
+            description=data.get('description', ""),
+            location=data.get('location', ""),
+            products=data.get('products', ""),
+            website=data.get('website', ""),
+            categories=data.get('categories', ""),
+            email=email,
+            phone=data.get('phone', ""),
+            logo=data.get('logo', "default_logo.jpg"),
+            created_at=datetime.utcnow()
+        )
         db.session.add(business_info)
         db.session.commit()
-        print("Business information successfully saved to the database.")
+
+        print(f"Business Info Saved: {business_info.name} for User ID: {business_info.user_id}")
+
+        return jsonify({"message": "Business information submitted successfully."}), 201
+
     except Exception as e:
         db.session.rollback()
-        print(f"Database Commit Error: {e}")
+        print(f"Error: {e}")
         return jsonify({"error": "Internal server error. Please try again later."}), 500
 
-    return jsonify({"message": "Business information submitted successfully."}), 201
 
-
-@main.route('/api/business-info/<int:user_id>', methods=['GET'])
-@login_required
+@main.route('/api/business-info', methods=['GET'])
 @cross_origin(origins="http://localhost:5173", supports_credentials=True)
-def get_business_info_by_user(user_id):
-    user = User.query.get(user_id)
-    
-    if not user or not user.business_info:
-        return jsonify({"error": "No business information found for this user."}), 404
+@jwt_required()
+def get_user_business_info():
+    try:
+        # Get the current user's ID from the JWT
+        user_identity = get_jwt_identity()
+        print(f"Authenticated User Identity: {user_identity}")
 
-    business_data = {
-        "name": user.business_info.name,
-        "description": user.business_info.description,
-        "location": user.business_info.location,
-        "products": user.business_info.products,
-        "website": user.business_info.website,
-        "categories": user.business_info.categories,
-        "email": user.business_info.email,
-        "phone": user.business_info.phone,
-        "logo": user.business_info.logo,
-        "created_at": user.business_info.created_at.strftime("%Y-%m-%d %H:%M:%S")
-    }
-    return jsonify(business_data), 200
+        if not user_identity:
+            return jsonify({"error": "User not authenticated."}), 401
+
+        # Extract user ID if `user_identity` is a dictionary
+        user_id = user_identity['id'] if isinstance(user_identity, dict) else user_identity
+
+        # Fetch the business info for the specific user
+        business_info = BusinessInfo.query.filter_by(user_id=user_id).first()
+
+        if not business_info:
+            return jsonify({"error": "No business information found for this user."}), 404
+
+        # Serialize the business information
+        business_info_data = {
+            "name": business_info.name,
+            "description": business_info.description,
+            "location": business_info.location,
+            "products": business_info.products,
+            "website": business_info.website,
+            "categories": business_info.categories,
+            "email": business_info.email,
+            "phone": business_info.phone,
+            "logo": business_info.logo,
+            "created_at": business_info.created_at.isoformat(),
+        }
+
+        return jsonify({"business_info": business_info_data}), 200
+
+    except Exception as e:
+        print(f"Error fetching business info: {e}")
+        return jsonify({"error": "An error occurred while retrieving the business information."}), 500

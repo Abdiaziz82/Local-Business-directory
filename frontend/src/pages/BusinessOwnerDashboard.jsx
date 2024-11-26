@@ -6,18 +6,52 @@ import BusinessCard from "./BusinessCard";
 const BusinessOwnerDashboard = () => {
   const [activeSection, setActiveSection] = useState("form");
   const [businessData, setBusinessData] = useState([]);
+  const [userData, setUserData] = useState(null);
 
-  // Load existing data from local storage on component mount
+  // Fetch user-specific business data on component mount
   useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("businessListings")) || [];
-    setBusinessData(savedData);
+    const fetchUserData = async () => {
+      try {
+        // Retrieve the JWT token from localStorage (or sessionStorage, if that's where it's stored)
+        const token = localStorage.getItem("jwtToken");
+
+        if (!token) {
+          console.error("JWT token not found. Please log in.");
+          return;
+        }
+
+        // Make the API request with the token in the Authorization header
+        const response = await fetch("http://127.0.0.1:5000/api/business-info", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the token here
+          },
+        });
+
+        // Check if the response is okay
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error("Unauthorized: Token may have expired or is invalid.");
+          }
+          throw new Error("Failed to fetch user data.");
+        }
+
+        // Parse the response data
+        const data = await response.json();
+        setUserData([data.business_info]); // Set the business info data
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
-  // Function to handle form submission data
+  // Function to handle new business data submission
   const handleNewBusinessData = (newData) => {
     const updatedData = [...businessData, newData];
     setBusinessData(updatedData);
-    localStorage.setItem("businessListings", JSON.stringify(updatedData));
   };
 
   return (
@@ -50,14 +84,14 @@ const BusinessOwnerDashboard = () => {
             <BusinessForm setBusinessData={handleNewBusinessData} />
           </div>
         )}
-        {activeSection === "listings" && businessData.length > 0 && (
+        {activeSection === "listings" && userData && userData.length > 0 && (
           <div className="flex flex-wrap justify-center gap-4">
-            {businessData.map((data, userId) => (
-              <BusinessCard key={userId} data={data} />
+            {userData.map((data, index) => (
+              <BusinessCard key={index} data={data} />
             ))}
           </div>
         )}
-        {activeSection === "listings" && businessData.length === 0 && (
+        {activeSection === "listings" && (!userData || userData.length === 0) && (
           <p className="text-center text-gray-600 text-lg mt-10">
             No listings available. Fill out the form to add your listing.
           </p>

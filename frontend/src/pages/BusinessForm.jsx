@@ -14,6 +14,9 @@ const BusinessForm = ({ setBusinessData }) => {
     phone: "",
   });
 
+  const [loading, setLoading] = useState(false); // Loading state for user feedback
+  const [error, setError] = useState(null); // Error state
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -24,24 +27,36 @@ const BusinessForm = ({ setBusinessData }) => {
     console.log("Submitting form with data:", formData);
   
     try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem("jwtToken");
+  
+      // Check if the token exists
+      if (!token) {
+        alert("Authentication token is missing. Please log in.");
+        return;
+      }
+  
+      // Make the API request with the token in the Authorization header
       const response = await fetch("http://127.0.0.1:5000/api/business-info", {
         method: "POST",
-        credentials: "include", // Ensures cookies (session) are sent with the request
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token here
         },
         body: JSON.stringify(formData),
       });
   
+      // Handle non-200 responses
       if (!response.ok) {
-        const errorText = await response.json();
-        throw new Error(errorText.error || `Error ${response.status}`);
+        const errorData = await response.json();
+        console.error("Error response from server:", errorData);
+        throw new Error(errorData.msg || "Server error");
       }
   
       const data = await response.json();
+      console.log("Success response from server:", data);
       alert("Business information added successfully!");
       setBusinessData(data);
-  
     } catch (error) {
       console.error("Submission error:", error.message);
       alert(`Failed to submit form: ${error.message}`);
@@ -54,6 +69,7 @@ const BusinessForm = ({ setBusinessData }) => {
       className="bg-white p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto space-y-4"
     >
       <div className="flex flex-col lg:flex-row lg:flex-wrap lg:space-y-0 space-y-4 spartan">
+        {/* Business Name */}
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -65,6 +81,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
+        {/* Logo URL */}
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -76,6 +94,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
+        {/* Description */}
         <div className="lg:w-1/2 p-2">
           <textarea
             name="description"
@@ -86,6 +106,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           ></textarea>
         </div>
+
+        {/* Location */}
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -97,6 +119,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
+        {/* Products */}
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -108,6 +132,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
+        {/* Website */}
         <div className="lg:w-1/2 p-2">
           <input
             type="text"
@@ -119,6 +145,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
+        {/* Categories */}
         <div className="lg:w-1/2 p-2">
           <select
             name="categories"
@@ -135,6 +163,8 @@ const BusinessForm = ({ setBusinessData }) => {
             <option value="Food & Beverage">Food & Beverage</option>
           </select>
         </div>
+
+        {/* Email */}
         <div className="lg:w-1/2 p-2">
           <input
             type="email"
@@ -146,6 +176,8 @@ const BusinessForm = ({ setBusinessData }) => {
             required
           />
         </div>
+
+        {/* Phone */}
         <div className="lg:w-1/2 p-2">
           <input
             type="tel"
@@ -158,19 +190,31 @@ const BusinessForm = ({ setBusinessData }) => {
           />
         </div>
       </div>
+
+      {/* Submit Button */}
       <div className="p-2">
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full lg:w-auto lg:px-8"
+          className={`bg-blue-500 text-white p-2 rounded w-full lg:w-auto lg:px-8 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="p-2 text-red-500">
+          <p>Error: {error}</p>
+        </div>
+      )}
     </form>
   );
 };
 
-// Add prop type validation
+// PropTypes validation
 BusinessForm.propTypes = {
   setBusinessData: PropTypes.func.isRequired,
 };

@@ -39,13 +39,20 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+
     const loginData = { ...formData, remember: rememberMe };
 
     setTimeout(() => {
       axios
-        .post('http://127.0.0.1:5000/api/login', loginData,)
+        .post('http://127.0.0.1:5000/api/login', loginData, {
+          withCredentials: true, 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         .then((response) => {
           setLoading(false);
+
           if (!response.data || !response.data.role) {
             Swal.fire({
               icon: 'error',
@@ -55,8 +62,8 @@ const Login = () => {
             return;
           }
 
-          const { role } = response.data;
-          login(role);
+          const { role, token } = response.data;
+          login(role, token); 
           Swal.fire({
             icon: 'success',
             title: 'Login Successful!',
@@ -68,6 +75,7 @@ const Login = () => {
           });
 
           Cookies.set('userRole', role);
+          Cookies.set('access_token', token); 
         })
         .catch((error) => {
           setLoading(false);
@@ -160,12 +168,7 @@ const Login = () => {
           </div>
         </form>
         <div className="text-center mt-6">
-          <p className="text-lg text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Sign Up
-            </Link>
-          </p>
+          <p className="text-lg text-gray-600">Don't have an account? <Link to="/signup" className="text-indigo-600 font-medium hover:text-indigo-500">Sign up</Link></p>
         </div>
       </div>
     </div>
