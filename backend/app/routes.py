@@ -125,6 +125,8 @@ def login():
         return jsonify({'error': 'Invalid JSON payload'}), 400
 
     data = request.get_json()
+
+    # Check if email and password are provided
     if not data or 'email' not in data or 'password' not in data:
         return jsonify({'error': 'Email and password are required.'}), 400
 
@@ -135,10 +137,11 @@ def login():
     if user and bcrypt.check_password_hash(user.password, data['password']):
         remember = data.get('remember', False)  # Default to False if not provided
 
-        # Generate JWT token
+        # Generate JWT token with expiration time logic
+        expires_in = timedelta(days=30) if remember else timedelta(days=30)  # Default to 1 day if not remembered
         access_token = create_access_token(
             identity={"id": user.id, "email": user.email, "role": user.role},
-            expires_delta=timedelta(days=30) if remember else timedelta(hours=12)  # Longer expiry for "remember me"
+            expires_delta=expires_in
         )
 
         # Prepare the response
@@ -148,11 +151,17 @@ def login():
             'role': user.role,
             'imageFile': user.image_file
         })
-
         return response, 200
     else:
         # Invalid credentials
-        return jsonify({'error': 'Invalid email or password'}), 400
+        return jsonify({'error': 'Invalid email or password'}), 401  # Changed to 401 for Unauthorized
+
+@main.route("/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+    return jsonify(access_token=access_token)
 
 
 @main.route("/api/logout", methods=['POST'])
@@ -288,7 +297,7 @@ def reset_password():
 
 
 
-@main.route('/api/business-info', methods=[ 'POST'])
+@main.route('/api/business-info', methods=['POST'])
 @cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def save_business_info():
@@ -299,7 +308,7 @@ def save_business_info():
         user_role = user_identity.get("role")
 
         if not user_id or not user_role:
-            return jsonify({"error": "Invalid token."}), 401
+            return jsonify({"error": "Invalid token. Missing user information."}), 401
 
         if user_role != 'business_owner':
             return jsonify({"error": "Access denied. Only business owners can submit business info."}), 403
@@ -343,8 +352,9 @@ def save_business_info():
         db.session.rollback()
         print(f"Error: {e}")
         return jsonify({"error": "Internal server error. Please try again later."}), 500
-
-
+    
+    
+    
 @main.route('/api/business-info', methods=['GET'])
 @cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()

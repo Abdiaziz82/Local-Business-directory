@@ -21,7 +21,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.config["JWT_SECRET_KEY"] = "your_secret_key"
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12)
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
     jwt = JWTManager(app)
     
     # Cookie and session security configurations

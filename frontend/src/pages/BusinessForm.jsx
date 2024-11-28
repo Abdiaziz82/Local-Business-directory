@@ -24,45 +24,65 @@ const BusinessForm = ({ setBusinessData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting form with data:", formData);
-  
     try {
-      // Retrieve the token from localStorage
-      const token = localStorage.getItem("jwtToken");
-  
-      // Check if the token exists
-      if (!token) {
-        alert("Authentication token is missing. Please log in.");
-        return;
-      }
-  
-      // Make the API request with the token in the Authorization header
-      const response = await fetch("http://127.0.0.1:5000/api/business-info", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include the token here
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      // Handle non-200 responses
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error response from server:", errorData);
-        throw new Error(errorData.msg || "Server error");
-      }
-  
-      const data = await response.json();
-      console.log("Success response from server:", data);
-      alert("Business information added successfully!");
-      setBusinessData(data);
+        const token = localStorage.getItem("jwtToken");
+
+        if (!token) {
+            alert("Authentication token is missing. Please log in.");
+            return;
+        }
+
+        const response = await fetch("http://127.0.0.1:5000/api/business-info", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (response.status === 401) {
+            // Attempt to refresh the token
+            const refreshResponse = await fetch("http://127.0.0.1:5000/refresh", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (refreshResponse.ok) {
+                const { access_token } = await refreshResponse.json();
+                localStorage.setItem("jwtToken", access_token);
+
+                // Retry the original request
+                const retryResponse = await fetch("http://127.0.0.1:5000/api/business-info", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${access_token}`,
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (!retryResponse.ok) throw new Error("Retry failed");
+                alert("Business information added successfully!");
+            } else {
+                throw new Error("Token refresh failed");
+            }
+        } else if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.msg || "Server error");
+        }
+
+        const data = await response.json();
+        alert("Business information added successfully!");
+        setBusinessData(data);
     } catch (error) {
-      console.error("Submission error:", error.message);
-      alert(`Failed to submit form: ${error.message}`);
+        console.error("Error:", error.message);
+        alert(`Failed to submit form: ${error.message}`);
     }
-  };
-  
+};
+
   return (
     <form
       onSubmit={handleSubmit}

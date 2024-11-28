@@ -8,43 +8,71 @@ const BusinessOwnerDashboard = () => {
   const [businessData, setBusinessData] = useState([]);
   const [userData, setUserData] = useState(null);
 
-  // Fetch user-specific business data on component mount
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // Retrieve the JWT token from localStorage (or sessionStorage, if that's where it's stored)
-        const token = localStorage.getItem("jwtToken");
-
-        if (!token) {
-          console.error("JWT token not found. Please log in.");
-          return;
-        }
-
-        // Make the API request with the token in the Authorization header
-        const response = await fetch("http://127.0.0.1:5000/api/business-info", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token here
-          },
+  // Function to refresh the token
+  const refreshAccessToken = async () => {
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/token/refresh", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("refresh_token")}`, // Replace with your refresh token storage mechanism
+            },
         });
 
-        // Check if the response is okay
         if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error("Unauthorized: Token may have expired or is invalid.");
-          }
-          throw new Error("Failed to fetch user data.");
+            throw new Error("Failed to refresh token");
         }
 
-        // Parse the response data
         const data = await response.json();
-        setUserData([data.business_info]); // Set the business info data
-      } catch (error) {
-        console.error("Error fetching user data:", error.message);
-      }
-    };
+        localStorage.setItem("access_token", data.access_token); // Store the new access token
+        return data.access_token;
+    } catch (error) {
+        console.error("Unable to refresh token:", error);
+        throw error;
+    }
+};
 
+
+  // Function to fetch user-specific business data
+  const fetchUserData = async () => {
+    try {
+      let token = localStorage.getItem("jwtToken");
+
+      if (!token) {
+        console.error("JWT token not found. Redirecting to login.");
+        return; // Optionally, redirect to login
+      }
+
+      const response = await fetch("http://127.0.0.1:5000/api/business-info", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserData([data.business_info]); // Update user data state
+      } else if (response.status === 401) {
+        console.warn("Token expired. Attempting to refresh...");
+        token = await refreshAccessToken(); // Refresh the token
+        if (token) {
+          await fetchUserData(); // Retry the request
+        } else {
+          console.error("Unable to refresh token. Please log in again.");
+          // Optionally, redirect to login page here
+        }
+      } else {
+        throw new Error("Failed to fetch user data.");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+    }
+  };
+
+  // Fetch user data on component mount
+  useEffect(() => {
     fetchUserData();
   }, []);
 
