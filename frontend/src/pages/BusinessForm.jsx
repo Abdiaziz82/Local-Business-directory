@@ -1,6 +1,13 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
+// Utility function to retrieve a specific cookie value
+const getCookie = (cookieName) => {
+  const cookies = document.cookie.split("; ");
+  const cookie = cookies.find((c) => c.startsWith(`${cookieName}=`));
+  return cookie ? cookie.split("=")[1] : null;
+};
+
 const BusinessForm = ({ setBusinessData }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -24,64 +31,73 @@ const BusinessForm = ({ setBusinessData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     try {
-        const token = localStorage.getItem("jwtToken");
+      const token = getCookie("access_token"); // Retrieve the token from cookies
 
-        if (!token) {
-            alert("Authentication token is missing. Please log in.");
-            return;
-        }
+      if (!token) {
+        setLoading(false);
+        alert("Authentication token is missing. Please log in.");
+        return;
+      }
 
-        const response = await fetch("http://127.0.0.1:5000/api/business-info", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(formData),
+      const response = await fetch("http://127.0.0.1:5000/api/business-info", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.status === 401) {
+        // Attempt to refresh the token
+        const refreshResponse = await fetch("http://127.0.0.1:5000/refresh", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        if (response.status === 401) {
-            // Attempt to refresh the token
-            const refreshResponse = await fetch("http://127.0.0.1:5000/refresh", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+        if (refreshResponse.ok) {
+          const { access_token } = await refreshResponse.json();
+          document.cookie = `access_token=${access_token}; path=/`; // Update the cookie
 
-            if (refreshResponse.ok) {
-                const { access_token } = await refreshResponse.json();
-                localStorage.setItem("jwtToken", access_token);
-
-                // Retry the original request
-                const retryResponse = await fetch("http://127.0.0.1:5000/api/business-info", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${access_token}`,
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                if (!retryResponse.ok) throw new Error("Retry failed");
-                alert("Business information added successfully!");
-            } else {
-                throw new Error("Token refresh failed");
+          // Retry the original request
+          const retryResponse = await fetch(
+            "http://127.0.0.1:5000/api/business-info",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${access_token}`,
+              },
+              body: JSON.stringify(formData),
             }
-        } else if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.msg || "Server error");
-        }
+          );
 
-        const data = await response.json();
-        alert("Business information added successfully!");
-        setBusinessData(data);
+          if (!retryResponse.ok) throw new Error("Retry failed");
+          alert("Business information added successfully!");
+        } else {
+          throw new Error("Token refresh failed");
+        }
+      } else if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.msg || "Server error");
+      }
+
+      const data = await response.json();
+      alert("Business information added successfully!");
+      setBusinessData(data);
     } catch (error) {
-        console.error("Error:", error.message);
-        alert(`Failed to submit form: ${error.message}`);
+      console.error("Error:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
   return (
     <form

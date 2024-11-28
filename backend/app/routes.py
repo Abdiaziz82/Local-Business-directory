@@ -395,3 +395,62 @@ def get_user_business_info():
     except Exception as e:
         print(f"Error fetching business info: {e}")
         return jsonify({"error": "An error occurred while retrieving the business information."}), 500
+
+
+@main.route('/api/business-info', methods=['PUT'])
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@jwt_required()
+def update_business_info():
+    try:
+        # Extract user identity from JWT
+        user_identity = get_jwt_identity()
+        user_id = user_identity.get("id")
+        user_role = user_identity.get("role")
+
+        if not user_id or not user_role:
+            return jsonify({"error": "Invalid token. Missing user information."}), 401
+
+        if user_role != 'business_owner':
+            return jsonify({"error": "Access denied. Only business owners can update business info."}), 403
+
+        # Validate request data
+        if not request.is_json:
+            return jsonify({"error": "Invalid content type, expected JSON."}), 400
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided."}), 400
+
+        # Validate required fields
+        name = data.get('name')
+        email = data.get('email')
+        if not name or not email:
+            return jsonify({"error": "Name and email are required fields."}), 400
+
+        # Find the existing business info for the logged-in user
+        business_info = BusinessInfo.query.filter_by(user_id=user_id).first()
+        if not business_info:
+            return jsonify({"error": "Business information not found for this user."}), 404
+
+        # Update business info fields
+        business_info.name = name
+        business_info.description = data.get('description', business_info.description)
+        business_info.location = data.get('location', business_info.location)
+        business_info.products = data.get('products', business_info.products)
+        business_info.website = data.get('website', business_info.website)
+        business_info.categories = data.get('categories', business_info.categories)
+        business_info.email = email
+        business_info.phone = data.get('phone', business_info.phone)
+        business_info.logo = data.get('logo', business_info.logo)
+        business_info.updated_at = datetime.utcnow()
+
+        db.session.commit()
+
+        print(f"Business Info Updated: {business_info.name} for User ID: {business_info.user_id}")
+
+        return jsonify({"message": "Business information updated successfully."}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error: {e}")
+        return jsonify({"error": "Internal server error. Please try again later."}), 500

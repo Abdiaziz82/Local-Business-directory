@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-icons/fa";
 
-const BusinessCard = ({ data }) => {
+const BusinessCard = ({ data, onEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -35,8 +35,17 @@ const BusinessCard = ({ data }) => {
     website,
   } = data;
 
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(data); // Pass the business data to the parent component
+    }
+  };
+
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-auto mb-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
+    <div
+      className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-auto mb-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300"
+      onClick={handleEdit} // Trigger edit action on click
+    >
       <div className="relative bg-gray-100">
         {logo ? (
           <img
@@ -123,6 +132,7 @@ BusinessCard.propTypes = {
     phone: PropTypes.string,
     website: PropTypes.string,
   }),
+  onEdit: PropTypes.func.isRequired, // Callback to handle edit
 };
 
 export default BusinessCard;
