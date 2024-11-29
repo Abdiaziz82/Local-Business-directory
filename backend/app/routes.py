@@ -454,3 +454,38 @@ def update_business_info():
         db.session.rollback()
         print(f"Error: {e}")
         return jsonify({"error": "Internal server error. Please try again later."}), 500
+
+@main.route('/api/businesses', methods=['GET'])
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@jwt_required()
+def get_all_business_info():
+    try:
+        # Fetch all business info posted by business owners
+        businesses = BusinessInfo.query.all()
+
+        # Check if any business information is found
+        if not businesses:
+            return jsonify({"error": "No business information found."}), 404
+
+        # Serialize the business information
+        businesses_data = []
+        for business in businesses:
+            business_data = {
+                "name": business.name,
+                "description": business.description,
+                "location": business.location,
+                "products": business.products,
+                "website": business.website,
+                "categories": business.categories,
+                "email": business.email,
+                "phone": business.phone,
+                "logo": business.logo,
+                "created_at": business.created_at.isoformat(),
+            }
+            businesses_data.append(business_data)
+
+        return jsonify({"businesses": businesses_data}), 200
+
+    except Exception as e:
+        print(f"Error fetching all business info: {e}")
+        return jsonify({"error": "An error occurred while retrieving the business information."}), 500
