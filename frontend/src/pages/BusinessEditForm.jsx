@@ -1,287 +1,253 @@
 import React, { useState, useEffect } from "react";
+import Swal from 'sweetalert2';
 
-// Function to retrieve JWT from cookies
-const getJwtFromCookies = () => {
-  const cookies = document.cookie.split("; ");
-  const jwtCookie = cookies.find((cookie) => cookie.startsWith("access_token="));
-  return jwtCookie ? jwtCookie.split("=")[1] : null;
-};
 
-// Function to refresh the access token
-const refreshAccessToken = async () => {
-  try {
-    const response = await fetch("http://127.0.0.1:5000/api/token/refresh", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("refresh_token")}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to refresh token");
-    }
-
-    const data = await response.json();
-    document.cookie = `access_token=${data.access_token}; path=/;`; // Store the new token in cookies
-    return data.access_token;
-  } catch (error) {
-    console.error("Unable to refresh token:", error);
-    throw error;
-  }
-};
-
-// Function to fetch business data
-const fetchBusinessData = async () => {
-  let token = getJwtFromCookies();
-
-  if (!token) {
-    console.error("JWT token not found in cookies.");
-    return null;
-  }
-
-  try {
-    const response = await fetch("http://127.0.0.1:5000/api/business-info", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      return data.business_info; // Return the business info
-    } else if (response.status === 401) {
-      console.warn("Token expired. Attempting to refresh...");
-      token = await refreshAccessToken(); // Refresh the token
-      if (token) {
-        return await fetchBusinessData(); // Retry the request with the new token
-      } else {
-        console.error("Unable to refresh token. Please log in again.");
-        return null;
-      }
-    } else {
-      throw new Error("Failed to fetch business data.");
-    }
-  } catch (error) {
-    console.error("Error fetching business data:", error.message);
-    return null;
-  }
-};
-
-const BusinessEditForm = ({ onUpdate }) => {
-  const [business, setBusiness] = useState(null);
+const BusinessEditForm = ({ onSave }) => {
   const [formData, setFormData] = useState({
     name: "",
-    logo: "",
+    email: "",
     description: "",
     location: "",
-    email: "",
-    phone: "",
-    website: "",
     products: "",
+    website: "",
     categories: "",
+    phone: "",
+    logo: "",
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [showForm, setShowForm] = useState(false); // Manage form visibility
 
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(""); // Error state for form submission
+  
+  // Fetch business data on component mount
   useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchBusinessData();
-      if (data) {
-        setBusiness(data);
-        setFormData({
-          name: data.name || "",
-          logo: data.logo || "",
-          description: data.description || "",
-          location: data.location || "",
-          email: data.email || "",
-          phone: data.phone || "",
-          website: data.website || "",
-          products: data.products || "",
-          categories: data.categories || "",
+    const fetchBusinessData = async () => {
+      setLoading(true);
+      try {
+        const token = document.cookie.split("; ").find(row => row.startsWith("access_token="))?.split("=")[1];
+        if (!token) {
+          alert("Authentication token is missing. Please log in.");
+          return;
+        }
+
+        const response = await fetch("http://127.0.0.1:5000/api/business-info", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setLoading(false);
-      } else {
-        setError("Failed to load business data.");
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error fetching business data:", errorData);
+          setError("Failed to load business data.");
+          return;
+        }
+
+        const data = await response.json();
+        setFormData({
+          name: data.business_info.name || "",
+          email: data.business_info.email || "",
+          description: data.business_info.description || "",
+          location: data.business_info.location || "",
+          products: data.business_info.products || "",
+          website: data.business_info.website || "",
+          categories: data.business_info.categories || "",
+          phone: data.business_info.phone || "",
+          logo: data.business_info.logo || "",
+        });
+      } catch (error) {
+        console.error("Error fetching business data:", error.message);
+        setError("An error occurred while fetching the data.");
+      } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, []);
+    fetchBusinessData();
+  }, []); // Fetch data on initial load
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    // Validation
-    if (!formData.name || !formData.email || !formData.location) {
-      setLoading(false);
-      setError("Please fill in all required fields.");
-      return;
-    }
-
-    let token = getJwtFromCookies();
-
+    const token = document.cookie.split("; ").find(row => row.startsWith("access_token="))?.split("=")[1];
+  
     if (!token) {
-      console.error("JWT token not found in cookies.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Failed',
+        text: 'Authentication token is missing. Please log in.',
+      });
       return;
     }
-
+  
+    setLoading(true);
+    setError(""); // Reset error state before making request
+  
     try {
       const response = await fetch("http://127.0.0.1:5000/api/business-info", {
-        method: "PUT", // Use PUT for updating data
+        method: "PUT", // Use PUT method for updating
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
-
+  
+      // Check if response is not ok
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update business information.");
+        console.error("Error updating business info:", errorData);
+        setError("Failed to update business info: " + errorData.error); // Show a meaningful error message
+        return;
       }
-
-      const updatedBusiness = await response.json();
-      onUpdate(updatedBusiness); // Notify parent component with updated data
+  
+      // If everything is successful
+      Swal.fire({
+        icon: 'success',
+        title: 'Business Updated',
+        text: 'Your business information has been successfully updated!',
+      });
+  
+      onSave(); // Callback to refresh data or notify the parent
+  
+    } finally {
       setLoading(false);
-      setShowForm(false); // Close the form after successful update
-    } catch (err) {
-      setLoading(false);
-      setError(err.message);
     }
   };
 
-  const handleEditClick = () => {
-    setShowForm(true); // Show the form when "Edit" button is clicked
-  };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!business) {
-    return <p>No business data found.</p>;
-  }
-
   return (
-    <div>
-      <button onClick={handleEditClick}>Edit Business</button>
-      
-      {showForm && (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Business Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Business Name"
-            />
-          </div>
-          <div>
-            <label>Logo:</label>
-            <input
-              type="text"
-              name="logo"
-              value={formData.logo}
-              onChange={handleChange}
-              placeholder="Logo URL"
-            />
-          </div>
-          <div>
-            <label>Description:</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Description"
-            />
-          </div>
-          <div>
-            <label>Location:</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Location"
-            />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-            />
-          </div>
-          <div>
-            <label>Phone:</label>
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-            />
-          </div>
-          <div>
-            <label>Website:</label>
-            <input
-              type="url"
-              name="website"
-              value={formData.website}
-              onChange={handleChange}
-              placeholder="Website URL"
-            />
-          </div>
-          <div>
-            <label>Products:</label>
-            <input
-              type="text"
-              name="products"
-              value={formData.products}
-              onChange={handleChange}
-              placeholder="Products"
-            />
-          </div>
-          <div>
-            <label>Categories:</label>
-            <input
-              type="text"
-              name="categories"
-              value={formData.categories}
-              onChange={handleChange}
-              placeholder="Categories"
-            />
-          </div>
-          <button type="submit" disabled={loading}>
-            {loading ? "Updating..." : "Update Business"}
-          </button>
-        </form>
-      )}
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-7xl mx-auto bg-white p-4 rounded-md shadow-sm">
+      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Edit Business Info</h2>
+      {error && <p className="text-red-500 text-center">{error}</p>}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="name">Business Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Business Name"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="email">Business Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Business Email"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="description">Description</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Description"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="location">Location</label>
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Location"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="products">Products</label>
+          <input
+            type="text"
+            name="products"
+            value={formData.products}
+            onChange={handleChange}
+            placeholder="Products"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="website">Website</label>
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            placeholder="Website"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="categories">Categories</label>
+          <input
+            type="text"
+            name="categories"
+            value={formData.categories}
+            onChange={handleChange}
+            placeholder="Categories"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="phone">Phone</label>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Phone"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-1" htmlFor="logo">Logo URL</label>
+          <input
+            type="text"
+            name="logo"
+            value={formData.logo}
+            onChange={handleChange}
+            placeholder="Logo URL"
+            className="w-full p-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-center mt-4">
+        <button
+          type="submit"
+          className={`bg-blue-600 text-white py-2 px-6 rounded-lg shadow-lg focus:outline-none ${
+            loading ? "cursor-not-allowed opacity-50" : ""
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save Changes"}
+        </button>
+      </div>
+    </form>
   );
 };
 
