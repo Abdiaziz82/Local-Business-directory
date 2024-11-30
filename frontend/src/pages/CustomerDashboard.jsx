@@ -3,22 +3,22 @@ import BusinessCard from "./BusinessCard"; // Reuse the BusinessCard component t
 
 const CustomerDashboard = () => {
   const [businesses, setBusinesses] = useState([]);
-  const [categories, setCategories] = useState([]); // To store unique business categories
-  const [products, setProducts] = useState([]); // To store unique business products
-  const [locations, setLocations] = useState([]); // To store unique business locations
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [productFilter, setProductFilter] = useState(""); 
+  const [productFilter, setProductFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [filteredBusinesses, setFilteredBusinesses] = useState([]);
+  const [sortFilter, setSortFilter] = useState(""); // State for sorting
+  const [isLoading, setIsLoading] = useState(false); // State for loader spinner
 
-  // Helper function to get JWT token from cookies
   const getJwtFromCookies = () => {
     const cookies = document.cookie.split("; ");
     const jwtCookie = cookies.find((cookie) => cookie.startsWith("access_token="));
     return jwtCookie ? jwtCookie.split("=")[1] : null;
   };
 
-  // Fetch all businesses posted by business owners
   const fetchBusinesses = async () => {
     try {
       let token = getJwtFromCookies();
@@ -40,8 +40,7 @@ const CustomerDashboard = () => {
         const data = await response.json();
         setBusinesses(data.businesses);
         setFilteredBusinesses(data.businesses);
-        
-        // Dynamically extract categories, products, and locations
+
         setCategories([...new Set(data.businesses.map((business) => business.categories))]);
         setProducts([...new Set(data.businesses.map((business) => business.products))]);
         setLocations([...new Set(data.businesses.map((business) => business.location))]);
@@ -53,42 +52,36 @@ const CustomerDashboard = () => {
     }
   };
 
-  // Filter businesses based on search query and selected filters
   const handleSearch = () => {
-    console.log("Filtering businesses with:");
-    console.log("Category:", categoryFilter);
-    console.log("Product:", productFilter);
-    console.log("Location:", locationFilter);
-  
-    const filtered = businesses.filter((business) => {
-      const matchesCategory = categoryFilter
-        ? (business.categories && business.categories.toLowerCase().includes(categoryFilter.toLowerCase()))
-        : true;
-  
-      const matchesProduct = productFilter
-        ? (business.products && business.products.toLowerCase().includes(productFilter.toLowerCase()))
-        : true;
-  
-      const matchesLocation = locationFilter
-        ? (business.location && business.location.toLowerCase().includes(locationFilter.toLowerCase()))
-        : true;
-  
-      console.log("Matches Category:", matchesCategory);
-      console.log("Matches Product:", matchesProduct);
-      console.log("Matches Location:", matchesLocation);
-  
-      return matchesCategory && matchesProduct && matchesLocation;
-    });
-  
-    console.log("Filtered businesses:", filtered);
-    setFilteredBusinesses(filtered);
-  
-    if (filtered.length === 0) {
-      console.log("No businesses found matching your search or selected filters.");
-    }
+    setIsLoading(true); // Start the loader
+    setTimeout(() => {
+      let filtered = businesses.filter((business) => {
+        const matchesCategory = categoryFilter
+          ? (business.categories && business.categories.toLowerCase().includes(categoryFilter.toLowerCase()))
+          : true;
+
+        const matchesProduct = productFilter
+          ? (business.products && business.products.toLowerCase().includes(productFilter.toLowerCase()))
+          : true;
+
+        const matchesLocation = locationFilter
+          ? (business.location && business.location.toLowerCase().includes(locationFilter.toLowerCase()))
+          : true;
+
+        return matchesCategory && matchesProduct && matchesLocation;
+      });
+
+      // Apply sort filter
+      if (sortFilter === "latest") {
+        filtered = filtered.sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate));
+      } else if (sortFilter === "a-z") {
+        filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      setFilteredBusinesses(filtered);
+      setIsLoading(false); // Stop the loader
+    }, 1000); // Simulate a delay for fetching data
   };
-  
-  
 
   useEffect(() => {
     fetchBusinesses();
@@ -116,15 +109,11 @@ const CustomerDashboard = () => {
                 className="p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
               >
                 <option value="">Select Category</option>
-                {categories.length > 0 ? (
-                  categories.map((category, index) => (
-                    <option key={index} value={category}>
-                      {category}
-                    </option>
-                  ))
-                ) : (
-                  <option>Loading...</option>
-                )}
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -139,15 +128,11 @@ const CustomerDashboard = () => {
                 className="p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
               >
                 <option value="">Select Product</option>
-                {products.length > 0 ? (
-                  products.map((product, index) => (
-                    <option key={index} value={product}>
-                      {product}
-                    </option>
-                  ))
-                ) : (
-                  <option>Loading...</option>
-                )}
+                {products.map((product, index) => (
+                  <option key={index} value={product}>
+                    {product}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -162,15 +147,27 @@ const CustomerDashboard = () => {
                 className="p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
               >
                 <option value="">Select Location</option>
-                {locations.length > 0 ? (
-                  locations.map((location, index) => (
-                    <option key={index} value={location}>
-                      {location}
-                    </option>
-                  ))
-                ) : (
-                  <option>Loading...</option>
-                )}
+                {locations.map((location, index) => (
+                  <option key={index} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort Options */}
+            <div className="flex flex-col w-full lg:w-1/4">
+              <label htmlFor="sort" className="text-gray-700 font-semibold mb-2">
+                Sort By
+              </label>
+              <select
+                id="sort"
+                onChange={(e) => setSortFilter(e.target.value)}
+                className="p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+              >
+                <option value="">None</option>
+                <option value="latest">Latest Posted</option>
+                <option value="a-z">A-Z</option>
               </select>
             </div>
 
@@ -178,9 +175,14 @@ const CustomerDashboard = () => {
             <div className="w-full lg:w-1/4 flex justify-center mt-4 lg:mt-0">
               <button
                 onClick={handleSearch}
-                className="bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+                className="bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300 flex items-center justify-center"
+                disabled={isLoading} // Disable button while loading
               >
-                Search
+                {isLoading ? (
+                  <div className="loader border-t-2 border-white w-5 h-5 rounded-full animate-spin"></div>
+                ) : (
+                  "Search"
+                )}
               </button>
             </div>
           </div>
