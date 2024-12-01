@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import BusinessCard from "./BusinessCard"; // Reuse the BusinessCard component to display businesses
 
 const CustomerDashboard = () => {
@@ -12,6 +13,7 @@ const CustomerDashboard = () => {
   const [filteredBusinesses, setFilteredBusinesses] = useState([]);
   const [sortFilter, setSortFilter] = useState(""); // State for sorting
   const [isLoading, setIsLoading] = useState(false); // State for loader spinner
+  const navigate = useNavigate(); // Hook for navigation
 
   const getJwtFromCookies = () => {
     const cookies = document.cookie.split("; ");
@@ -86,6 +88,13 @@ const CustomerDashboard = () => {
   useEffect(() => {
     fetchBusinesses();
   }, []);
+
+  // Function to handle click on a business card
+  const handleCardClick = (businessId) => {
+    console.log("Navigating to:", `/message/${businessId}`); // Log the URL
+    navigate(`/message/${businessId}`);
+  };
+  
 
   return (
     <div className="flex flex-col min-h-screen spartan">
@@ -195,7 +204,9 @@ const CustomerDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 justify-items-center">
           {filteredBusinesses.length > 0 ? (
             filteredBusinesses.map((business, index) => (
-              <BusinessCard key={index} data={business} />
+              <div key={index} onClick={() => handleCardClick(business.id)}>
+                <BusinessCard data={business} />
+              </div>
             ))
           ) : (
             <p className="text-center text-gray-600 text-lg mt-10">

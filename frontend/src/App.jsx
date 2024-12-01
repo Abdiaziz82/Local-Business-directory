@@ -19,6 +19,7 @@ import ResetPasswordForm from './pages/ResetPasswordForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import About from './pages/About';
 import ContactUs from './pages/ContactUs';
+import MessageForm from './pages/MessageForm';
 
 
 function App() {
@@ -95,6 +96,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+            <Route
+            path="/business/:id"
+            element={
+              <ProtectedRoute role="customer">
+                <MessageForm />
+              </ProtectedRoute>
+            }
+          />
+
+
 
           {/* Redirect unknown routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
