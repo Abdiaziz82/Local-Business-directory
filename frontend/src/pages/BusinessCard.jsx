@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaBoxOpen, FaTag } from "react-icons/fa";
 
-const BusinessCard = ({ data, onEdit }) => {
+const BusinessCard = ({ data, onEdit}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -40,6 +40,8 @@ const BusinessCard = ({ data, onEdit }) => {
       onEdit(data); // Pass the business data to the parent component
     }
   };
+
+
 
   return (
     <div
@@ -114,6 +116,8 @@ const BusinessCard = ({ data, onEdit }) => {
             </a>
           </div>
         )}
+        {/* Trigger the delete action when the component is clicked */}
+        
       </div>
     </div>
   );
@@ -122,6 +126,7 @@ const BusinessCard = ({ data, onEdit }) => {
 // Prop validation for the BusinessCard component
 BusinessCard.propTypes = {
   data: PropTypes.shape({
+    id: PropTypes.string.isRequired, // Ensure an ID is passed for deletion
     name: PropTypes.string,
     description: PropTypes.string,
     location: PropTypes.string,
@@ -133,6 +138,7 @@ BusinessCard.propTypes = {
     website: PropTypes.string,
   }),
   onEdit: PropTypes.func.isRequired, // Callback to handle edit
+  onDelete: PropTypes.func.isRequired, // Callback to handle delete
 };
 
 export default BusinessCard;

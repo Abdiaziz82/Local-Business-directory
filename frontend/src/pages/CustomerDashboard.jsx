@@ -238,6 +238,7 @@ const CustomerDashboard = () => {
       onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
     >
       <h3 className="text-xl font-semibold mb-4">Send a Message to {modalData.name}</h3>
+      <p className="text-gray-500 font-semibold">{modalData.description}</p>
       <form className="space-y-4">
         {/* Name Field */}
         <div>

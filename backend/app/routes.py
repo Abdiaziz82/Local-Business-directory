@@ -490,3 +490,34 @@ def get_all_business_info():
         print(f"Error fetching all business info: {e}")
         return jsonify({"error": "An error occurred while retrieving the business information."}), 500
     
+    
+@main.route('/api/business-info/<int:business_id>', methods=['DELETE'])
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@jwt_required()
+def delete_business_info(business_id):
+    try:
+        # Extract user identity from JWT
+        user_identity = get_jwt_identity()
+        user_id = user_identity.get("id")
+        user_role = user_identity.get("role")
+
+        if not user_id or not user_role:
+            return jsonify({"error": "Invalid token. Missing user information."}), 401
+
+        if user_role != 'business_owner':
+            return jsonify({"error": "Access denied. Only business owners can delete business info."}), 403
+
+        # Fetch the business info
+        business_info = BusinessInfo.query.filter_by(id=business_id, user_id=user_id).first()
+        if not business_info:
+            return jsonify({"error": "Business not found or unauthorized."}), 404
+
+        # Delete the business info
+        db.session.delete(business_info)
+        db.session.commit()
+
+        return jsonify({"message": "Business information deleted successfully."}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500

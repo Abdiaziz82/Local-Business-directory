@@ -68,13 +68,35 @@ const BusinessOwnerDashboard = () => {
   };
 
   // Handle delete business
-  const handleBusinessDelete = (businessId) => {
-    const updatedData = businessData.filter((business) => business.id !== businessId);
-    setBusinessData(updatedData);
-    // Optionally, you could make an API call here to delete the business from the server
-    console.log(`Business with ID ${businessId} deleted.`);
+  const handleBusinessDelete = async (businessId) => {
+    try {
+      const token = getJwtFromCookies();
+      if (!token) {
+        console.error("JWT token not found in cookies.");
+        return;
+      }
+  
+      const response = await fetch(`http://127.0.0.1:5000/api/business-info/${businessId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        const updatedData = businessData.filter((business) => business.id !== businessId);
+        setBusinessData(updatedData); // Update the state to reflect the deletion
+        console.log(`Business with ID ${businessId} deleted.`);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete business:", errorData.error);
+      }
+    } catch (error) {
+      console.error("Error deleting business:", error);
+    }
   };
-
+  
   // Handle section change
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -87,6 +109,8 @@ const BusinessOwnerDashboard = () => {
       setSelectedBusiness(null); // Clear selected business if not in edit section
     }
   };
+
+ 
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen spartan">
@@ -157,45 +181,74 @@ const BusinessOwnerDashboard = () => {
 
       {/* Main Content */}
       <main className="flex-grow p-4 lg:p-8 bg-gray-100 overflow-y-auto mt-16">
-        {activeSection === "form" && (
-          <div className="flex justify-center">
-            <BusinessForm setBusinessData={handleNewBusinessData} />
-          </div>
-        )}
-        {activeSection === "listings" && userData && userData.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-4">
-            {userData.map((data, index) => (
-              <BusinessCard
-                key={index}
-                data={data}
-                onEdit={() => handleSectionChange("edit")} // Trigger edit form from card
-                onDelete={() => handleBusinessDelete(data.id)} // Delete functionality from card
-              />
-            ))}
-          </div>
-        )}
-        {activeSection === "listings" && (!userData || userData.length === 0) && (
-          <p className="text-center text-gray-600 text-lg mt-10">
-            No listings available. Fill out the form to add your listing.
-          </p>
-        )}
-        {activeSection === "edit" && selectedBusiness && (
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Edit Business</h2>
-            <BusinessEditForm
-              business={selectedBusiness}
-              onSubmit={handleBusinessUpdate}
-            />
-          </div>
-        )}
-        {activeSection === "delete" && (
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4 text-red-500">Delete Business</h2>
-            <p className="text-lg">Please select a business to delete.</p>
-            {/* You can implement a delete confirmation form or list here */}
-          </div>
-        )}
-      </main>
+  {activeSection === "form" && (
+    <div className="flex justify-center">
+      <BusinessForm setBusinessData={handleNewBusinessData} />
+    </div>
+  )}
+
+  {activeSection === "listings" && userData && userData.length > 0 && (
+    <div className="flex flex-wrap justify-center gap-4">
+      {userData.map((data, index) => (
+        <BusinessCard
+          key={index}
+          data={data}
+          onEdit={() => handleSectionChange("edit")} // Edit remains available
+          // No delete option for shared users
+        />
+      ))}
+    </div>
+  )}
+
+  {activeSection === "listings" && (!userData || userData.length === 0) && (
+    <p className="text-center text-gray-600 text-lg mt-10">
+      No listings available. Fill out the form to add your listing.
+    </p>
+  )}
+
+  {activeSection === "edit" && selectedBusiness && (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold mb-4">Edit Business</h2>
+      <BusinessEditForm
+        business={selectedBusiness}
+        onSubmit={handleBusinessUpdate}
+      />
+    </div>
+  )}
+
+{activeSection === "delete" && (
+  <div className="text-center">
+    <button
+      className="text-2xl font-bold mb-4 text-red-500 bg-transparent border-none hover:underline cursor-pointer"
+      onClick={() => {
+        // Ensure there's a selected business to delete
+        if (selectedBusiness) {
+          handleBusinessDelete(selectedBusiness.id);
+        } else {
+          console.error("No business selected for deletion.");
+        }
+      }}
+    >
+      Delete Business
+    </button>
+    {userData && userData.length > 0 ? (
+      <div className="flex flex-wrap justify-center gap-4">
+        {userData.map((data, index) => (
+          <BusinessCard
+            key={index}
+            data={data}
+            onDelete={() => handleBusinessDelete(data.id)} // Delete only here
+          />
+        ))}
+      </div>
+    ) : (
+      <p className="text-lg">No businesses to delete.</p>
+    )}
+  </div>
+)}
+
+</main>
+
     </div>
   );
 };
