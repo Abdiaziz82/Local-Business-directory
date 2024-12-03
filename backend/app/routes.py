@@ -496,7 +496,6 @@ def get_all_business_info():
 @jwt_required()
 def delete_business_info(business_id):
     try:
-        # Extract user identity from JWT
         user_identity = get_jwt_identity()
         user_id = user_identity.get("id")
         user_role = user_identity.get("role")
@@ -507,12 +506,10 @@ def delete_business_info(business_id):
         if user_role != 'business_owner':
             return jsonify({"error": "Access denied. Only business owners can delete business info."}), 403
 
-        # Fetch the business info
         business_info = BusinessInfo.query.filter_by(id=business_id, user_id=user_id).first()
         if not business_info:
             return jsonify({"error": "Business not found or unauthorized."}), 404
 
-        # Delete the business info
         db.session.delete(business_info)
         db.session.commit()
 

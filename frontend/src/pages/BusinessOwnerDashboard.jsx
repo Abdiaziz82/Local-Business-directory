@@ -70,6 +70,11 @@ const BusinessOwnerDashboard = () => {
   // Handle delete business
   const handleBusinessDelete = async (businessId) => {
     try {
+      if (!businessId) {
+        console.error("Invalid business ID.");
+        return;
+      }
+  
       const token = getJwtFromCookies();
       if (!token) {
         console.error("JWT token not found in cookies.");
@@ -86,7 +91,7 @@ const BusinessOwnerDashboard = () => {
   
       if (response.ok) {
         const updatedData = businessData.filter((business) => business.id !== businessId);
-        setBusinessData(updatedData); // Update the state to reflect the deletion
+        setBusinessData(updatedData);
         console.log(`Business with ID ${businessId} deleted.`);
       } else {
         const errorData = await response.json();
@@ -96,6 +101,26 @@ const BusinessOwnerDashboard = () => {
       console.error("Error deleting business:", error);
     }
   };
+  
+  {activeSection === "delete" && (
+    <div className="text-center">
+      <h2 className="text-2xl font-bold mb-4">Delete Business</h2>
+      {userData && userData.length > 0 ? (
+        <div className="flex flex-wrap justify-center gap-4">
+          {userData.map((data) => (
+            <BusinessCard
+              key={data.id}
+              data={data}
+              onDelete={() => handleBusinessDelete(data.id)} // Pass valid ID
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-lg">No businesses to delete.</p>
+      )}
+    </div>
+  )}
+  
   
   // Handle section change
   const handleSectionChange = (section) => {

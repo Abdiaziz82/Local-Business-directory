@@ -228,78 +228,131 @@ const CustomerDashboard = () => {
 
       {/* Modal */}
      {/* Modal */}
-{showModal && (
+     {showModal && (
   <div
     className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50"
     onClick={closeModal}
   >
     <div
-      className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full"
+      className="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full space-y-6"
       onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
     >
-      <h3 className="text-xl font-semibold mb-4">Send a Message to {modalData.name}</h3>
-      <p className="text-gray-500 font-semibold">{modalData.description}</p>
-      <form className="space-y-4">
-        {/* Name Field */}
+      {/* Header Section */}
+      <div className="flex justify-between items-center border-b pb-4">
+        <h3 className="text-2xl font-semibold">
+          Send a Message to {modalData.name}
+        </h3>
+        <button
+          className="text-gray-500 hover:text-gray-800"
+          onClick={closeModal}
+        >
+          &times;
+        </button>
+      </div>
+
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left Column */}
         <div>
-          <label htmlFor="name" className="text-gray-700 font-semibold mb-2 block">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-            required
-          />
+          {/* Description Section */}
+          <div>
+            <h3 className="text-lg font-bold mb-2">Description</h3>
+            <p className="text-gray-700">{modalData.description}</p>
+          </div>
+
+          {/* Location Section */}
+          <div className="mt-6">
+            <h3 className="text-lg font-bold mb-2">Location</h3>
+            <div className="h-48 w-full bg-gray-200 flex justify-center items-center">
+              <span className="text-gray-500">Map Placeholder</span>
+            </div>
+          </div>
         </div>
 
-        {/* Email Field */}
+        {/* Right Column */}
         <div>
-          <label htmlFor="email" className="text-gray-700 font-semibold mb-2 block">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-            required
-          />
-        </div>
+          {/* Contact Form */}
+          <form className="space-y-4">
+            {/* Name Field */}
+            <div>
+              <label
+                htmlFor="name"
+                className="text-gray-700 font-semibold mb-2 block"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+                required
+              />
+            </div>
 
-        {/* Message Field */}
-        <div>
-          <label htmlFor="message" className="text-gray-700 font-semibold mb-2 block">
-            Message
-          </label>
-          <textarea
-            id="message"
-            rows="4"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-            required
-          ></textarea>
-        </div>
+            {/* Email Field */}
+            <div>
+              <label
+                htmlFor="email"
+                className="text-gray-700 font-semibold mb-2 block"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+                required
+              />
+            </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
-          >
-            Send Message
-          </button>
+            {/* Message Field */}
+            <div>
+              <label
+                htmlFor="message"
+                className="text-gray-700 font-semibold mb-2 block"
+              >
+                Message
+              </label>
+              <textarea
+                id="message"
+                rows="4"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+                required
+              ></textarea>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
-      
+      </div>
+
+      {/* Reviews Section */}
+      <div className="mt-6">
+        <h3 className="text-lg font-bold mb-2">Reviews</h3>
+        <p className="text-gray-500">No reviews yet.</p>
+      </div>
+
       {/* Close Button */}
-      <button
-        className="mt-4 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-        onClick={closeModal}
-      >
-        Close
-      </button>
+      <div className="flex justify-end mt-4">
+        <button
+          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+          onClick={closeModal}
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 )}
+
 
     </div>
   );
