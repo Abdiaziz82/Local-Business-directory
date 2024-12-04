@@ -518,3 +518,33 @@ def delete_business_info(business_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+
+messages = []
+reviews = []
+
+@main.route('/api/messages', methods=['POST'])
+def send_message():
+    data = request.json
+    message = {
+        "name": data.get("name"),
+        "email": data.get("email"),
+        "message": data.get("message"),
+        "timestamp": data.get("timestamp"),
+    }
+    messages.append(message)
+    return jsonify({"success": True, "message": "Message sent successfully"}), 201
+
+@main.route('/api/reviews', methods=['POST'])
+def submit_review():
+    data = request.json
+    review = {
+        "name": data.get("name"),
+        "text": data.get("text"),
+        "timestamp": data.get("timestamp"),
+    }
+    reviews.append(review)
+    return jsonify({"success": True, "message": "Review submitted successfully"}), 201
+
+@main.route('/api/reviews', methods=['GET'])
+def get_reviews():
+    return jsonify(reviews), 200

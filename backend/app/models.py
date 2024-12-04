@@ -41,3 +41,34 @@ class BusinessInfo(db.Model):
  
     def __repr__(self):
         return f"BusinessInfo('{self.name}', '{self.user.username}')"
+    
+    
+    # Relationship with messages and reviews
+    messages = db.relationship('Message', backref='business', lazy=True)
+    reviews = db.relationship('Review', backref='business', lazy=True)
+
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    business_id = db.Column(db.Integer, db.ForeignKey('business_info.id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Optional if not logged in
+    name = db.Column(db.String(100), nullable=False)  # Name of the sender
+    email = db.Column(db.String(120), nullable=False)  # Email of the sender
+    content = db.Column(db.Text, nullable=False)  # The message
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"Message('{self.name}', '{self.email}', '{self.business.name}', '{self.timestamp}')"
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    business_id = db.Column(db.Integer, db.ForeignKey('business_info.id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Optional if not logged in
+    name = db.Column(db.String(100), nullable=False)  # Name of the reviewer
+    content = db.Column(db.Text, nullable=False)  # The review
+    rating = db.Column(db.Integer, nullable=True)  # Optional rating (if required)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"Review('{self.name}', '{self.business.name}', '{self.timestamp}')"
