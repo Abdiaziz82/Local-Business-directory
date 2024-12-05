@@ -1,7 +1,69 @@
-import React from "react";
+import React, { useState } from "react";
+
+// Utility function to retrieve JWT from cookies
+const getJwtFromCookies = () => {
+  const cookies = document.cookie.split("; ");
+  const tokenCookie = cookies.find((cookie) => cookie.startsWith("access_token="));
+  return tokenCookie ? tokenCookie.split("=")[1] : null;
+};
 
 const BusinessModal = ({ modalData, closeModal }) => {
-  if (!modalData) return null; // Prevent rendering if no modal data
+  const [messageForm, setMessageForm] = useState({ name: "", email: "", message: "" });
+  const [reviewForm, setReviewForm] = useState({ name: "", review: "" });
+  const [feedback, setFeedback] = useState(null); // For success/error messages
+
+  if (!modalData) return null;
+
+  // Helper function to handle API requests
+  const sendRequest = async () => {
+    const payload = {
+      business_id: modalData?.id, // Ensure correct key matches the backend
+      name,
+      email,
+      message,
+    };
+  
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        console.log("Message sent successfully!");
+        closeModal();
+      } else {
+        const errorData = await response.json();
+        console.error("Error response from server:", errorData);
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+  
+
+  // Handle message form submission
+  const handleMessageSubmit = async (e) => {
+    e.preventDefault();
+    const payload = { business_id: modalData.id, ...messageForm };
+    console.log("Message Payload:", payload); // Debugging
+
+    const success = await sendRequest("http://127.0.0.1:5000/api/messages", payload);
+    if (success) setMessageForm({ name: "", email: "", message: "" }); // Reset form
+  };
+
+  // Handle review form submission
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    const payload = { business_id: modalData.id, ...reviewForm };
+    console.log("Review Payload:", payload); // Debugging
+
+    const success = await sendRequest("http://127.0.0.1:5000/api/reviews", payload);
+    if (success) setReviewForm({ name: "", review: "" }); // Reset form
+  };
 
   return (
     <div
@@ -10,7 +72,7 @@ const BusinessModal = ({ modalData, closeModal }) => {
     >
       <div
         className="relative bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-7xl space-y-6 mt-10 mb-10 overflow-y-auto max-h-screen"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header Section */}
         <div className="flex justify-between items-center border-b pb-4 relative">
@@ -25,166 +87,107 @@ const BusinessModal = ({ modalData, closeModal }) => {
           </button>
         </div>
 
+        {/* Feedback Section */}
+        {feedback && (
+          <div
+            className={`p-4 rounded-md ${
+              feedback.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}
+          >
+            {feedback.message}
+          </div>
+        )}
+
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column */}
           <div>
-            {/* Description Section */}
-            <div>
-              <h3 className="text-lg font-bold mb-4">Description</h3>
-              <p className="text-gray-700 text-base">{modalData.description}</p>
-            </div>
+            <h3 className="text-lg font-bold mb-4">Description</h3>
+            <p className="text-gray-700 text-base">{modalData.description}</p>
 
-            {/* Location Section */}
-            <div className="mt-8">
-              <h3 className="text-lg font-bold mb-4">Location</h3>
-              <div className="h-64 w-full bg-gray-200 flex justify-center items-center">
-                <span className="text-gray-500 text-base">Map Placeholder</span>
-              </div>
+            <h3 className="text-lg font-bold mt-8 mb-4">Location</h3>
+            <div className="h-64 w-full bg-gray-200 flex justify-center items-center">
+              <span className="text-gray-500 text-base">Map Placeholder</span>
             </div>
           </div>
 
-          {/* Right Column */}
           <div>
-            {/* Contact Form */}
-            <form className="space-y-6">
-              {/* Name Field */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="text-gray-700 font-semibold mb-2 block text-base"
-                >
-                  Name
-                </label>
+            <form className="space-y-6" onSubmit={handleMessageSubmit}>
+              <label>
+                Name
                 <input
                   type="text"
-                  id="name"
-                  className="w-full p-4 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+                  className="w-full p-4 border border-gray-300 rounded-md"
                   required
+                  value={messageForm.name}
+                  onChange={(e) => setMessageForm({ ...messageForm, name: e.target.value })}
                 />
-              </div>
-
-              {/* Email Field */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="text-gray-700 font-semibold mb-2 block text-base"
-                >
-                  Email
-                </label>
+              </label>
+              <label>
+                Email
                 <input
                   type="email"
-                  id="email"
-                  className="w-full p-4 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+                  className="w-full p-4 border border-gray-300 rounded-md"
                   required
+                  value={messageForm.email}
+                  onChange={(e) => setMessageForm({ ...messageForm, email: e.target.value })}
                 />
-              </div>
-
-              {/* Message Field */}
-              <div>
-                <label
-                  htmlFor="message"
-                  className="text-gray-700 font-semibold mb-2 block text-base"
-                >
-                  Message
-                </label>
+              </label>
+              <label>
+                Message
                 <textarea
-                  id="message"
                   rows="6"
-                  className="w-full p-4 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
+                  className="w-full p-4 border border-gray-300 rounded-md"
                   required
-                ></textarea>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
-                >
-                  Send Message
-                </button>
-              </div>
+                  value={messageForm.message}
+                  onChange={(e) => setMessageForm({ ...messageForm, message: e.target.value })}
+                />
+              </label>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
+              >
+                Send Message
+              </button>
             </form>
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="mt-8">
-          <h3 className="text-lg font-bold mb-4">Submit a Review</h3>
-          {/* Review Submission Form */}
-          <form className="space-y-6">
-            {/* Name Field */}
-            <div>
-              <label
-                htmlFor="reviewerName"
-                className="block text-base font-semibold text-gray-700"
-              >
-                Your Name
-              </label>
-              <input
-                type="text"
-                id="reviewerName"
-                className="w-full p-4 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-                placeholder="Enter your name"
-                required
-              />
-            </div>
-
-            {/* Review Field */}
-            <div>
-              <label
-                htmlFor="reviewText"
-                className="block text-base font-semibold text-gray-700"
-              >
-                Your Review
-              </label>
-              <textarea
-                id="reviewText"
-                rows="6"
-                className="w-full p-4 border border-gray-300 rounded-md focus:ring focus:ring-blue-300"
-                placeholder="Write your review"
-                required
-              ></textarea>
-            </div>
-
-            {/* Submit Review Button */}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="bg-green-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-green-700 transition duration-300"
-              >
-                Submit Review
-              </button>
-            </div>
-          </form>
-
-          {/* Display Submitted Reviews */}
-          <div className="mt-8">
-            <h3 className="text-lg font-bold mb-4">Reviews</h3>
-            <div className="space-y-4">
-              {/* Example Review */}
-              <div className="p-4 border border-gray-300 rounded-lg">
-                <h4 className="text-base font-bold">ahmed abdi</h4>
-                <p className="text-gray-700 text-sm">Great service and support!</p>
-              </div>
-              <div className="p-4 border border-gray-300 rounded-lg">
-                <h4 className="text-base font-bold">Abdiaziz</h4>
-                <p className="text-gray-700 text-sm">Highly recommended!</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Close Button */}
-        <div className="flex justify-end mt-8">
+        <h3 className="text-lg font-bold mt-8 mb-4">Submit a Review</h3>
+        <form className="space-y-6" onSubmit={handleReviewSubmit}>
+          <label>
+            Your Name
+            <input
+              type="text"
+              className="w-full p-4 border border-gray-300 rounded-md"
+              required
+              value={reviewForm.name}
+              onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+            />
+          </label>
+          <label>
+            Your Review
+            <textarea
+              rows="6"
+              className="w-full p-4 border border-gray-300 rounded-md"
+              required
+              value={reviewForm.review}
+              onChange={(e) => setReviewForm({ ...reviewForm, review: e.target.value })}
+            />
+          </label>
           <button
-            className="bg-red-500 text-white py-3 px-6 rounded-md hover:bg-red-600"
-            onClick={closeModal}
+            type="submit"
+            className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700"
           >
-            Close
+            Submit Review
           </button>
-        </div>
+        </form>
+
+        <button
+          className="bg-red-500 text-white py-3 px-6 rounded-md hover:bg-red-600 mt-8"
+          onClick={closeModal}
+        >
+          Close
+        </button>
       </div>
     </div>
   );
