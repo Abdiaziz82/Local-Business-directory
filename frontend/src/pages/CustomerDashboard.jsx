@@ -91,11 +91,10 @@ const CustomerDashboard = () => {
 
   // Function to handle opening the modal and setting the selected business data
   const openModal = (business) => {
-    console.log("Opening modal with business data:", business);
     setModalData(business);
     setShowModal(true);
   };
-  
+
   // Function to handle closing the modal
   const closeModal = () => {
     setShowModal(false);
