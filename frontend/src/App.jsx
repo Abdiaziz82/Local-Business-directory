@@ -21,6 +21,7 @@ import About from './pages/About';
 import ContactUs from './pages/ContactUs';
 
 
+
 function App() {
   
   const [userRole, setUserRole] = useState(null);
@@ -67,6 +68,7 @@ function App() {
               <SearchComponent />
               <StatsSection />
               <HowItWorks />
+              
               
               <FeaturedBusinesses />
             </>

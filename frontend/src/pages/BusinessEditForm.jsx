@@ -122,7 +122,7 @@ const BusinessEditForm = ({ onSave }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-7xl mx-auto bg-white p-4 rounded-md shadow-sm">
-      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Edit Business Info</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center text-indigo-600">Edit Business Info</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -239,7 +239,7 @@ const BusinessEditForm = ({ onSave }) => {
       <div className="flex justify-center mt-4">
         <button
           type="submit"
-          className={`bg-blue-600 text-white py-2 px-6 rounded-lg shadow-lg focus:outline-none ${
+          className={`bg-indigo-600 text-white py-2 px-6 rounded-lg shadow-lg focus:outline-none ${
             loading ? "cursor-not-allowed opacity-50" : ""
           }`}
           disabled={loading}

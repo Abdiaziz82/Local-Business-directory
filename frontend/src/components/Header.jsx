@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/react.svg'; // Adjust path as needed
+import logo from '../assets/image.png'; // Adjust path as needed
 import ProfileDropdown from '../pages/ProfileDropdown'; // Import the ProfileDropdown
 import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
@@ -31,10 +31,15 @@ const Header = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/">
-              <img src={logo} alt="LocalBiz Directory Logo" className="h-10 w-auto" />
-            </Link>
-          </div>
+  
+    <img 
+      src={logo} 
+      alt="LocalBiz Directory Logo" 
+      className="h-32 w-auto md:h-20 lg:h-32 max-h-full"
+    />
+  
+</div>
+
           
           {/* Navigation Links */}
           <div className="hidden md:flex space-x-8">

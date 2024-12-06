@@ -197,7 +197,7 @@ const CustomerDashboard = () => {
             <div className="w-full lg:w-1/4 flex justify-center mt-4 lg:mt-0">
               <button
                 onClick={handleSearch}
-                className="bg-blue-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300 flex items-center justify-center"
+                className="bg-indigo-600 text-white px-6 py-3 rounded-md shadow-md hover:bg-blue-700 transition duration-300 flex items-center justify-center"
                 disabled={isLoading} // Disable button while loading
               >
                 {isLoading ? (

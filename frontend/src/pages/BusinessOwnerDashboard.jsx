@@ -3,6 +3,8 @@ import { FaClipboardList, FaEdit, FaTrashAlt } from "react-icons/fa"; // Import 
 import BusinessForm from "./BusinessForm";
 import BusinessCard from "./BusinessCard";
 import BusinessEditForm from "./BusinessEditForm";
+import TableComponent from "./TableComponent";
+import ReviewTable from "./ReviewTable";
 
 const BusinessOwnerDashboard = () => {
   const [activeSection, setActiveSection] = useState("form"); // 'form', 'listings', or 'edit'
@@ -150,7 +152,7 @@ const BusinessOwnerDashboard = () => {
           }`}
           onClick={() => setActiveSection("form")}
         >
-          <FaEdit className="mr-3 text-blue-500" /> Filling Form
+          <FaEdit className="mr-3 text-indigo-600" /> Filling Form
         </button>
 
         {/* Your Listings Button */}
@@ -160,7 +162,7 @@ const BusinessOwnerDashboard = () => {
           }`}
           onClick={() => setActiveSection("listings")}
         >
-          <FaClipboardList className="mr-3 text-blue-500" /> Your Listings
+          <FaClipboardList className="mr-3 text-indigo-600" /> Your Listings
         </button>
 
         {/* Edit Button */}
@@ -240,6 +242,20 @@ const BusinessOwnerDashboard = () => {
       />
     </div>
   )}
+
+{activeSection === "messages" && (
+          <div className="flex lg:flex-row flex-col">
+            <TableComponent />
+          </div>
+        )}
+
+{activeSection === "reviews" && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4 text-center">Reviews</h2>
+            <ReviewTable /> {/* Display the ReviewTable */}
+          </div>
+        )}
+        
 
 {activeSection === "delete" && (
   <div className="text-center">
