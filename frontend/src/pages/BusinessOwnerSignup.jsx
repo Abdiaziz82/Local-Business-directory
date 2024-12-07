@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const BusinessOwnerSignup = () => {
   const [formData, setFormData] = useState({
@@ -175,9 +176,9 @@ const BusinessOwnerSignup = () => {
               className="ml-3 block text-sm text-gray-800"
             >
               I accept the{' '}
-              <a href="#" className="text-blue-500 font-semibold hover:underline">
-                Terms and Conditions
-              </a>
+              <Link to="/terms-and-conditions" className="text-blue-500 font-semibold hover:underline">
+  Terms and Conditions
+</Link>
             </label>
           </div>
 

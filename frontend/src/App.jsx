@@ -19,6 +19,9 @@ import ResetPasswordForm from './pages/ResetPasswordForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import About from './pages/About';
 import ContactUs from './pages/ContactUs';
+import TermsAndConditions from './pages/TermsAndConditions';
+import TestimonialCard from './components/TestimonialCard';
+import Features from './components/Features';
 
 
 
@@ -68,12 +71,14 @@ function App() {
               <SearchComponent />
               <StatsSection />
               <HowItWorks />
-              
-              
+              <Features />
+             <TestimonialCard />
               <FeaturedBusinesses />
             </>
           } 
         />
+
+<Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup/business-owner" element={<BusinessOwnerSignup />} />
