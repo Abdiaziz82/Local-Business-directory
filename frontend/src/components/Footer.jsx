@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 function Footer() {
   return (
@@ -13,7 +14,7 @@ function Footer() {
             <div className="flex mt-8 flex-col md:flex-row md:justify-between">
                 <p className="w-full md:w-2/3 text-gray-400">To ensure that all Wikipedia content is verifiable, anyone may question an uncited claim. If your work has been tagged</p>
                 <div className="w-44 pt-6 md:pt-0">
-                    <a className="bg-indigo-600 justify-center text-center rounded-lg shadow px-10 py-3 flex items-center">Contact US</a>
+                    <Link to="/contact" className="bg-indigo-600 justify-center text-center rounded-lg shadow px-10 py-3 flex items-center">Contact US</Link>
                 </div>
             </div>
             <div className="flex flex-col">
