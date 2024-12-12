@@ -12,26 +12,26 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-70" /> {/* Gradient overlay for better contrast */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-        {/* Adjusting the font sizes for better responsiveness */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight shadow-lg">
+        {/* Improved font sizes and line heights for better visibility */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight sm:leading-snug shadow-lg">
           Discover & Promote Local Businesses
         </h1>
 
-        <p className="mt-6 text-lg text-white max-w-2xl mx-auto shadow-md">
+        <p className="mt-4 text-base sm:text-lg md:text-xl text-white max-w-xl mx-auto shadow-md">
           Whether you're looking for the best services in your area or you're a business owner aiming to grow, we've got you covered! Join our vibrant community today!
         </p>
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-6">
+        <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
           <a
             href="/browse"
-            className="inline-block bg-white text-indigo-600 hover:bg-gray-200 px-8 py-4 rounded-lg font-medium shadow-lg transition duration-300"
+            className="inline-block bg-white text-indigo-600 hover:bg-gray-200 px-6 py-3 sm:px-8 sm:py-4 rounded-lg font-medium shadow-lg transition duration-300 text-sm sm:text-base"
           >
             Browse Businesses
           </a>
 
           <a
             href="/add-business"
-            className="inline-block border border-white text-white hover:bg-white hover:text-indigo-600 px-8 py-4 rounded-lg font-medium shadow-lg transition duration-300"
+            className="inline-block border border-white text-white hover:bg-white hover:text-indigo-600 px-6 py-3 sm:px-8 sm:py-4 rounded-lg font-medium shadow-lg transition duration-300 text-sm sm:text-base"
           >
             Add Your Business
           </a>
