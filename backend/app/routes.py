@@ -378,6 +378,7 @@ def get_user_business_info():
 
         # Serialize the business information
         business_info_data = {
+            "id": business_info.id,
             "name": business_info.name,
             "description": business_info.description,
             "location": business_info.location,
@@ -500,8 +501,8 @@ def delete_business_info(business_id):
         user_id = user_identity.get("id")
         user_role = user_identity.get("role")
 
-        if not user_id or not user_role:
-            return jsonify({"error": "Invalid token. Missing user information."}), 401
+        # Log the business_id and user_id for debugging
+        print(f"Received business_id: {business_id}, user_id: {user_id}")
 
         if user_role != 'business_owner':
             return jsonify({"error": "Access denied. Only business owners can delete business info."}), 403
@@ -514,10 +515,11 @@ def delete_business_info(business_id):
         db.session.commit()
 
         return jsonify({"message": "Business information deleted successfully."}), 200
-
     except Exception as e:
         db.session.rollback()
+        print(f"Error: {str(e)}")  # Log the error
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+
 
 messages = []
 reviews = []

@@ -71,13 +71,19 @@ const BusinessOwnerDashboard = () => {
 
   // Handle delete business
   const handleBusinessDelete = async (businessId) => {
-    try {
-      if (!businessId) {
-        console.error("Invalid business ID.");
-        return;
-      }
+    console.log("Business ID to delete:", businessId); // Log the businessId to check its value
   
-      const token = getJwtFromCookies();
+    if (!businessId) {
+      console.error("Business ID is undefined!");
+      return;
+    }
+  
+    if (!window.confirm("Are you sure you want to delete this business?")) {
+      return;
+    }
+  
+    try {
+      const token = getJwtFromCookies();  // Assuming this function retrieves the token from cookies
       if (!token) {
         console.error("JWT token not found in cookies.");
         return;
@@ -92,9 +98,8 @@ const BusinessOwnerDashboard = () => {
       });
   
       if (response.ok) {
-        const updatedData = businessData.filter((business) => business.id !== businessId);
-        setBusinessData(updatedData);
-        console.log(`Business with ID ${businessId} deleted.`);
+        // Handle successful deletion
+        console.log("Business deleted successfully!");
       } else {
         const errorData = await response.json();
         console.error("Failed to delete business:", errorData.error);
@@ -104,24 +109,9 @@ const BusinessOwnerDashboard = () => {
     }
   };
   
-  {activeSection === "delete" && (
-    <div className="text-center">
-      <h2 className="text-2xl font-bold mb-4">Delete Business</h2>
-      {userData && userData.length > 0 ? (
-        <div className="flex flex-wrap justify-center gap-4">
-          {userData.map((data) => (
-            <BusinessCard
-              key={data.id}
-              data={data}
-              onDelete={() => handleBusinessDelete(data.id)} // Pass valid ID
-            />
-          ))}
-        </div>
-      ) : (
-        <p className="text-lg">No businesses to delete.</p>
-      )}
-    </div>
-  )}
+  
+  
+  
   
   
   // Handle section change
@@ -257,36 +247,60 @@ const BusinessOwnerDashboard = () => {
         )}
         
 
-{activeSection === "delete" && (
+        {activeSection === "delete" && (
   <div className="text-center">
-    <button
-      className="text-2xl font-bold mb-4 text-red-500 bg-transparent border-none hover:underline cursor-pointer"
-      onClick={() => {
-        // Ensure there's a selected business to delete
-        if (selectedBusiness) {
-          handleBusinessDelete(selectedBusiness.id);
-        } else {
-          console.error("No business selected for deletion.");
-        }
-      }}
-    >
-      Delete Business
-    </button>
+    <h2 className="text-2xl font-bold mb-4">Delete Business</h2>
     {userData && userData.length > 0 ? (
-      <div className="flex flex-wrap justify-center gap-4">
-        {userData.map((data, index) => (
-          <BusinessCard
-            key={index}
-            data={data}
-            onDelete={() => handleBusinessDelete(data.id)} // Delete only here
-          />
-        ))}
-      </div>
+      <>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded mb-4"
+          onClick={() => {
+            const dropdown = document.getElementById("business-delete-dropdown");
+            dropdown.classList.toggle("hidden");
+          }}
+        >
+          Select Business to Delete
+        </button>
+
+        <div
+          id="business-delete-dropdown"
+          className="hidden bg-white border rounded shadow-lg p-4 max-w-md mx-auto"
+        >
+          <ul>
+            {userData.map((data, index) => (
+              <li
+                key={index}
+                className="flex justify-between items-center border-b py-2"
+              >
+                <span>{data.name}</span>
+               
+                
+                <button
+  className="bg-red-500 text-white px-3 py-1 rounded"
+  onClick={() => {
+    console.log("Data object:", data); // Check the structure of data
+    if (data.id) {
+      handleBusinessDelete(data.id);
+    } else {
+      console.error("Business ID is missing.");
+    }
+  }}
+>
+  Delete
+</button>
+
+
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
     ) : (
       <p className="text-lg">No businesses to delete.</p>
     )}
   </div>
 )}
+
 
 </main>
 
