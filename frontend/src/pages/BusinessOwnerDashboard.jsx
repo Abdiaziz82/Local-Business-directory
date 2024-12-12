@@ -5,6 +5,8 @@ import BusinessCard from "./BusinessCard";
 import BusinessEditForm from "./BusinessEditForm";
 import TableComponent from "./TableComponent";
 import ReviewTable from "./ReviewTable";
+import Swal from "sweetalert2";
+
 
 const BusinessOwnerDashboard = () => {
   const [activeSection, setActiveSection] = useState("form"); // 'form', 'listings', or 'edit'
@@ -70,25 +72,37 @@ const BusinessOwnerDashboard = () => {
   };
 
   // Handle delete business
-  const handleBusinessDelete = async (businessId) => {
-    console.log("Business ID to delete:", businessId); // Log the businessId to check its value
   
-    if (!businessId) {
-      console.error("Business ID is undefined!");
-      return;
-    }
-  
-    if (!window.confirm("Are you sure you want to delete this business?")) {
-      return;
-    }
-  
+const handleBusinessDelete = async (businessId) => {
+  if (!businessId) {
+    console.error("Business ID is undefined!");
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    customClass: {
+      title: "swal-title",
+      htmlContainer:"swal-text",
+      confirmButton: "swal-text",
+      cancelButton: "swal-text",
+    },
+  });
+
+  if (result.isConfirmed) {
     try {
-      const token = getJwtFromCookies();  // Assuming this function retrieves the token from cookies
+      const token = getJwtFromCookies();
       if (!token) {
         console.error("JWT token not found in cookies.");
         return;
       }
-  
+
       const response = await fetch(`http://127.0.0.1:5000/api/business-info/${businessId}`, {
         method: "DELETE",
         headers: {
@@ -96,24 +110,43 @@ const BusinessOwnerDashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (response.ok) {
-        // Handle successful deletion
-        console.log("Business deleted successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "You have deleted the business successfully.",
+          customClass: {
+            title: "swal-title",
+            htmlContainer:"swal-text",
+          },
+        });
       } else {
         const errorData = await response.json();
-        console.error("Failed to delete business:", errorData.error);
+        Swal.fire({
+          icon: "error",
+          title: "Failed!",
+          text: errorData.error,
+          customClass: {
+            title: "swal-title",
+            htmlContainer:"swal-text",
+          },
+        });
       }
     } catch (error) {
-      console.error("Error deleting business:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Error deleting business.",
+        customClass: {
+          title: "swal-title",
+          htmlContainer:"swal-text",
+        },
+      });
     }
-  };
-  
-  
-  
-  
-  
-  
+  }
+};
+ 
   // Handle section change
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -126,8 +159,6 @@ const BusinessOwnerDashboard = () => {
       setSelectedBusiness(null); // Clear selected business if not in edit section
     }
   };
-
- 
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen spartan">
@@ -248,7 +279,7 @@ const BusinessOwnerDashboard = () => {
         
 
         {activeSection === "delete" && (
-  <div className="text-center">
+  <div className="text-center pt-14">
     <h2 className="text-2xl font-bold mb-4">Delete Business</h2>
     {userData && userData.length > 0 ? (
       <>
@@ -273,6 +304,7 @@ const BusinessOwnerDashboard = () => {
                 className="flex justify-between items-center border-b py-2"
               >
                 <span>{data.name}</span>
+                
                
                 
                 <button

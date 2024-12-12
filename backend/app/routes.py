@@ -22,7 +22,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 main = Blueprint('main', __name__)
-CORS(main, supports_credentials=True, origins="http://localhost:5173")
+CORS(main, supports_credentials=True, origins="http://localhost:5174")
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -119,6 +119,7 @@ def customer_signup():
 
 
 @main.route("/api/login", methods=['POST'])
+
 def login():
     # Validate JSON payload
     if not request.is_json:
@@ -298,7 +299,7 @@ def reset_password():
 
 
 @main.route('/api/business-info', methods=['POST'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5174", supports_credentials=True)
 @jwt_required()
 def save_business_info():
     try:
@@ -356,7 +357,7 @@ def save_business_info():
     
     
 @main.route('/api/business-info', methods=['GET'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5174", supports_credentials=True)
 @jwt_required()
 def get_user_business_info():
     try:
@@ -399,7 +400,7 @@ def get_user_business_info():
 
 
 @main.route('/api/business-info', methods=['PUT'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5174", supports_credentials=True)
 @jwt_required()
 def update_business_info():
     try:
@@ -457,7 +458,7 @@ def update_business_info():
         return jsonify({"error": "Internal server error. Please try again later."}), 500
 
 @main.route('/api/businesses', methods=['GET'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5174", supports_credentials=True)
 @jwt_required()
 def get_all_business_info():
     try:
@@ -493,7 +494,7 @@ def get_all_business_info():
     
     
 @main.route('/api/business-info/<int:business_id>', methods=['DELETE'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5174", supports_credentials=True)
 @jwt_required()
 def delete_business_info(business_id):
     try:
