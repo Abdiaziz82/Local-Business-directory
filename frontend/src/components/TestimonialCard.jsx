@@ -21,7 +21,7 @@ function TestimonialCard() {
           </div>
 
           <div className="mt-4">
-            <p className="text-sm leading-relaxed text-gray-800">The service was amazing. I never had to wait that long for my food. The staff was friendly and attentive, and the delivery was impressively prompt.</p>
+            <p className="text-sm leading-relaxed text-gray-800">This local business directory has completely transformed the way I connect with customers. My business is now more visible, and I’ve seen a significant increase in inquiries and sales!.</p>
           </div>
 
           <div className="flex justify-center space-x-1 mt-4">
@@ -63,7 +63,7 @@ function TestimonialCard() {
           </div>
 
           <div className="mt-4">
-            <p className="text-sm leading-relaxed text-gray-800">The service was amazing. I never had to wait that long for my food. The staff was friendly and attentive, and the delivery was impressively prompt.</p>
+            <p className="text-sm leading-relaxed text-gray-800"> Finding reliable and trustworthy services in my area used to be a challenge, but this platform makes it so easy. I’ve discovered businesses I didn’t even know existed before!.</p>
           </div>
 
           <div className="flex justify-center space-x-1 mt-4">
@@ -105,7 +105,7 @@ function TestimonialCard() {
           </div>
 
           <div className="mt-4">
-            <p className="text-sm leading-relaxed text-gray-800">The service was amazing. I never had to wait that long for my food. The staff was friendly and attentive, and the delivery was impressively prompt.</p>
+            <p className="text-sm leading-relaxed text-gray-800">Listing my startup on this directory has been one of the best decisions I’ve made. The increased visibility and engagement have truly helped my business grow!</p>
           </div>
 
           <div className="flex justify-center space-x-1 mt-4">

@@ -1,51 +1,61 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const TermsAndConditions = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleAccept = () => {
+    const from = location.state?.from || "/"; // Default to home if no `from` state
+    navigate(from); // Navigate back to the previous route
+  };
   return (
     <div className="flex flex-col lg:flex-row bg-gray-50 min-h-screen spartan">
       {/* Sidebar */}
-      <aside className="bg-indigo-600 text-white w-full lg:w-1/4 py-10 px-6 lg:px-8 shadow-md">
+      <aside className="bg-indigo-700 text-white w-full lg:w-1/4 py-10 px-6 lg:px-8 shadow-md">
         <h2 className="text-3xl font-extrabold mb-8 text-center">
           Terms Navigation
         </h2>
-        <nav className="space-y-4">
-          <a
-            href="#use-of-app"
-            className="block text-lg font-medium hover:text-gray-200 transition"
-          >
-            Use of the App
-          </a>
-          <a
-            href="#business-listings"
-            className="block text-lg font-medium hover:text-gray-200 transition"
-          >
-            Business Listings
-          </a>
-          <a
-            href="#user-conduct"
-            className="block text-lg font-medium hover:text-gray-200 transition"
-          >
-            User Conduct
-          </a>
-          <a
-            href="#privacy-policy"
-            className="block text-lg font-medium hover:text-gray-200 transition"
-          >
-            Privacy Policy
-          </a>
-          <a
-            href="#limitation-liability"
-            className="block text-lg font-medium hover:text-gray-200 transition"
-          >
-            Limitation of Liability
-          </a>
-          <a
-            href="#updates-changes"
-            className="block text-lg font-medium hover:text-gray-200 transition"
-          >
-            Updates and Changes
-          </a>
-        </nav>
+        <nav className="space-y-6">
+  <a
+    href="#use-of-app"
+    className="block text-lg font-semibold text-indigo-200 hover:text-white transition transform hover:scale-105"
+  >
+    Use of the App
+  </a>
+  <a
+    href="#business-listings"
+    className="block text-lg font-semibold text-indigo-200 hover:text-white transition transform hover:scale-105"
+  >
+    Business Listings
+  </a>
+  <a
+    href="#user-conduct"
+    className="block text-lg font-semibold text-indigo-200 hover:text-white transition transform hover:scale-105"
+  >
+    User Conduct
+  </a>
+  <a
+    href="#privacy-policy"
+    className="block text-lg font-semibold text-indigo-200 hover:text-white transition transform hover:scale-105"
+  >
+    Privacy Policy
+  </a>
+  <a
+    href="#limitation-liability"
+    className="block text-lg font-semibold text-indigo-200 hover:text-white transition transform hover:scale-105"
+  >
+    Limitation of Liability
+  </a>
+  <a
+    href="#updates-changes"
+    className="block text-lg font-semibold text-indigo-200 hover:text-white transition transform hover:scale-105"
+  >
+    Updates and Changes
+  </a>
+</nav>
+
       </aside>
 
       {/* Content */}
@@ -134,9 +144,12 @@ const TermsAndConditions = () => {
           .
         </p>
         <div className="flex justify-end mt-12">
-          <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-8 rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300">
-            Accept Terms
-          </button>
+        <button
+        onClick={handleAccept}
+        className="bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-8 rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300"
+      >
+        Accept Terms
+      </button>
         </div>
       </main>
     </div>

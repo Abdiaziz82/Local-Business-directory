@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const CustomerSignup = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const CustomerSignup = () => {
     confirmPassword: '',
   });
 
+  const [acceptTerms, setAcceptTerms] = useState(false); // State for terms checkbox
   const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate(); // Initialize navigate function
 
@@ -23,6 +25,16 @@ const CustomerSignup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!acceptTerms) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Accept Terms',
+        text: 'You must accept the terms and conditions to continue.',
+      });
+      return;
+    }
+
     setLoading(true);
 
     axios.post('http://localhost:5000/api/signup/customer', formData)
@@ -113,6 +125,23 @@ const CustomerSignup = () => {
                 placeholder="Confirm your password"
               />
             </div>
+          </div>
+
+          {/* Terms and Conditions Checkbox */}
+          <div className="mt-6 flex items-center">
+            <input
+              type="checkbox"
+              id="acceptTerms"
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="acceptTerms" className="ml-2 text-sm text-gray-800">
+              I accept the{' '}
+              <Link to="/terms-and-conditions" className="text-blue-500 font-semibold hover:underline">
+  Terms and Conditions
+</Link>
+            </label>
           </div>
 
           <div className="mt-12">
