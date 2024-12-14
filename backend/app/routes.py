@@ -400,7 +400,7 @@ def get_user_business_info():
 
 
 @main.route('/api/business-info', methods=['PUT'])
-@cross_origin(origins="http://localhost:5174", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def update_business_info():
     try:
@@ -458,7 +458,7 @@ def update_business_info():
         return jsonify({"error": "Internal server error. Please try again later."}), 500
 
 @main.route('/api/businesses', methods=['GET'])
-@cross_origin(origins="http://localhost:5174", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def get_all_business_info():
     try:

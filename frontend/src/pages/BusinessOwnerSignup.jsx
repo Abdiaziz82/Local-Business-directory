@@ -162,7 +162,7 @@ const BusinessOwnerSignup = () => {
                 placeholder="Create a password"
               />
               <div
-                className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer pt-7"
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer pt-7 text-indigo-700"
                 onClick={handlePasswordVisibility}
               >
                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -180,7 +180,7 @@ const BusinessOwnerSignup = () => {
                 placeholder="Confirm your password"
               />
               <div
-                className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer pt-7"
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer pt-7 text-indigo-700"
                 onClick={handleConfirmPasswordVisibility}
               >
                 {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -200,7 +200,7 @@ const BusinessOwnerSignup = () => {
               I accept the{' '}
               <Link
                 to="/terms-and-conditions"
-                className="text-blue-500 font-semibold hover:underline"
+                className="text-indigo-600 font-semibold hover:underline"
               >
                 Terms and Conditions
               </Link>
