@@ -3,6 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'; // Import icons for showing/hiding password
 
 const CustomerSignup = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const CustomerSignup = () => {
 
   const [acceptTerms, setAcceptTerms] = useState(false); // State for terms checkbox
   const [loading, setLoading] = useState(false); // Loading state
+  const [showPassword, setShowPassword] = useState(false); // State for showing password
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for showing confirm password
   const navigate = useNavigate(); // Initialize navigate function
 
   const handleChange = (e) => {
@@ -103,27 +106,43 @@ const CustomerSignup = () => {
             </div>
             <div>
               <label className="text-gray-800 text-sm mb-2 block">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
-                placeholder="Create a password"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
+                  placeholder="Create a password"
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-indigo-600"
+                >
+                  {showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}
+                </span>
+              </div>
             </div>
             <div>
               <label className="text-gray-800 text-sm mb-2 block">Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
-                placeholder="Confirm your password"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all rounded-md"
+                  placeholder="Confirm your password"
+                />
+                <span
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-indigo-600"
+                >
+                  {showConfirmPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -138,9 +157,9 @@ const CustomerSignup = () => {
             />
             <label htmlFor="acceptTerms" className="ml-2 text-sm text-gray-800">
               I accept the{' '}
-              <Link to="/terms-and-conditions" className="text-blue-500 font-semibold hover:underline">
-  Terms and Conditions
-</Link>
+              <Link to="/terms-and-conditions" className="text-indigo-600 font-semibold hover:underline">
+                Terms and Conditions
+              </Link>
             </label>
           </div>
 
