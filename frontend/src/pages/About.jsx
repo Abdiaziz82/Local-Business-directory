@@ -2,7 +2,7 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8 spartan pt-20 sm:pt-24 pb-16 sm:pb-24 overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8 spartan pt-28 sm:pt-32 pb-16 sm:pb-24 overflow-y-auto">
       <div className="w-full max-w-full sm:max-w-5xl lg:max-w-7xl text-center">
         {/* Heading */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-snug">
@@ -38,7 +38,9 @@ const About = () => {
               Our Mission
             </h3>
             <p className="mt-2 text-sm sm:text-base text-gray-600">
-              Empower businesses by providing visibility and fostering connections that drive success.
+              Our mission is to empower businesses by providing visibility and fostering connections that drive success.
+              We are committed to creating a robust platform where companies can showcase their expertise, share their values, and connect with like-minded individuals and organizations to unlock opportunities.
+              Through innovation and dedication, we aim to bridge the gap between businesses and their potential customers globally.
             </p>
           </div>
 
@@ -64,7 +66,9 @@ const About = () => {
               Our Vision
             </h3>
             <p className="mt-2 text-sm sm:text-base text-gray-600">
-              To be the global platform that brings together professionals and companies for meaningful connections.
+              Our vision is to be the global platform that connects businesses, professionals, and organizations to foster innovation, growth, and sustainability.
+              We envision a world where every business, no matter its size or location, has equal access to tools and networks that drive success.
+              By cultivating a thriving ecosystem of collaboration and trust, we aim to become the cornerstone of business networking worldwide.
             </p>
           </div>
 
@@ -90,7 +94,11 @@ const About = () => {
               Why Choose Us
             </h3>
             <p className="mt-2 text-sm sm:text-base text-gray-600">
-              Trusted by thousands globally, offering reliable and user-friendly directory services that connect businesses to success.
+              Choosing us means choosing reliability, innovation, and dedication.
+              We are trusted by thousands of businesses globally for our commitment to providing top-notch services.
+              Our platform is designed with user-friendliness and efficiency in mind, ensuring seamless connections and unparalleled opportunities for growth.
+              By choosing BizHub, you're investing in a future of possibilities, collaboration, and success.
+              Let us be the partner that elevates your business to the next level.
             </p>
           </div>
         </div>
