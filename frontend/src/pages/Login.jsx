@@ -44,7 +44,7 @@ const Login = () => {
 
     setTimeout(() => {
       axios
-        .post('https://backend-henna-delta-42.vercel.app//api/login', loginData, {
+        .post('https://backend-henna-delta-42.vercel.app/api/login', loginData, {
           withCredentials: true, 
           headers: {
             'Content-Type': 'application/json',

@@ -22,7 +22,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 main = Blueprint('main', __name__)
-CORS(main, supports_credentials=True, origins="http://localhost:5174")
+CORS(main, supports_credentials=True, origins="https://bizhive-business-directory.vercel.app")
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
