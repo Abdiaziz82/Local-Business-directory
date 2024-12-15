@@ -2,27 +2,30 @@ import React from 'react';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8 spartan">
-      <div className="max-w-7xl text-center">
-        <h2 className="text-5xl font-extrabold text-gray-900 sm:text-6xl tracking-tight leading-tight">
+    <div className="min-h-screen bg-gradient-to-r from-blue-50 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8 spartan pt-20 sm:pt-24 pb-16 sm:pb-24 overflow-y-auto">
+      <div className="w-full max-w-full sm:max-w-5xl lg:max-w-7xl text-center">
+        {/* Heading */}
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-snug">
           About BizHub
         </h2>
-        <p className="mt-4 text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-          Your trusted business directory connecting professionals and companies worldwide.
+        {/* Paragraph */}
+        <p className="mt-4 text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
+          Your trusted business directory connecting professionals and companies worldwide. 
           We help you grow your network, visibility, and influence.
         </p>
 
-        <div className="mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Cards */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 max-w-full mx-auto">
           {/* Our Mission */}
-          <div className="bg-white p-8 shadow-2xl rounded-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
-            <div className="flex items-center justify-center w-16 h-16 bg-blue-600 text-white rounded-full mx-auto">
+          <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-lg rounded-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-blue-600 text-white rounded-full mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="w-8 h-8"
+                className="w-6 h-6 sm:w-8 sm:h-8"
               >
                 <path
                   strokeLinecap="round"
@@ -31,24 +34,24 @@ const About = () => {
                 />
               </svg>
             </div>
-            <h3 className="mt-6 text-2xl font-semibold text-gray-900">
+            <h3 className="mt-4 text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900">
               Our Mission
             </h3>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-sm sm:text-base text-gray-600">
               Empower businesses by providing visibility and fostering connections that drive success.
             </p>
           </div>
 
           {/* Our Vision */}
-          <div className="bg-white p-8 shadow-2xl rounded-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
-            <div className="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full mx-auto">
+          <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-lg rounded-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-green-600 text-white rounded-full mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="w-8 h-8"
+                className="w-6 h-6 sm:w-8 sm:h-8"
               >
                 <path
                   strokeLinecap="round"
@@ -57,24 +60,24 @@ const About = () => {
                 />
               </svg>
             </div>
-            <h3 className="mt-6 text-2xl font-semibold text-gray-900">
+            <h3 className="mt-4 text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900">
               Our Vision
             </h3>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-sm sm:text-base text-gray-600">
               To be the global platform that brings together professionals and companies for meaningful connections.
             </p>
           </div>
 
           {/* Why Choose Us */}
-          <div className="bg-white p-8 shadow-2xl rounded-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105">
-            <div className="flex items-center justify-center w-16 h-16 bg-yellow-600 text-white rounded-full mx-auto">
+          <div className="bg-white p-4 sm:p-6 lg:p-8 shadow-lg rounded-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-yellow-600 text-white rounded-full mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="w-8 h-8"
+                className="w-6 h-6 sm:w-8 sm:h-8"
               >
                 <path
                   strokeLinecap="round"
@@ -83,10 +86,10 @@ const About = () => {
                 />
               </svg>
             </div>
-            <h3 className="mt-6 text-2xl font-semibold text-gray-900">
+            <h3 className="mt-4 text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900">
               Why Choose Us
             </h3>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-sm sm:text-base text-gray-600">
               Trusted by thousands globally, offering reliable and user-friendly directory services that connect businesses to success.
             </p>
           </div>
