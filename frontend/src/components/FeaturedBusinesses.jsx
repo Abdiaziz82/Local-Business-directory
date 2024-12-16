@@ -21,7 +21,7 @@ const FeaturedBusinesses = () => {
       category: "IT Services",
       rating: 4,
       location: "Westlands, Nairobi",
-      imageUrl: "https://source.unsplash.com/400x300/?tech,office",
+      imageUrl: "https://cdn.pixabay.com/photo/2020/01/30/21/24/shop-4806610_960_720.jpg",
       websiteUrl: "https://example.com",
     },
     {
@@ -31,7 +31,7 @@ const FeaturedBusinesses = () => {
       category: "Florist",
       rating: 5,
       location: "Karen, Nairobi",
-      imageUrl: "https://source.unsplash.com/400x300/?flowers,shop",
+      imageUrl: "https://cdn.pixabay.com/photo/2017/01/28/02/24/japan-2014618_1280.jpg",
       websiteUrl: "https://example.com",
     },
     {
@@ -41,7 +41,7 @@ const FeaturedBusinesses = () => {
       category: "Gym",
       rating: 4,
       location: "Thika Road, Nairobi",
-      imageUrl: "https://source.unsplash.com/400x300/?gym,fitness",
+      imageUrl: "https://cdn.pixabay.com/photo/2020/03/28/06/42/kobe-4975863_960_720.jpg",
       websiteUrl: "https://example.com",
     },
     {

@@ -1,8 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoImage from '../assets/image.png'; // Import your logo
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 function Footer() {
+  const [email, setEmail] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false); // Track loading state
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (email) {
+      setLoading(true); // Set loading to true when the request starts
+      try {
+        // Send email to the Flask backend to notify user of successful subscription
+        const response = await fetch('http://localhost:5000/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (response.ok) {
+          setIsSubscribed(true);
+          // Show SweetAlert success message
+          Swal.fire({
+            icon: 'success',
+            title: 'Successfully Subscribed!',
+            text: 'You will start receiving our newsletter.',
+            confirmButtonText: 'OK',
+            customClass: {
+              title: 'swal-title',
+              htmlContainer: 'swal-text',
+            },
+          });
+        } else {
+          alert('Subscription failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error during subscription:', error);
+        alert('There was an error. Please try again.');
+      } finally {
+        setLoading(false); // Set loading to false once the request completes
+      }
+    }
+  };
+
   return (
     <div className="bg-gray-900 text-white py-12 spartan">
       <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20">
@@ -57,21 +105,46 @@ function Footer() {
           <div>
             <p className="text-lg font-semibold mb-4">Subscribe to Our Newsletter</p>
             <p className="text-gray-400 mb-4">Stay updated with the latest local business news and offers!</p>
-            <form className="flex">
+            <form className="flex" onSubmit={handleSubmit}>
               <input
                 type="email"
                 placeholder="Your Email"
+                value={email}
+                onChange={handleEmailChange}
                 className="p-3 rounded-l-lg w-full text-black"
               />
-              <button className="bg-blue-600 text-white p-3 rounded-r-lg hover:bg-blue-700">Subscribe</button>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white p-3 rounded-r-lg hover:bg-blue-700"
+                disabled={loading} // Disable the button while loading
+              >
+                {loading ? (
+                  <span className="flex items-center">
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <circle cx="12" cy="12" r="10" strokeWidth="4" stroke="currentColor" fill="none" />
+                      <path
+                        fill="currentColor"
+                        d="M4 12a8 8 0 1 1 16 0A8 8 0 1 1 4 12"
+                      />
+                    </svg>
+                    Subscribing...
+                  </span>
+                ) : (
+                  'Subscribe'
+                )}
+              </button>
             </form>
           </div>
         </div>
-
-        {/* Footer Bottom */}
-        <div className="mt-12 border-t border-gray-700 pt-6 text-center">
-          <p className="text-sm text-gray-400">© 2024 Your Local Business Directory. All rights reserved.</p>
-        </div>
+      </div>
+      <div className="text-center text-gray-400 mt-12">
+        <p>&copy; 2024 Your Local Business Directory. All Rights Reserved.</p>
       </div>
     </div>
   );

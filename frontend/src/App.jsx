@@ -112,7 +112,7 @@ function App() {
          <Route path="/forgot-password" element={<ForgetPassword />} />
          <Route path="/reset-password" element={<ResetPasswordForm />} />
         
-        <Route path="/browse" element={<div>Browse Businesses</div>} />
+        <Route path="/browse" element={<Login />} />
         <Route path="/add-business" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<ContactUs />} />
