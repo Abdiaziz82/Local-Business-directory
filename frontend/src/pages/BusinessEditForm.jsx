@@ -111,6 +111,10 @@ const BusinessEditForm = ({ onSave }) => {
         icon: 'success',
         title: 'Business Updated',
         text: 'Your business information has been successfully updated!',
+        customClass: {
+          title: 'swal-title',
+          htmlContainer: 'swal-text',
+        },
       });
   
       onSave(); // Callback to refresh data or notify the parent

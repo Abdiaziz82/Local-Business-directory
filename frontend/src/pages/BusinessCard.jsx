@@ -73,7 +73,7 @@ const BusinessCard = ({ data, onEdit}) => {
         <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">
           {name || "Business Name"}
         </h3>
-        <p className="text-sm text-gray-600 mb-4 text-center">
+        <p className="text-sm text-gray-600 mb-4 text-center truncate">
           {description || "No description provided."}
         </p>
         <div className="text-sm text-gray-600 mb-4 flex items-center justify-center">
