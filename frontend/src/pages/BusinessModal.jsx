@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 
 const BusinessModal = ({ modalData, closeModal }) => {
   const [coordinates, setCoordinates] = useState(null);
+  const [reviewForm, setReviewForm] = useState({ name: "", email: "", review: "", rating: 0 });
+  const [messageForm, setMessageForm] = useState({ name: "", message: "" });
 
-  // Function to fetch latitude and longitude from the location
   const getCoordinates = async (location) => {
     try {
       const response = await fetch(
@@ -11,37 +12,83 @@ const BusinessModal = ({ modalData, closeModal }) => {
       );
       const data = await response.json();
 
-      // Check if a location was found
       if (data && data.length > 0) {
         const lat = parseFloat(data[0]?.lat);
         const lon = parseFloat(data[0]?.lon);
         setCoordinates({ latitude: lat, longitude: lon });
       } else {
         console.error("Location not found");
-        setCoordinates(null); // If no coordinates found, reset
+        setCoordinates(null);
       }
     } catch (error) {
       console.error("Error fetching coordinates:", error);
-      setCoordinates(null); // Reset coordinates on error
+      setCoordinates(null);
     }
   };
 
   useEffect(() => {
     if (modalData && modalData.location) {
-      getCoordinates(modalData.location); // Fetch coordinates when location changes
+      getCoordinates(modalData.location);
     }
   }, [modalData]);
 
-  if (!modalData) return null; // Return null if modalData is not available
+  // Send the review data to the backend
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reviewForm),
+      });
 
-  // If coordinates are not available, fallback to a default map view
+      if (response.ok) {
+        console.log("Review submitted successfully");
+        // Optionally reset the form
+        setReviewForm({ name: "", email: "", review: "", rating: 0 });
+      } else {
+        console.error("Error submitting review");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
+  };
+
+  // Send the message data to the backend
+  const handleMessageSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(messageForm),
+      });
+
+      if (response.ok) {
+        console.log("Message sent successfully");
+        // Optionally reset the form
+        setMessageForm({ name: "", message: "" });
+      } else {
+        console.error("Error sending message");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+
+  if (!modalData) return null;
+
   const mapUrl = coordinates
     ? `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(
         coordinates.longitude - 0.05
       )}%2C${encodeURIComponent(coordinates.latitude - 0.05)}%2C${encodeURIComponent(
         coordinates.longitude + 0.05
       )}%2C${encodeURIComponent(coordinates.latitude + 0.05)}&layer=mapnik`
-    : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=mapnik`; // Full world view as fallback
+    : `https://www.openstreetmap.org/export/embed.html?bbox=-180%2C-90%2C180%2C90&layer=mapnik`;
 
   return (
     <div
@@ -49,7 +96,7 @@ const BusinessModal = ({ modalData, closeModal }) => {
       onClick={closeModal}
     >
       <div
-        className="relative bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-4xl space-y-6 mt-10 mb-10 overflow-y-auto max-h-screen"
+        className="relative bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-5xl space-y-6 mt-10 mb-10 overflow-y-auto max-h-screen"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Section */}
@@ -67,30 +114,13 @@ const BusinessModal = ({ modalData, closeModal }) => {
 
         {/* Business Details */}
         <div>
-          {/* Description Section */}
           <div>
             <h3 className="text-lg font-bold mb-4">Description</h3>
             <p className="text-gray-700 text-base">{modalData.description}</p>
           </div>
 
-          {/* Contact Section */}
-          <div className="mt-8">
-            <h3 className="text-lg font-bold mb-4">Contact Information</h3>
-            <p className="text-gray-700 text-base">Email: {modalData.email}</p>
-            <p className="text-gray-700 text-base">Phone: {modalData.phone}</p>
-            {modalData.website && (
-              <p className="text-blue-500 text-base">
-                <a href={modalData.website} target="_blank" rel="noopener noreferrer">
-                  Visit Website
-                </a>
-              </p>
-            )}
-          </div>
-
           {/* Location Section */}
           <div className="mt-8">
-            <h3 className="text-lg font-bold mb-4">Location: {modalData.location}</h3>
-            {/* Only show map if coordinates are available */}
             <iframe
               title="Business Location Map"
               width="100%"
@@ -101,6 +131,80 @@ const BusinessModal = ({ modalData, closeModal }) => {
               loading="lazy"
             ></iframe>
           </div>
+        </div>
+
+        {/* Review Form */}
+        <div className="mt-8">
+          <h3 className="text-lg font-bold mb-4">Leave a Review</h3>
+          <form onSubmit={handleReviewSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Your Name"
+              className="w-full border p-3 rounded-md"
+              value={reviewForm.name}
+              onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+            />
+            <input
+              type="email"
+              placeholder="Your Email"
+              className="w-full border p-3 rounded-md"
+              value={reviewForm.email}
+              onChange={(e) => setReviewForm({ ...reviewForm, email: e.target.value })}
+            />
+            <textarea
+              placeholder="Your Review"
+              className="w-full border p-3 rounded-md"
+              rows="4"
+              value={reviewForm.review}
+              onChange={(e) => setReviewForm({ ...reviewForm, review: e.target.value })}
+            ></textarea>
+            <div className="flex items-center space-x-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`cursor-pointer text-2xl ${
+                    reviewForm.rating >= star ? "text-yellow-500" : "text-gray-400"
+                  }`}
+                  onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            >
+              Submit Review
+            </button>
+          </form>
+        </div>
+
+        {/* Message Form */}
+        <div className="mt-8">
+          <h3 className="text-lg font-bold mb-4">Send a Message</h3>
+          <form onSubmit={handleMessageSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Your Name"
+              className="w-full border p-3 rounded-md"
+              value={messageForm.name}
+              onChange={(e) => setMessageForm({ ...messageForm, name: e.target.value })}
+            />
+            <textarea
+              placeholder="Your Message"
+              className="w-full border p-3 rounded-md"
+              rows="4"
+              value={messageForm.message}
+              onChange={(e) => setMessageForm({ ...messageForm, message: e.target.value })}
+            ></textarea>
+            <button
+              type="submit"
+              className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+            >
+              Send Message
+            </button>
+          </form>
         </div>
 
         {/* Close Button */}
