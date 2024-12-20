@@ -35,26 +35,36 @@ const BusinessModal = ({ modalData, closeModal }) => {
   // Send the review data to the backend
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
+  
+    // Assume businessId is available in your state or props
+    const businessId = modalData.id; // Replace with actual logic to get business ID dynamically
+  
+    const reviewPayload = {
+      ...reviewForm,
+      business_id: businessId, // Dynamically associate with the correct business
+    };
+  
     try {
       const response = await fetch("http://127.0.0.1:5000/api/reviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(reviewForm),
+        body: JSON.stringify(reviewPayload),
       });
-
+  
       if (response.ok) {
         console.log("Review submitted successfully");
-        // Optionally reset the form
         setReviewForm({ name: "", email: "", review: "", rating: 0 });
       } else {
-        console.error("Error submitting review");
+        const errorData = await response.json();
+        console.error("Error submitting review:", errorData.error || "Unknown error");
       }
     } catch (error) {
       console.error("Error submitting review:", error);
     }
   };
+  
 
   // Send the message data to the backend
   const handleMessageSubmit = async (e) => {
