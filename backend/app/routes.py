@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session, make_response, url_for, current_app
 from app import db, bcrypt, mail  # Ensure `mail` instance is available here
-from app.models import User, BusinessInfo
+from app.models import User, BusinessInfo,Review
 from flask_cors import CORS ,cross_origin
 from flask_mail import Message
 from flask_login import login_user, current_user, logout_user ,login_required
@@ -8,6 +8,9 @@ from datetime import datetime, timedelta
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import random
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Define where to save the uploaded avatar files
 UPLOAD_FOLDER = 'static/uploads/avatars'  # Update this path as per your project structure
@@ -22,7 +25,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 main = Blueprint('main', __name__)
-CORS(main, supports_credentials=True, origins="https://bizhive-business-directory.vercel.app")
+CORS(main, supports_credentials=True, origins="http://localhost:5173")
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -274,6 +277,70 @@ def forgot_password():
         return jsonify({"error": "Failed to send email"}), 500
 
 
+
+@main.route('/api/contact', methods=['POST'])
+def contact():
+    try:
+        data = request.json
+        user_name = data.get('user_name')
+        user_email = data.get('user_email')
+        user_message = data.get('user_message')
+
+        # Email configuration
+        sender_email = "abdiazizhared64@gmail.com"  # Replace with your email
+        app_password = "zgdj edcr dtnz zugp"    # Replace with your app password
+        recipient_email = "abdiazizhared64@gmail.com"  # Your Gmail to receive messages
+
+        # Create the email
+        msg = MIMEMultipart()
+        msg['From'] = f"{user_name} <{sender_email}>"
+        msg['To'] = recipient_email
+        msg['Subject'] = f"New Contact Form Submission from {user_name}"
+        msg['Reply-To'] = user_email
+
+        
+        # Email body
+        body = f"""
+        You have a new message from your contact form:
+
+        Name: {user_name}
+        Email: {user_email}
+        Message:
+        {user_message}
+        """
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Send the email
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(sender_email, app_password)
+            server.sendmail(sender_email, recipient_email, msg.as_string())
+
+        return jsonify({"message": "Message sent successfully!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@main.route('/subscribe', methods=['POST'])
+def subscribe():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'message': 'Email is required'}), 400
+
+    # Create and send the email
+    msg = Message('Subscription Confirmation',
+                  sender='abdiazizhared64@gmail.com',
+                  recipients=[email])
+    msg.body = 'Thank you for subscribing to our newsletter! You will now receive the latest updates.  '
+
+    try:
+        mail.send(msg)
+        return jsonify({'message': 'Subscription successful! Please check your email for confirmation.'}), 200
+    except Exception as e:
+        return jsonify({'message': f'Error occurred: {str(e)}'}), 500
+
+
 @main.route('/api/reset-password', methods=['POST'])
 def reset_password():
     data = request.get_json()
@@ -299,7 +366,7 @@ def reset_password():
 
 
 @main.route('/api/business-info', methods=['POST'])
-@cross_origin(origins="http://localhost:5174", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def save_business_info():
     try:
@@ -357,7 +424,7 @@ def save_business_info():
     
     
 @main.route('/api/business-info', methods=['GET'])
-@cross_origin(origins="http://localhost:5174", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def get_user_business_info():
     try:
@@ -494,7 +561,7 @@ def get_all_business_info():
     
     
 @main.route('/api/business-info/<int:business_id>', methods=['DELETE'])
-@cross_origin(origins="http://localhost:5174", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def delete_business_info(business_id):
     try:
@@ -522,32 +589,37 @@ def delete_business_info(business_id):
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 
-messages = []
-reviews = []
-
-@main.route('/api/messages', methods=['POST'])
-def send_message():
-    data = request.json
-    message = {
-        "name": data.get("name"),
-        "email": data.get("email"),
-        "message": data.get("message"),
-        "timestamp": data.get("timestamp"),
-    }
-    messages.append(message)
-    return jsonify({"success": True, "message": "Message sent successfully"}), 201
-
 @main.route('/api/reviews', methods=['POST'])
 def submit_review():
     data = request.json
-    review = {
-        "name": data.get("name"),
-        "text": data.get("text"),
-        "timestamp": data.get("timestamp"),
-    }
-    reviews.append(review)
-    return jsonify({"success": True, "message": "Review submitted successfully"}), 201
+    business_id = data.get('business_id')  # ID of the business being reviewed
+    name = data.get('name')  # Reviewer's name
+    email = data.get('email')  # Reviewer's email
+    review_text = data.get('review')  # Review content
+    rating = data.get('rating')  # Rating out of 5
 
-@main.route('/api/reviews', methods=['GET'])
-def get_reviews():
-    return jsonify(reviews), 200
+    # Validate inputs
+    if not all([business_id, name, email, review_text, rating]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # Check if business exists
+    business = BusinessInfo.query.get(business_id)
+    if not business:
+        return jsonify({"error": "Business not found"}), 404
+
+    # Check the owner of the business
+    user_id = business.user_id
+
+    # Create and save the review
+    review = Review(
+        business_id=business_id,
+        user_id=user_id,  # Link the review to the owner
+        name=name,
+        email=email,
+        review_text=review_text,
+        rating=rating
+    )
+
+    db.session.add(review)
+    db.session.commit()
+    return jsonify({"message": "Review submitted successfully"}), 201

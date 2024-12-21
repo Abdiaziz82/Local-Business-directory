@@ -30,7 +30,7 @@ def create_app():
     app.config['SESSION_COOKIE_SECURE'] = False   # Set to True if using HTTPS in production
 
     # Enable CORS for the app to handle cross-origin requests
-    CORS(app, supports_credentials=True, origins=["https://bizhive-business-directory.vercel.app"])
+    CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
     # Initialize extensions with the app
     db.init_app(app)
