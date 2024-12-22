@@ -540,6 +540,7 @@ def get_all_business_info():
         businesses_data = []
         for business in businesses:
             business_data = {
+                "id": business.id,  # Include the business ID
                 "name": business.name,
                 "description": business.description,
                 "location": business.location,
@@ -558,7 +559,7 @@ def get_all_business_info():
     except Exception as e:
         print(f"Error fetching all business info: {e}")
         return jsonify({"error": "An error occurred while retrieving the business information."}), 500
-    
+
     
 @main.route('/api/business-info/<int:business_id>', methods=['DELETE'])
 @cross_origin(origins="http://localhost:5173", supports_credentials=True)
@@ -592,7 +593,9 @@ def delete_business_info(business_id):
 @main.route('/api/reviews', methods=['POST'])
 def submit_review():
     data = request.json
-    business_id = data.get('business_id')  # ID of the business being reviewed
+    print("Received data:", data)  # Debug log to verify received data
+
+    business_id = data.get('business_id')  # Dynamically passed from the frontend
     name = data.get('name')  # Reviewer's name
     email = data.get('email')  # Reviewer's email
     review_text = data.get('review')  # Review content
@@ -602,18 +605,18 @@ def submit_review():
     if not all([business_id, name, email, review_text, rating]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    # Check if business exists
+    # Check if the business exists
     business = BusinessInfo.query.get(business_id)
     if not business:
         return jsonify({"error": "Business not found"}), 404
 
-    # Check the owner of the business
+    # Link the review to the business owner
     user_id = business.user_id
 
     # Create and save the review
     review = Review(
         business_id=business_id,
-        user_id=user_id,  # Link the review to the owner
+        user_id=user_id,  # Associate the review with the business owner
         name=name,
         email=email,
         review_text=review_text,

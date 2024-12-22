@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BusinessCard from "./BusinessCard"; // Reuse the BusinessCard component to display businesses
 import BusinessModal from "./BusinessModal";
-
 const CustomerDashboard = () => {
   const [businesses, setBusinesses] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -107,6 +106,9 @@ const CustomerDashboard = () => {
     fetchBusinesses();
   }, []);
 
+
+  
+  
   return (
     <div className="flex flex-col min-h-screen spartan">
       {/* Heading Above Search Bar */}
@@ -228,7 +230,10 @@ const CustomerDashboard = () => {
       </main>
 
       {/* Modal */}
-      {showModal && <BusinessModal modalData={modalData} closeModal={closeModal} />}
+     {/* Modal */}
+     {showModal && <BusinessModal modalData={modalData} closeModal={closeModal} />}
+
+
     </div>
   );
 };
