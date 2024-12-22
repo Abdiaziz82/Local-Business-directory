@@ -24,6 +24,7 @@ const BusinessCard = ({ data, onEdit}) => {
   }
 
   const {
+    
     name,
     description,
     location,
@@ -49,6 +50,7 @@ const BusinessCard = ({ data, onEdit}) => {
       onClick={handleEdit} // Trigger edit action on click
     >
       <div className="relative bg-gray-100">
+       
         {logo ? (
           <img
             src={logo}
@@ -99,6 +101,7 @@ const BusinessCard = ({ data, onEdit}) => {
           )}
           {phone && (
             <div className="flex items-center">
+             
               <FaPhone className="mr-1 text-indigo-500" />
               <span>{phone}</span>
             </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import Swal from 'sweetalert2';
 
 // Utility function to retrieve a specific cookie value
 const getCookie = (cookieName) => {
@@ -29,20 +30,22 @@ const BusinessForm = ({ setBusinessData }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
       const token = getCookie("access_token"); // Retrieve the token from cookies
-
+  
       if (!token) {
         setLoading(false);
-        alert("Authentication token is missing. Please log in.");
+        Swal.fire("Authentication token is missing. Please log in.");
         return;
       }
-
+  
       const response = await fetch("http://127.0.0.1:5000/api/business-info", {
         method: "POST",
         headers: {
@@ -51,7 +54,7 @@ const BusinessForm = ({ setBusinessData }) => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.status === 401) {
         // Attempt to refresh the token
         const refreshResponse = await fetch("http://127.0.0.1:5000/refresh", {
@@ -60,11 +63,11 @@ const BusinessForm = ({ setBusinessData }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-
+  
         if (refreshResponse.ok) {
           const { access_token } = await refreshResponse.json();
           document.cookie = `access_token=${access_token}; path=/`; // Update the cookie
-
+  
           // Retry the original request
           const retryResponse = await fetch(
             "http://127.0.0.1:5000/api/business-info",
@@ -77,9 +80,9 @@ const BusinessForm = ({ setBusinessData }) => {
               body: JSON.stringify(formData),
             }
           );
-
+  
           if (!retryResponse.ok) throw new Error("Retry failed");
-          alert("Business information added successfully!");
+          Swal.fire("Success", "Business information added successfully!", "success");
         } else {
           throw new Error("Token refresh failed");
         }
@@ -87,9 +90,9 @@ const BusinessForm = ({ setBusinessData }) => {
         const errorData = await response.json();
         throw new Error(errorData.msg || "Server error");
       }
-
+  
       const data = await response.json();
-      alert("Business information added successfully!");
+      Swal.fire("Success", "Business information added successfully!", "success");
       setBusinessData(data);
     } catch (error) {
       console.error("Error:", error.message);
@@ -98,6 +101,7 @@ const BusinessForm = ({ setBusinessData }) => {
       setLoading(false);
     }
   };
+  
 
   return (
     <form

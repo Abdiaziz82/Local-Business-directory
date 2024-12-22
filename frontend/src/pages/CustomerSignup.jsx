@@ -34,6 +34,10 @@ const CustomerSignup = () => {
         icon: 'warning',
         title: 'Accept Terms',
         text: 'You must accept the terms and conditions to continue.',
+         customClass: {
+          title: 'swal-title',
+          htmlContainer: 'swal-text',
+        },
       });
       return;
     }
@@ -58,6 +62,10 @@ const CustomerSignup = () => {
           icon: 'success',
           title: 'Success!',
           text: 'Customer account created successfully!',
+          customClass: {
+            title: 'swal-title',
+            htmlContainer: 'swal-text',
+          },
           timer: 2000,
           didClose: () => {
             navigate('/login'); // Redirect to login page
