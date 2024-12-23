@@ -626,3 +626,29 @@ def submit_review():
     db.session.add(review)
     db.session.commit()
     return jsonify({"message": "Review submitted successfully"}), 201
+
+
+@main.route('/api/reviews', methods=['GET'])
+def get_reviews():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "User ID is missing"}), 400
+
+    # Fetch reviews for the given user_id, using the relationship between the Review and User models
+    reviews = Review.query.filter_by(user_id=user_id).all()
+
+    if not reviews:
+        return jsonify({"reviews": []}), 200
+
+    reviews_data = [
+        {
+            "name": review.name,
+            "email": review.email,
+            "text": review.review_text,
+            "rating": review.rating,
+        }
+        for review in reviews
+    ]
+
+    return jsonify({"reviews": reviews_data}), 200
