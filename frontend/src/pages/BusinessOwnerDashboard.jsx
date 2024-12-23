@@ -273,7 +273,7 @@ const handleBusinessDelete = async (businessId) => {
 {activeSection === "reviews" && (
           <div>
             <h2 className="text-2xl font-bold mb-4 text-center">Reviews</h2>
-            <ReviewTable /> {/* Display the ReviewTable */}
+            <ReviewTable  /> {/* Display the ReviewTable */}
           </div>
         )}
         
