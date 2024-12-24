@@ -630,17 +630,17 @@ def submit_review():
 
 @main.route('/api/reviews', methods=['GET'])
 def get_reviews():
-    user_id = request.args.get('user_id')
+    user_id = request.args.get('user_id')  # Fetch user_id dynamically from query parameter
 
     if not user_id:
         return jsonify({"error": "User ID is missing"}), 400
 
-    # Fetch reviews for the given user_id, using the relationship between the Review and User models
-    reviews = Review.query.filter_by(user_id=user_id).all()
+    reviews = Review.query.filter_by(user_id=user_id).all()  # Query reviews for that user_id
 
     if not reviews:
         return jsonify({"reviews": []}), 200
 
+    # Prepare the reviews data
     reviews_data = [
         {
             "name": review.name,
