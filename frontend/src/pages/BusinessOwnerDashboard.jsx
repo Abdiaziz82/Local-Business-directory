@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 
 
 const BusinessOwnerDashboard = () => {
+  
   const [activeSection, setActiveSection] = useState("form"); // 'form', 'listings', or 'edit'
   const [businessData, setBusinessData] = useState([]);
   const [userData, setUserData] = useState(null);
