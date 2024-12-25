@@ -3,7 +3,7 @@ import { FaClipboardList, FaEdit, FaTrashAlt } from "react-icons/fa"; // Import 
 import BusinessForm from "./BusinessForm";
 import BusinessCard from "./BusinessCard";
 import BusinessEditForm from "./BusinessEditForm";
-import TableComponent from "./TableComponent";
+import TableComponent from "./MessageTable";
 import ReviewTable from "./ReviewTable";
 import Swal from "sweetalert2";
 

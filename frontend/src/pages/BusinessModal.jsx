@@ -36,7 +36,6 @@ const BusinessModal = ({ modalData, closeModal }) => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
   
-    // Assume businessId is available in your state or props
     const businessId = modalData.id; // Replace with actual logic to get business ID dynamically
   
     const reviewPayload = {
@@ -64,32 +63,39 @@ const BusinessModal = ({ modalData, closeModal }) => {
       console.error("Error submitting review:", error);
     }
   };
-  
 
-  // Send the message data to the backend
+  // Send the message data to the backend (similar to review)
   const handleMessageSubmit = async (e) => {
     e.preventDefault();
+  
+    const businessId = modalData.id; // Replace with actual logic to get business ID dynamically
+  
+    const messagePayload = {
+      ...messageForm,
+      business_id: businessId, // Dynamically associate with the correct business
+    };
+  
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/messages", {
+      const response = await fetch("http://127.0.0.1:5000/api/user_messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(messageForm),
+        body: JSON.stringify(messagePayload),
       });
-
+  
       if (response.ok) {
         console.log("Message sent successfully");
-        // Optionally reset the form
-        setMessageForm({ name: "", message: "" });
+        setMessageForm({ name: "", message: "" }); // Clear the form after successful submission
       } else {
-        console.error("Error sending message");
+        const errorData = await response.json();
+        console.error("Error sending message:", errorData.error || "Unknown error");
       }
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
-
+  
   if (!modalData) return null;
 
   const mapUrl = coordinates
