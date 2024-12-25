@@ -591,6 +591,7 @@ def delete_business_info(business_id):
 
 
 @main.route('/api/reviews', methods=['POST'])
+
 def submit_review():
     data = request.json
     print("Received data:", data)  # Debug log to verify received data
@@ -628,27 +629,38 @@ def submit_review():
     return jsonify({"message": "Review submitted successfully"}), 201
 
 
-@main.route('/api/reviews', methods=['GET'])
-def get_reviews():
-    user_id = request.args.get('user_id')  # Fetch user_id dynamically from query parameter
-
-    if not user_id:
-        return jsonify({"error": "User ID is missing"}), 400
-
-    reviews = Review.query.filter_by(user_id=user_id).all()  # Query reviews for that user_id
-
+@main.route('/api/reviews/<int:user_id>', methods=['GET'])
+def get_user_reviews(user_id):
+    reviews = Review.query.filter_by(user_id=user_id).all()
     if not reviews:
-        return jsonify({"reviews": []}), 200
-
-    # Prepare the reviews data
+        return jsonify({"message": "No reviews found for this user"}), 404
     reviews_data = [
         {
             "name": review.name,
             "email": review.email,
             "text": review.review_text,
             "rating": review.rating,
+            "business_id": review.business_id
         }
         for review in reviews
     ]
+    return jsonify(reviews_data), 200
 
-    return jsonify({"reviews": reviews_data}), 200
+
+
+
+
+@main.route('/api/current_user', methods=['GET'])
+@jwt_required()  # Require JWT authentication
+def get_current_user():
+    try:
+        # Get the current user's identity from the JWT
+        user_identity = get_jwt_identity()
+        return jsonify({"user_id": user_identity['id']}), 200
+    except Exception as e:
+        print(f"Error getting current user: {e}")
+        return jsonify({"message": "User not authenticated"}), 401
+
+
+
+

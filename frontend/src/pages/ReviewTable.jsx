@@ -1,63 +1,66 @@
 import React, { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 
+// Function to get the JWT token from cookies
+const getJwtFromCookies = () => {
+  const cookies = document.cookie.split("; ");
+  const jwtCookie = cookies.find((cookie) => cookie.startsWith("access_token="));
+  return jwtCookie ? jwtCookie.split("=")[1] : null;
+};
+
 const ReviewTable = () => {
   const [reviews, setReviews] = useState([]);
-  const [userId, setUserId] = useState(null); // State for storing userId
-  const [error, setError] = useState(null); // Error state
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch the current user ID dynamically
-    const fetchUserId = async () => {
+    const fetchReviews = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/api/current_user', {
-          method: 'GET',
-          credentials: 'include', // Send cookies with request
+        const token = getJwtFromCookies(); // Get JWT token from cookies
+
+        if (!token) {
+          setError("JWT token not found in cookies. Redirecting to login.");
+          return;
+        }
+
+        // Step 1: Get the current user's ID
+        const userResponse = await fetch("http://127.0.0.1:5000/api/current_user", {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
-  
-        const data = await response.json();
-        if (response.ok) {
-          setUserId(data.user_id); // Set the userId state
+
+        const userData = await userResponse.json();
+        if (!userResponse.ok) {
+          setError("Failed to fetch user information. Please log in again.");
+          return;
+        }
+
+        const userId = userData.user_id;
+
+        // Step 2: Fetch reviews for the current user
+        const reviewsResponse = await fetch(`http://127.0.0.1:5000/api/reviews/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const reviewsData = await reviewsResponse.json();
+        if (reviewsResponse.ok) {
+          setReviews(reviewsData);
         } else {
-          setError("User not authenticated");
+          setError(reviewsData.message || "Error fetching reviews.");
         }
       } catch (error) {
-        setError("Error fetching userId");
+        setError("An error occurred while fetching reviews.");
       }
     };
-  
-    if (!userId) {
-      fetchUserId();
-    } else {
-      // Fetch reviews after getting the userId
-      const fetchReviews = async () => {
-        try {
-          const response = await fetch(`http://127.0.0.1:5000/api/reviews/${userId}`, {
-            method: 'GET',
-            credentials: 'include', // Send cookies with request
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-  
-          const data = await response.json();
-          if (response.ok) {
-            setReviews(data);  // Update the reviews state with the fetched data
-          } else {
-            setError("Error fetching reviews");
-          }
-        } catch (error) {
-          setError("Error fetching reviews");
-        }
-      };
-  
-      fetchReviews();
-    }
-  }, [userId]);
-  
+
+    fetchReviews();
+  }, []);
 
   return (
     <div className="overflow-x-auto">
@@ -81,7 +84,10 @@ const ReviewTable = () => {
                 <td className="px-4 py-2 border border-gray-300">{review.text}</td>
                 <td className="px-4 py-2 border border-gray-300">{review.rating}</td>
                 <td className="px-4 py-2 border border-gray-300 text-center">
-                  <FaTrashAlt className="text-red-500 cursor-pointer hover:text-red-700" onClick={() => console.log("Delete review at index:", index)} />
+                  <FaTrashAlt
+                    className="text-red-500 cursor-pointer hover:text-red-700"
+                    onClick={() => console.log("Delete review at index:", index)}
+                  />
                 </td>
               </tr>
             ))
