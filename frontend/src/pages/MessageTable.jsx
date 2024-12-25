@@ -83,7 +83,7 @@ const MessageTable = () => {
     <div className="overflow-x-auto w-full mx-auto my-6">
       {error && <p className="text-red-500 text-center my-4">{error}</p>}
       <table className="table-auto w-full border-collapse text-sm md:text-base border border-gray-300">
-        <thead className="bg-indigo-600 text-white">
+        <thead className="bg-indigo-700 text-white">
           <tr>
             <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Name</th>
             <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Message</th>
