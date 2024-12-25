@@ -60,12 +60,14 @@ class Review(db.Model):
         return f"Review(name='{self.name}', business='{self.business.name}', rating='{self.rating}')"
     
     
-# class Message(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     business_info_id = db.Column(db.Integer, db.ForeignKey('business_info.id'), nullable=False)
-#     name = db.Column(db.String(100))
-#     message = db.Column(db.String(500))
-#     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+class UserMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    business_id = db.Column(db.Integer, db.ForeignKey('business_info.id'), nullable=False)  # Business being messaged
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # User sending the message
+    name = db.Column(db.String(100), nullable=False)  # Name of the user
+    message_text = db.Column(db.Text, nullable=False)  # Message content
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # Message timestamp
 
-#     def __repr__(self):
-#         return f"Message('{self.name}')"
+    # Relationships
+    business = db.relationship('BusinessInfo', backref='user_messages')  # Link to the business
+    user = db.relationship('User', backref='user_messages')  # Link to the user

@@ -60,36 +60,24 @@ const MessageTable = () => {
     fetchMessages();
   }, []);
 
-  const deleteMessage = async (messageId) => {
-    try {
-      const token = getJwtFromCookies();
+  const deleteMessage = (messageId) => {
+    console.log("Deleting message with ID:", messageId);
   
-      if (!token) {
-        setError("JWT token not found. Please log in again.");
-        return;
-      }
-  
-      // Send DELETE request to backend
-      const response = await fetch(`http://127.0.0.1:5000/api/delete_message/${messageId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        // If successful, update the state to remove the message
-        setMessages(messages.filter((message) => message.id !== messageId));
-      } else {
-        setError(data.error || "Error deleting message.");
-      }
-    } catch (error) {
-      setError("An error occurred while deleting the message.");
-    }
+    fetch(`http://127.0.0.1:5000/api/delete_user_message/${messageId}`, {
+      method: "DELETE",
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Message deleted:", data);
+      // Optionally, you can filter the message out of the messages state here to reflect the changes in the UI
+    })
+    .catch((error) => {
+      console.error("Error deleting message:", error);
+    });
   };
+  
+  
+  
   
   return (
     <div className="overflow-x-auto w-full mx-auto my-6">
@@ -103,29 +91,33 @@ const MessageTable = () => {
           </tr>
         </thead>
         <tbody>
-          {messages.length > 0 ? (
-            messages.map((message, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td className="px-6 py-4 border-r border-gray-300">{message.name}</td>
-                <td className="px-6 py-4 border-r border-gray-300">{message.message_text}</td>
-                <td className="px-6 py-4 text-center">
-                  <div className="flex justify-center items-end h-full">
-                    <FaTrashAlt
-                      className="text-red-500 cursor-pointer hover:text-red-700"
-                      onClick={() => deleteMessage(message.id)} // Call deleteMessage function on click
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td className="px-6 py-4 text-center" colSpan="3">
-                No messages available.
-              </td>
-            </tr>
-          )}
-        </tbody>
+  {messages.length > 0 ? (
+    messages.map((message) => {
+      return (
+        <tr key={message.id} className="hover:bg-gray-100">
+          <td className="px-6 py-4 border-r border-gray-300">{message.name}</td>
+          <td className="px-6 py-4 border-r border-gray-300">{message.message_text}</td>
+          <td className="px-6 py-4 text-center">
+            <FaTrashAlt
+              className="text-red-500 cursor-pointer hover:text-red-700"
+              onClick={() => deleteMessage(message.id)}  // Pass the correct message ID
+            />
+          </td>
+        </tr>
+      );
+    })
+  ) : (
+    <tr>
+      <td className="px-6 py-4 text-center" colSpan="3">
+        No messages available.
+      </td>
+    </tr>
+  )}
+</tbody>
+
+
+
+
       </table>
     </div>
   );

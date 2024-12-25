@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session, make_response, url_for, current_app
 from app import db, bcrypt, mail  # Ensure `mail` instance is available here
-from app.models import User, BusinessInfo,Review
+from app.models import User, BusinessInfo,Review , UserMessage
 from flask_cors import CORS ,cross_origin
 from flask_mail import Message
 from flask_login import login_user, current_user, logout_user ,login_required
@@ -648,8 +648,6 @@ def get_user_reviews(user_id):
 
 
 
-
-
 @main.route('/api/current_user', methods=['GET'])
 @jwt_required()  # Require JWT authentication
 def get_current_user():
@@ -660,6 +658,81 @@ def get_current_user():
     except Exception as e:
         print(f"Error getting current user: {e}")
         return jsonify({"message": "User not authenticated"}), 401
+
+
+
+@main.route('/api/user_messages', methods=['POST'])
+def post_user_message():
+    try:
+        data = request.json
+        print("Received data:", data)  # Debug log to verify received data
+
+        business_id = data.get('business_id')  # Business ID passed from frontend
+        name = data.get('name')  # User's name
+        message_text = data.get('message')  # Message content
+
+        # Validate inputs
+        if not all([business_id, name, message_text]):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Check if the business exists
+        business = BusinessInfo.query.get(business_id)
+        if not business:
+            return jsonify({"error": "Business not found"}), 404
+
+        # Link the message to the business owner (user_id of the business owner)
+        user_id = business.user_id
+
+        # Create and save the message
+        new_message = UserMessage(
+            business_id=business_id,
+            user_id=user_id,  # Associate the message with the business owner
+            name=name,
+            message_text=message_text
+        )
+
+        db.session.add(new_message)
+        db.session.commit()
+
+        return jsonify({"message": "Message sent successfully"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@main.route('/api/user_messages/<int:user_id>', methods=['GET'])
+def get_user_messages(user_id):
+    messages = UserMessage.query.filter_by(user_id=user_id).all()
+    if not messages:
+        return jsonify({"message": "No messages found for this user"}), 404
+    messages_data = [
+        {
+            "id": message.id,  # Include the message id here
+            "name": message.name,
+            "message_text": message.message_text
+        }
+        for message in messages
+    ]
+    return jsonify(messages_data), 200
+
+@main.route('/api/delete_user_message/<int:user_message_id>', methods=['DELETE'])
+def delete_user_message(user_message_id):
+    try:
+        # Find the message by its ID
+        message = UserMessage.query.get(user_message_id)
+
+        if not message:
+            return jsonify({"error": "Message not found"}), 404
+
+        # Delete the message from the database
+        db.session.delete(message)
+        db.session.commit()
+
+        return jsonify({"message": "Message deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
 
 
 
