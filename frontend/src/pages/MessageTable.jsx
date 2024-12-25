@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaTrashAlt } from "react-icons/fa";
 
 // Function to get the JWT token from cookies
 const getJwtFromCookies = () => {
@@ -62,26 +63,33 @@ const MessageTable = () => {
   }, []);
 
   return (
-    <div className="overflow-x-auto">
-      {error && <p className="text-red-500">{error}</p>}
-      <table className="table-auto w-full border border-gray-200 text-sm md:text-base">
+    <div className="overflow-x-auto w-full mx-auto my-6">
+      {error && <p className="text-red-500 text-center my-4">{error}</p>}
+      <table className="table-auto w-full border-collapse text-sm md:text-base">
         <thead className="bg-indigo-600 text-white">
           <tr>
-            <th className="px-4 py-2 border border-gray-300 text-left">Name</th>
-            <th className="px-4 py-2 border border-gray-300 text-left">Message</th>
+            <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Name</th>
+            <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Message</th>
+            <th className="px-6 py-4 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           {messages.length > 0 ? (
             messages.map((message, index) => (
               <tr key={index} className="hover:bg-gray-100">
-                <td className="px-4 py-2 border border-gray-300">{message.name}</td>
-                <td className="px-4 py-2 border border-gray-300">{message.message_text}</td>
+                <td className="px-6 py-4 border-r border-gray-300">{message.name}</td>
+                <td className="px-6 py-4 border-r border-gray-300">{message.message_text}</td>
+                <td className="px-6 py-4 text-center">
+                  <FaTrashAlt
+                    className="text-red-500 cursor-pointer hover:text-red-700"
+                    onClick={() => console.log("Delete message at index:", index)}
+                  />
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td className="px-4 py-2 border border-gray-300 text-center" colSpan="2">
+              <td className="px-6 py-4 text-center" colSpan="3">
                 No messages available.
               </td>
             </tr>
