@@ -22,7 +22,6 @@ const MessageTable = () => {
           return;
         }
 
-        // Step 1: Get the current user's ID
         const userResponse = await fetch("http://127.0.0.1:5000/api/current_user", {
           method: "GET",
           headers: {
@@ -39,7 +38,6 @@ const MessageTable = () => {
 
         const userId = userData.user_id;
 
-        // Step 2: Fetch messages for the current user
         const messagesResponse = await fetch(`http://127.0.0.1:5000/api/user_messages/${userId}`, {
           method: "GET",
           headers: {
@@ -62,15 +60,46 @@ const MessageTable = () => {
     fetchMessages();
   }, []);
 
+  const deleteMessage = async (messageId) => {
+    try {
+      const token = getJwtFromCookies();
+  
+      if (!token) {
+        setError("JWT token not found. Please log in again.");
+        return;
+      }
+  
+      // Send DELETE request to backend
+      const response = await fetch(`http://127.0.0.1:5000/api/delete_message/${messageId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // If successful, update the state to remove the message
+        setMessages(messages.filter((message) => message.id !== messageId));
+      } else {
+        setError(data.error || "Error deleting message.");
+      }
+    } catch (error) {
+      setError("An error occurred while deleting the message.");
+    }
+  };
+  
   return (
     <div className="overflow-x-auto w-full mx-auto my-6">
       {error && <p className="text-red-500 text-center my-4">{error}</p>}
-      <table className="table-auto w-full border-collapse text-sm md:text-base">
+      <table className="table-auto w-full border-collapse text-sm md:text-base border border-gray-300">
         <thead className="bg-indigo-600 text-white">
           <tr>
             <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Name</th>
             <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Message</th>
-            <th className="px-6 py-4 text-center">Actions</th>
+            <th className="px-6 py-4 text-center">Action</th> {/* Changed to 'Action' */}
           </tr>
         </thead>
         <tbody>
@@ -80,10 +109,12 @@ const MessageTable = () => {
                 <td className="px-6 py-4 border-r border-gray-300">{message.name}</td>
                 <td className="px-6 py-4 border-r border-gray-300">{message.message_text}</td>
                 <td className="px-6 py-4 text-center">
-                  <FaTrashAlt
-                    className="text-red-500 cursor-pointer hover:text-red-700"
-                    onClick={() => console.log("Delete message at index:", index)}
-                  />
+                  <div className="flex justify-center items-end h-full">
+                    <FaTrashAlt
+                      className="text-red-500 cursor-pointer hover:text-red-700"
+                      onClick={() => deleteMessage(message.id)} // Call deleteMessage function on click
+                    />
+                  </div>
                 </td>
               </tr>
             ))
