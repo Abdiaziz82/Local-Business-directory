@@ -630,21 +630,22 @@ def submit_review():
 
 
 @main.route('/api/reviews/<int:user_id>', methods=['GET'])
-def get_user_reviews(user_id):
+def get_reviews(user_id):
     reviews = Review.query.filter_by(user_id=user_id).all()
     if not reviews:
         return jsonify({"message": "No reviews found for this user"}), 404
     reviews_data = [
         {
+            "id": review.id,  # Include review ID
             "name": review.name,
             "email": review.email,
             "text": review.review_text,
-            "rating": review.rating,
-            "business_id": review.business_id
+            "rating": review.rating
         }
         for review in reviews
     ]
     return jsonify(reviews_data), 200
+
 
 
 
@@ -733,6 +734,23 @@ def delete_user_message(user_message_id):
 
 
 
+
+@main.route('/api/reviews/<int:review_id>', methods=['DELETE'])
+def delete_review(review_id):
+    try:
+        # Find the review by its ID
+        review = Review.query.get(review_id)
+
+        if not review:
+            return jsonify({"error": "Review not found"}), 404
+
+        # Delete the review from the database
+        db.session.delete(review)
+        db.session.commit()
+
+        return jsonify({"message": "Review deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 
