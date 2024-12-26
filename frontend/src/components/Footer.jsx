@@ -87,7 +87,7 @@ function Footer() {
                 <Link to="/about" className="hover:text-white">About Us</Link>
               </li>
               <li>
-                <Link to="/businesses" className="hover:text-white">Businesses</Link>
+                <Link to="/businesses" className="hover:text-white">FAQS</Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-white">Contact</Link>

@@ -118,7 +118,8 @@ const ReviewTable = () => {
             <th className="px-4 py-2 border border-gray-300 text-left">Email</th>
             <th className="px-4 py-2 border border-gray-300 text-left">Review Text</th>
             <th className="px-4 py-2 border border-gray-300 text-left">Rating</th>
-            <th className="px-4 py-2 border border-gray-300 text-center">Actions</th>
+            <th className="px-4 py-4 text-center w-20">Action</th>
+
           </tr>
         </thead>
         <tbody>
@@ -129,12 +130,19 @@ const ReviewTable = () => {
                 <td className="px-4 py-2 border border-gray-300">{review.email}</td>
                 <td className="px-4 py-2 border border-gray-300">{review.text}</td>
                 <td className="px-4 py-2 border border-gray-300">{review.rating}</td>
-                <td className="px-4 py-2 border border-gray-300 text-center">
-                  <FaTrashAlt
-                    className="text-red-500 cursor-pointer hover:text-red-700"
-                    onClick={() => handleDelete(review.id)}
-                  />
-                </td>
+                <td className="px-2 py-2 border border-gray-300 text-center w-16">
+  <div className="relative group inline-block">
+    <FaTrashAlt
+      className="text-red-500 cursor-pointer hover:text-red-700"
+      onClick={() => handleDelete(review.id)}
+    />
+    {/* Tooltip */}
+    <div className="absolute hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2">
+      Delete Review
+    </div>
+  </div>
+</td>
+
               </tr>
             ))
           ) : (

@@ -22,6 +22,7 @@ import ContactUs from './pages/ContactUs';
 import TermsAndConditions from './pages/TermsAndConditions';
 import TestimonialCard from './components/TestimonialCard';
 import Features from './components/Features';
+import BlogsPage from './pages/BlogsPage';
 
 
 
@@ -112,7 +113,7 @@ function App() {
          <Route path="/forgot-password" element={<ForgetPassword />} />
          <Route path="/reset-password" element={<ResetPasswordForm />} />
         
-        <Route path="/browse" element={<Login />} />
+        <Route path="/browse" element={<BlogsPage />} />
         <Route path="/add-business" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<ContactUs />} />

@@ -113,7 +113,8 @@ const MessageTable = () => {
           <tr>
             <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Name</th>
             <th className="px-6 py-4 border-r-2 border-gray-300 text-left">Message</th>
-            <th className="px-6 py-4 text-center">Action</th>
+            <th className="px-4 py-4 text-center w-20">Action</th>
+
           </tr>
         </thead>
         <tbody>
@@ -122,12 +123,20 @@ const MessageTable = () => {
               <tr key={message.id} className="hover:bg-gray-100">
                 <td className="px-6 py-4 border-r border-gray-300">{message.name}</td>
                 <td className="px-6 py-4 border-r border-gray-300">{message.message_text}</td>
-                <td className="px-6 py-4 text-center">
-                  <FaTrashAlt
-                    className="text-red-500 cursor-pointer hover:text-red-700"
-                    onClick={() => deleteMessage(message.id)}
-                  />
-                </td>
+                <td className="px-4 py-4 text-center w-20">
+  <div className="relative group inline-block">
+    <FaTrashAlt
+      className="text-red-500 cursor-pointer hover:text-red-700"
+      onClick={() => deleteMessage(message.id)}
+    />
+    {/* Tooltip */}
+    <div className="absolute hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2">
+      Delete Message
+    </div>
+  </div>
+</td>
+
+
               </tr>
             ))
           ) : (
