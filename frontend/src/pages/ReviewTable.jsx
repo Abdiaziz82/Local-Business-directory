@@ -64,35 +64,47 @@ const ReviewTable = () => {
   }, []);
 
   const handleDelete = async (reviewId) => {
-    try {
-      const token = getJwtFromCookies();
+    const confirmation = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this review? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-      if (!token) {
-        Swal.fire("Error", "JWT token not found in cookies. Please log in again.", "error");
-        return;
+    if (confirmation.isConfirmed) {
+      try {
+        const token = getJwtFromCookies();
+
+        if (!token) {
+          Swal.fire("Error", "JWT token not found in cookies. Please log in again.", "error");
+          return;
+        }
+
+        // Delete review from the backend
+        const response = await fetch(`http://127.0.0.1:5000/api/reviews/${reviewId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          // Update the state to remove the deleted review
+          setReviews(reviews.filter((review) => review.id !== reviewId));
+
+          // Display success message
+          Swal.fire("Deleted!", "You have deleted the review successfully.", "success");
+        } else {
+          const responseData = await response.json();
+          Swal.fire("Error", responseData.message || "Failed to delete the review.", "error");
+        }
+      } catch (error) {
+        Swal.fire("Error", "An unexpected error occurred.", "error");
       }
-
-      // Delete review from the backend
-      const response = await fetch(`http://127.0.0.1:5000/api/reviews/${reviewId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        // Update the state to remove the deleted review
-        setReviews(reviews.filter((review) => review.id !== reviewId));
-
-        // Display success message
-        Swal.fire("Deleted!", "You have deleted the review successfully.", "success");
-      } else {
-        const responseData = await response.json();
-        Swal.fire("Error", responseData.message || "Failed to delete the review.", "error");
-      }
-    } catch (error) {
-      Swal.fire("Error", "An unexpected error occurred.", "error");
     }
   };
 
@@ -118,7 +130,7 @@ const ReviewTable = () => {
                 <td className="px-4 py-2 border border-gray-300">{review.text}</td>
                 <td className="px-4 py-2 border border-gray-300">{review.rating}</td>
                 <td className="px-4 py-2 border border-gray-300 text-center">
-                  <FaTrashAlt 
+                  <FaTrashAlt
                     className="text-red-500 cursor-pointer hover:text-red-700"
                     onClick={() => handleDelete(review.id)}
                   />

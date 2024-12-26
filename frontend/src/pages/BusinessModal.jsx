@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+
 
 const BusinessModal = ({ modalData, closeModal }) => {
   const [coordinates, setCoordinates] = useState(null);
@@ -33,6 +35,7 @@ const BusinessModal = ({ modalData, closeModal }) => {
   }, [modalData]);
 
   // Send the review data to the backend
+ 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
   
@@ -53,18 +56,47 @@ const BusinessModal = ({ modalData, closeModal }) => {
       });
   
       if (response.ok) {
-        console.log("Review submitted successfully");
         setReviewForm({ name: "", email: "", review: "", rating: 0 });
+  
+        // Show success alert using SweetAlert
+        await Swal.fire({
+          title: "Success!",
+          text: "Your review has been submitted successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        });
       } else {
         const errorData = await response.json();
         console.error("Error submitting review:", errorData.error || "Unknown error");
+  
+        // Optionally, you can show an error alert
+        await Swal.fire({
+          title: "Error!",
+          text: errorData.error || "An error occurred while submitting your review.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       console.error("Error submitting review:", error);
+  
+      // Show error alert using SweetAlert
+      await Swal.fire({
+        title: "Error!",
+        text: "An error occurred while submitting your review. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        confirmButtonText: "OK",
+      });
     }
   };
+  
 
   // Send the message data to the backend (similar to review)
+ 
+
   const handleMessageSubmit = async (e) => {
     e.preventDefault();
   
@@ -85,16 +117,43 @@ const BusinessModal = ({ modalData, closeModal }) => {
       });
   
       if (response.ok) {
-        console.log("Message sent successfully");
         setMessageForm({ name: "", message: "" }); // Clear the form after successful submission
+  
+        // Show success alert using SweetAlert
+        await Swal.fire({
+          title: "Success!",
+          text: "Your message has been sent successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        });
       } else {
         const errorData = await response.json();
         console.error("Error sending message:", errorData.error || "Unknown error");
+  
+        // Show error alert using SweetAlert
+        await Swal.fire({
+          title: "Error!",
+          text: errorData.error || "An error occurred while sending your message.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       console.error("Error sending message:", error);
+  
+      // Show error alert using SweetAlert
+      await Swal.fire({
+        title: "Error!",
+        text: "An error occurred while sending your message. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+        confirmButtonText: "OK",
+      });
     }
   };
+  
   
   if (!modalData) return null;
 
