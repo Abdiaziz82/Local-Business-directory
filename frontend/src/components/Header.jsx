@@ -45,9 +45,9 @@ const Header = () => {
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-800 hover:text-indigo-600 font-medium">Home</Link>
             <Link to="/about" className="text-gray-800 hover:text-indigo-600 font-medium">About</Link>
-            <Link to="/browse" className="text-gray-800 hover:text-indigo-600 font-medium">Blogs</Link>
+            
             <Link to="/add-business" className="text-gray-800 hover:text-indigo-600 font-medium">Browse Business</Link>
-         
+            <Link to="/browse" className="text-gray-800 hover:text-indigo-600 font-medium">Blogs</Link>
             <Link to="/contact" className="text-gray-800 hover:text-indigo-600 font-medium">Contact Us</Link>
           </div>
           

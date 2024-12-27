@@ -14,7 +14,7 @@ const blogs = [
     id: 2,
     title: "Top 10 Restaurants in Your Area",
     description: "Explore the best dining options near you.",
-    image: "https://via.placeholder.com/600x400",
+    image: "https://cdn.pixabay.com/photo/2018/03/03/20/02/laptop-3196481_1280.jpg",
     date: "December 18, 2024",
     category: "Food & Drink",
   },
@@ -22,7 +22,7 @@ const blogs = [
     id: 3,
     title: "How to Leverage Social Media for Local Marketing",
     description: "Maximize your online presence with these social media strategies.",
-    image: "https://via.placeholder.com/600x400",
+    image: "https://cdn.pixabay.com/photo/2022/01/20/17/51/office-desk-6952919_1280.jpg",
     date: "December 15, 2024",
     category: "Marketing",
   },
@@ -49,7 +49,7 @@ const BlogsPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen spartan">
       {/* Hero Section */}
-      <header className="bg-white text-indigo-700 py-20  pt-40 px-6 text-center">
+      <header className="bg-white text-gray-800 py-20  pt-40 px-6 text-center">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4">
           Our Blog
         </h1>
@@ -65,7 +65,7 @@ const BlogsPage = () => {
           placeholder="Search Blogs..."
           value={searchTerm}
           onChange={handleSearch}
-          className="w-full p-4 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
+          className="w-full p-4 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-600 focus:outline-none text-gray-700"
         />
       </div>
 
@@ -84,7 +84,7 @@ const BlogsPage = () => {
           className="w-full h-56 object-cover"
         />
         <div className="p-6">
-          <span className="text-sm text-indigo-600 font-semibold">
+          <span className="text-sm text-indigo-700 font-semibold">
             {blog.category}
           </span>
           <h2 className="mt-2 text-xl font-bold text-gray-800 truncate">
@@ -95,7 +95,7 @@ const BlogsPage = () => {
           </p>
           <div className="mt-4 text-gray-500 text-sm">{blog.date}</div>
           <Link to={`/blog/${blog.id}`}>
-  <button className="mt-4 inline-block bg-blue-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+  <button className="mt-4 inline-block bg-indigo-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
     Read More
   </button>
 </Link>

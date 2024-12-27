@@ -36,7 +36,7 @@ const blogs = [
     title: "Top 10 Restaurants in Your Area",
     description: "Explore the best dining options near you.",
     fullContent: "<p>Full article content for restaurant recommendations.</p>",
-    image: "https://via.placeholder.com/600x400",
+    image: "https://cdn.pixabay.com/photo/2018/03/03/20/02/laptop-3196481_1280.jpg",
     date: "December 18, 2024",
     category: "Food & Drink",
   },
@@ -45,7 +45,7 @@ const blogs = [
     title: "How to Leverage Social Media for Local Marketing",
     description: "Maximize your online presence with these social media strategies.",
     fullContent: "<p>Full article content on leveraging social media for local marketing.</p>",
-    image: "https://via.placeholder.com/600x400",
+    image: "https://cdn.pixabay.com/photo/2022/01/20/17/51/office-desk-6952919_1280.jpg",
     date: "December 15, 2024",
     category: "Marketing",
   },
@@ -63,11 +63,12 @@ const BlogDetailPage = () => {
   return (
     <div className="container mx-auto mt-12 px-4 lg:px-20 spartan">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <img
-          src={blog.image}
-          alt={blog.title}
-          className="w-full h-56 object-cover"
-        />
+      <img
+  src={blog.image}
+  alt={blog.title}
+  className="w-full h-56 object-cover mt-24"
+/>
+
         <div className="p-6">
           <span className="text-sm text-indigo-600 font-semibold">
             {blog.category}
