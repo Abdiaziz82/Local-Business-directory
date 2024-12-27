@@ -23,6 +23,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import TestimonialCard from './components/TestimonialCard';
 import Features from './components/Features';
 import BlogsPage from './pages/BlogsPage';
+import BlogDetail from './pages/BlogDetail';
 
 
 
@@ -114,6 +115,7 @@ function App() {
          <Route path="/reset-password" element={<ResetPasswordForm />} />
         
         <Route path="/browse" element={<BlogsPage />} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/add-business" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<ContactUs />} />

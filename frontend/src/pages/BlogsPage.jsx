@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const blogs = [
   {
@@ -68,42 +69,46 @@ const BlogsPage = () => {
         />
       </div>
 
-      {/* Blog Cards */}
-      <div className="container mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 lg:px-20">
-        {filteredBlogs.length > 0 ? (
-          filteredBlogs.map((blog) => (
-            <div
-              key={blog.id}
-              className="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden transition-shadow duration-300"
-            >
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-6">
-                <span className="text-sm text-indigo-600 font-semibold">
-                  {blog.category}
-                </span>
-                <h2 className="mt-2 text-xl font-bold text-gray-800 truncate">
-                  {blog.title}
-                </h2>
-                <p className="mt-2 text-gray-600 line-clamp-3">
-                  {blog.description}
-                </p>
-                <div className="mt-4 text-gray-500 text-sm">{blog.date}</div>
-                <button className="mt-4 inline-block bg-blue-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
-                  Read More
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="col-span-1 md:col-span-2 lg:col-span-3 text-center text-gray-600 text-lg">
-            No blogs found matching your search.
+     
+     {/* Blog Cards */}
+<div className="container mx-auto mt-12 mb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 lg:px-20">
+  {filteredBlogs.length > 0 ? (
+    filteredBlogs.map((blog) => (
+      <div
+        key={blog.id}
+        className="bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden transition-shadow duration-300"
+      >
+        <img
+          src={blog.image}
+          alt={blog.title}
+          className="w-full h-56 object-cover"
+        />
+        <div className="p-6">
+          <span className="text-sm text-indigo-600 font-semibold">
+            {blog.category}
+          </span>
+          <h2 className="mt-2 text-xl font-bold text-gray-800 truncate">
+            {blog.title}
+          </h2>
+          <p className="mt-2 text-gray-600 line-clamp-3">
+            {blog.description}
           </p>
-        )}
+          <div className="mt-4 text-gray-500 text-sm">{blog.date}</div>
+          <Link to={`/blog/${blog.id}`}>
+  <button className="mt-4 inline-block bg-blue-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-blue-700 transition duration-200">
+    Read More
+  </button>
+</Link>
+        </div>
       </div>
+    ))
+  ) : (
+    <p className="col-span-1 md:col-span-2 lg:col-span-3 text-center text-gray-600 text-lg">
+      No blogs found matching your search.
+    </p>
+  )}
+</div>
+
 
       {/* Footer */}
      

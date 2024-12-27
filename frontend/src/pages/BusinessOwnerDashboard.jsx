@@ -196,6 +196,7 @@ const handleBusinessDelete = async (businessId) => {
         >
           <FaEdit className="mr-3 text-purple-500" /> Edit
         </button>
+        
 
         {/* Messages Button */}
         <button
