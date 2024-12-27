@@ -25,7 +25,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 main = Blueprint('main', __name__)
-CORS(main, supports_credentials=True, origins="http://localhost:5173")
+CORS(main, supports_credentials=True, origins="http://localhost:5175")
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -366,7 +366,7 @@ def reset_password():
 
 
 @main.route('/api/business-info', methods=['POST'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5175", supports_credentials=True)
 @jwt_required()
 def save_business_info():
     try:
@@ -424,7 +424,7 @@ def save_business_info():
     
     
 @main.route('/api/business-info', methods=['GET'])
-@cross_origin(origins="http://localhost:5173", supports_credentials=True)
+@cross_origin(origins="http://localhost:5175", supports_credentials=True)
 @jwt_required()
 def get_user_business_info():
     try:

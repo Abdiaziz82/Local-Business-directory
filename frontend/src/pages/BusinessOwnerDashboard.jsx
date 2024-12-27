@@ -6,6 +6,8 @@ import BusinessEditForm from "./BusinessEditForm";
 import TableComponent from "./MessageTable";
 import ReviewTable from "./ReviewTable";
 import Swal from "sweetalert2";
+import { FaSignOutAlt } from "react-icons/fa";
+
 
 
 const BusinessOwnerDashboard = () => {
@@ -148,6 +150,11 @@ const handleBusinessDelete = async (businessId) => {
   }
 };
  
+const handleLogout = () => {
+  // Clear user session or token logic here
+  console.log("User logged out");
+};
+
   // Handle section change
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -165,69 +172,77 @@ const handleBusinessDelete = async (businessId) => {
     <div className="flex flex-col lg:flex-row min-h-screen spartan">
       {/* Sidebar */}
       <aside className="lg:w-1/4 w-full lg:h-screen bg-gray-900 text-white flex flex-col items-center py-8 lg:py-16 space-y-6 pt-20 lg:pt-28">
-        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+  <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-        {/* Filling Form Button */}
-        <button
-          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
-            activeSection === "form" ? "bg-gray-700" : ""
-          }`}
-          onClick={() => setActiveSection("form")}
-        >
-          <FaEdit className="mr-3 text-indigo-600" /> Filling Form
-        </button>
+  {/* Filling Form Button */}
+  <button
+    className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+      activeSection === "form" ? "bg-gray-700" : ""
+    }`}
+    onClick={() => setActiveSection("form")}
+  >
+    <FaEdit className="mr-3 text-indigo-600" /> Filling Form
+  </button>
 
-        {/* Your Listings Button */}
-        <button
-          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
-            activeSection === "listings" ? "bg-gray-700" : ""
-          }`}
-          onClick={() => setActiveSection("listings")}
-        >
-          <FaClipboardList className="mr-3 text-indigo-600" /> Your Listings
-        </button>
+  {/* Your Listings Button */}
+  <button
+    className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+      activeSection === "listings" ? "bg-gray-700" : ""
+    }`}
+    onClick={() => setActiveSection("listings")}
+  >
+    <FaClipboardList className="mr-3 text-indigo-600" /> Your Listings
+  </button>
 
-        {/* Edit Button */}
-        <button
-          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
-            activeSection === "edit" ? "bg-gray-700" : ""
-          }`}
-          onClick={() => setActiveSection("edit")}
-        >
-          <FaEdit className="mr-3 text-purple-500" /> Edit
-        </button>
-        
+  {/* Edit Button */}
+  <button
+    className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+      activeSection === "edit" ? "bg-gray-700" : ""
+    }`}
+    onClick={() => setActiveSection("edit")}
+  >
+    <FaEdit className="mr-3 text-purple-500" /> Edit
+  </button>
 
-        {/* Messages Button */}
-        <button
-          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
-            activeSection === "messages" ? "bg-gray-700" : ""
-          }`}
-          onClick={() => setActiveSection("messages")}
-        >
-          <FaClipboardList className="mr-3 text-green-500" /> Messages
-        </button>
+  {/* Messages Button */}
+  <button
+    className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+      activeSection === "messages" ? "bg-gray-700" : ""
+    }`}
+    onClick={() => setActiveSection("messages")}
+  >
+    <FaClipboardList className="mr-3 text-green-500" /> Messages
+  </button>
 
-        {/* Reviews Button */}
-        <button
-          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
-            activeSection === "reviews" ? "bg-gray-700" : ""
-          }`}
-          onClick={() => setActiveSection("reviews")}
-        >
-          <FaClipboardList className="mr-3 text-yellow-500" /> Reviews
-        </button>
+  {/* Reviews Button */}
+  <button
+    className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+      activeSection === "reviews" ? "bg-gray-700" : ""
+    }`}
+    onClick={() => setActiveSection("reviews")}
+  >
+    <FaClipboardList className="mr-3 text-yellow-500" /> Reviews
+  </button>
 
-        {/* Delete Button */}
-        <button
-          className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
-            activeSection === "delete" ? "bg-gray-700" : ""
-          }`}
-          onClick={() => setActiveSection("delete")}
-        >
-          <FaTrashAlt className="mr-3 text-red-500" /> Delete
-        </button>
-      </aside>
+  {/* Delete Button */}
+  <button
+    className={`flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded ${
+      activeSection === "delete" ? "bg-gray-700" : ""
+    }`}
+    onClick={() => setActiveSection("delete")}
+  >
+    <FaTrashAlt className="mr-3 text-red-500" /> Delete
+  </button>
+
+  {/* Logout Button */}
+  <button
+    className="flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded bg-gray-800"
+    onClick={handleLogout}
+  >
+    <FaSignOutAlt className="mr-3 text-white" /> Logout
+  </button>
+</aside>
+
 
       {/* Main Content */}
       <main className="flex-grow p-4 lg:p-8 bg-gray-100 overflow-y-auto mt-16">
