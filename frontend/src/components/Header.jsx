@@ -60,7 +60,16 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-             <button
+   
+
+
+                <button 
+                  onClick={handleLogout} // Logout button functionality
+                  className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-500"
+                >
+                  Logout
+                </button>
+                <button
   onClick={toggleDropdown} // Toggle dropdown for profile options
   className="relative text-gray-800 hover:text-indigo-600 font-medium flex items-center"
 >
@@ -77,14 +86,6 @@ const Header = () => {
     />
   )}
 </button>
-
-
-                <button 
-                  onClick={handleLogout} // Logout button functionality
-                  className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-500"
-                >
-                  Logout
-                </button>
               </>
             ) : (
               <>
