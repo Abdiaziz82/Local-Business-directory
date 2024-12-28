@@ -16,7 +16,7 @@ const ProfileDropdown = ({ isOpen, setIsOpen }) => {
   };
 
   return (
-    <div className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ${isOpen ? 'block' : 'hidden'}`}>
+    <div className={`absolute right-0 mt-2  w-48 bg-white rounded-md shadow-lg ${isOpen ? 'block' : 'hidden'}`}>
       <div className="py-1">
         {/* Profile Link */}
         <Link 

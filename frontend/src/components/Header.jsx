@@ -8,7 +8,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false); // For mobile menu
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For profile dropdown
   const [isModalOpen, setIsModalOpen] = useState(false); // For signup choice modal
-  const { isLoggedIn, logout } = useContext(AuthContext); // Access login state and logout function from context
+  const { isLoggedIn, logout, user } = useContext(AuthContext); // Access login state, logout function and user info from context
   const navigate = useNavigate(); // To handle navigation after logout
 
   const toggleDropdown = () => {
@@ -25,27 +25,32 @@ const Header = () => {
     }
   };
 
+  // Function to get user's initials or a fallback
+  const getInitials = (name) => {
+    if (!name) return 'U'; // Default to 'U' if no name is available
+    const names = name.split(' ');
+    const initials = names.map((n) => n[0].toUpperCase()).join('');
+    return initials;
+  };
+  
+
   return (
     <header className="bg-white shadow-lg fixed top-0 left-0 w-full z-50 spartan">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-  
-    <img 
-      src={logo} 
-      alt="LocalBiz Directory Logo" 
-      className="h-32 w-auto md:h-20 lg:h-32 max-h-full"
-    />
-  
-</div>
+            <img 
+              src={logo} 
+              alt="LocalBiz Directory Logo" 
+              className="h-32 w-auto md:h-20 lg:h-32 max-h-full"
+            />
+          </div>
 
-          
           {/* Navigation Links */}
           <div className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-800 hover:text-indigo-600 font-medium">Home</Link>
             <Link to="/about" className="text-gray-800 hover:text-indigo-600 font-medium">About</Link>
-            
             <Link to="/add-business" className="text-gray-800 hover:text-indigo-600 font-medium">Browse Business</Link>
             <Link to="/browse" className="text-gray-800 hover:text-indigo-600 font-medium">Blogs</Link>
             <Link to="/contact" className="text-gray-800 hover:text-indigo-600 font-medium">Contact Us</Link>
@@ -57,11 +62,16 @@ const Header = () => {
               <>
                 <button
                   onClick={toggleDropdown} // Toggle dropdown for profile options
-                  className="relative text-gray-800 hover:text-indigo-600 font-medium"
+                  className="relative text-gray-800 hover:text-indigo-600 font-medium flex items-center"
                 >
-                  Profile
+                  {/* Avatar or Initials */}
+                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full flex justify-center items-center font-semibold text-lg">
+  {getInitials(user?.username)} {/* Show initials if user has a username */}
+</div>
+
                   <ProfileDropdown isOpen={isDropdownOpen} setIsOpen={setIsDropdownOpen} />
                 </button>
+
                 <button 
                   onClick={handleLogout} // Logout button functionality
                   className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-500"
@@ -105,7 +115,6 @@ const Header = () => {
             <Link to="/about" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">About</Link>
             <Link to="/add-business" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Browse Businesses</Link>
             <Link to="/browse" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Blogs</Link>
-           
             <Link to="/contact" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Contact Us</Link>
 
             {/* Mobile User Authentication */}

@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import AuthProvider from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+
 import Header from "./components/Header";
 import HeroSection from './components/HeroSection';
 import SearchComponent from './components/SearchComponent';

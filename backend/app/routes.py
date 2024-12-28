@@ -25,7 +25,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 main = Blueprint('main', __name__)
-CORS(main, supports_credentials=True, origins="http://localhost:5175")
+CORS(main, supports_credentials=True, origins="http://localhost:5173")
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -144,7 +144,7 @@ def login():
         # Generate JWT token with expiration time logic
         expires_in = timedelta(days=30) if remember else timedelta(days=30)  # Default to 1 day if not remembered
         access_token = create_access_token(
-            identity={"id": user.id, "email": user.email, "role": user.role},
+            identity={"id": user.id, "email": user.email, "role": user.role, "username": user.username},
             expires_delta=expires_in
         )
 
@@ -174,6 +174,22 @@ def logout():
     # JWT is stateless, so no explicit server-side logout
     # Inform the client to discard the token
     return jsonify({'message': 'Logout successful. Please discard your token.'}), 200
+
+@main.route("/api/user", methods=["GET"])
+@jwt_required()
+def get_user():
+    identity = get_jwt_identity()
+    user = User.query.get(identity["id"])
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "role": user.role,
+        "image_file": user.image_file
+    }), 200
 
 @main.route("/api/session_status", methods=['GET'])
 @cross_origin()
@@ -366,7 +382,7 @@ def reset_password():
 
 
 @main.route('/api/business-info', methods=['POST'])
-@cross_origin(origins="http://localhost:5175", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def save_business_info():
     try:
@@ -424,7 +440,7 @@ def save_business_info():
     
     
 @main.route('/api/business-info', methods=['GET'])
-@cross_origin(origins="http://localhost:5175", supports_credentials=True)
+@cross_origin(origins="http://localhost:5173", supports_credentials=True)
 @jwt_required()
 def get_user_business_info():
     try:
