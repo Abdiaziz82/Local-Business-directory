@@ -60,17 +60,24 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-                <button
-                  onClick={toggleDropdown} // Toggle dropdown for profile options
-                  className="relative text-gray-800 hover:text-indigo-600 font-medium flex items-center"
-                >
-                  {/* Avatar or Initials */}
-                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full flex justify-center items-center font-semibold text-lg">
-  {getInitials(user?.username)} {/* Show initials if user has a username */}
-</div>
+             <button
+  onClick={toggleDropdown} // Toggle dropdown for profile options
+  className="relative text-gray-800 hover:text-indigo-600 font-medium flex items-center"
+>
+  {/* Avatar */}
+  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full flex justify-center items-center font-semibold text-lg">
+    {getInitials(user?.username)} {/* Show initials if user has a username */}
+  </div>
 
-                  <ProfileDropdown isOpen={isDropdownOpen} setIsOpen={setIsDropdownOpen} />
-                </button>
+  {/* Profile Dropdown */}
+  {isDropdownOpen && (
+    <ProfileDropdown
+      isOpen={isDropdownOpen}
+      setIsOpen={setIsDropdownOpen}
+    />
+  )}
+</button>
+
 
                 <button 
                   onClick={handleLogout} // Logout button functionality
