@@ -18,16 +18,20 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = Cookies.get('access_token');
     const storedUserRole = localStorage.getItem('userRole');
-
+  
     if (token && storedUserRole) {
       setIsLoggedIn(true);
       setUserRole(storedUserRole);
-      fetchUserData(); // Fetch the user data from API
-      handleRedirection(storedUserRole);
+      fetchUserData();
+      // Only redirect if we're on the login page or a public route
+      if (window.location.pathname === '/login' || window.location.pathname === '/') {
+        handleRedirection(storedUserRole);
+      }
     } else {
       setIsLoading(false);
     }
   }, []);
+  
 
   // Fetch the user data from the API
   const fetchUserData = async () => {
@@ -70,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null); // Clear the user data on logout
     Cookies.remove('access_token');
     localStorage.removeItem('userRole');
-    navigate('/login');
+    navigate('/');
   };
 
   if (isLoading) {

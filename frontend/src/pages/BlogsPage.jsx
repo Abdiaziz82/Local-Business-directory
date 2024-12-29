@@ -51,7 +51,7 @@ const BlogsPage = () => {
       {/* Hero Section */}
       <header className="bg-white text-gray-800 py-20  pt-40 px-6 text-center">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4">
-          Our Blog
+          Our Blogs
         </h1>
         <p className="text-lg sm:text-xl lg:text-2xl">
           Stay informed with the latest updates, tips, and local insights.

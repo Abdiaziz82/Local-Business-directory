@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { FaClipboardList, FaEdit, FaTrashAlt } from "react-icons/fa"; // Import delete icon
 import BusinessForm from "./BusinessForm";
 import BusinessCard from "./BusinessCard";
@@ -7,6 +7,8 @@ import TableComponent from "./MessageTable";
 import ReviewTable from "./ReviewTable";
 import Swal from "sweetalert2";
 import { FaSignOutAlt } from "react-icons/fa";
+import { AuthContext } from "../context/AuthContext"; 
+import "react-toastify/dist/ReactToastify.css";
 
 
 
@@ -150,10 +152,40 @@ const handleBusinessDelete = async (businessId) => {
   }
 };
  
+const { logout } = useContext(AuthContext); // Access the logout function from context
+
 const handleLogout = () => {
-  // Clear user session or token logic here
-  console.log("User logged out");
+  toast.warn(
+    <div>
+      <p>Are you sure you want to log out?</p>
+      <div className="flex justify-end space-x-2 mt-2">
+        <button
+          className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+          onClick={() => {
+            toast.dismiss(); // Dismiss the toast
+            logout(); // Perform logout
+            toast.success("You have been successfully logged out.");
+          }}
+        >
+          Yes
+        </button>
+        <button
+          className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+          onClick={() => toast.dismiss()}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>,
+    {
+      autoClose: false, // Keeps the toast open until the user interacts
+      closeOnClick: false, // Prevents closing on background click
+      draggable: false,
+      closeButton: false,
+    }
+  );
 };
+
 
   // Handle section change
   const handleSectionChange = (section) => {
