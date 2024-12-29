@@ -8,7 +8,6 @@ import ReviewTable from "./ReviewTable";
 import Swal from "sweetalert2";
 import { FaSignOutAlt } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext"; 
-import "react-toastify/dist/ReactToastify.css";
 
 
 
@@ -155,35 +154,24 @@ const handleBusinessDelete = async (businessId) => {
 const { logout } = useContext(AuthContext); // Access the logout function from context
 
 const handleLogout = () => {
-  toast.warn(
-    <div>
-      <p>Are you sure you want to log out?</p>
-      <div className="flex justify-end space-x-2 mt-2">
-        <button
-          className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-          onClick={() => {
-            toast.dismiss(); // Dismiss the toast
-            logout(); // Perform logout
-            toast.success("You have been successfully logged out.");
-          }}
-        >
-          Yes
-        </button>
-        <button
-          className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
-          onClick={() => toast.dismiss()}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>,
-    {
-      autoClose: false, // Keeps the toast open until the user interacts
-      closeOnClick: false, // Prevents closing on background click
-      draggable: false,
-      closeButton: false,
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out of your account.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, log me out!",
+    customClass: {
+      title: 'swal-title',
+      htmlContainer: 'swal-text',
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      logout(); // Perform logout if confirmed
+      Swal.fire("Logged Out", "You have been successfully logged out.", "success");
     }
-  );
+  });
 };
 
 
