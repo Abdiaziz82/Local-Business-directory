@@ -170,6 +170,7 @@ const handleLogout = () => {
     if (result.isConfirmed) {
       logout(); // Perform logout if confirmed
       Swal.fire("Logged Out", "You have been successfully logged out.", "success");
+      
     }
   });
 };
@@ -256,7 +257,7 @@ const handleLogout = () => {
 
   {/* Logout Button */}
   <button
-    className="flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded bg-gray-800"
+    className="flex items-center w-3/4 p-3 text-lg font-semibold hover:bg-gray-700 rounded "
     onClick={handleLogout}
   >
     <FaSignOutAlt className="mr-3 text-white" /> Logout
