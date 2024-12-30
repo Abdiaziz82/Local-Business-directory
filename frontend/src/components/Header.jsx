@@ -126,16 +126,37 @@ const Header = () => {
             <Link to="/contact" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Contact Us</Link>
 
             {/* Mobile User Authentication */}
-            {isLoggedIn ? (
-              <>
-                <Link to="/profile" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profile</Link>
-                <button 
-                  onClick={handleLogout} // Logout functionality for mobile
-                  className="block w-full text-left text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium"
-                >
-                  Logout
-                </button>
-              </>
+{isLoggedIn ? (
+  <>
+    
+
+    {/* Toggle Dropdown Button */}
+    <button
+      onClick={toggleDropdown} // Toggle profile dropdown for mobile
+      className="relative text-gray-800 hover:text-indigo-600 font-medium flex items-center w-full text-left px-3 py-2 rounded-md"
+    >
+      {/* Avatar */}
+      <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full flex justify-center items-center font-semibold text-lg">
+        {getInitials(user?.username)} {/* Show initials if user has a username */}
+      </div>
+
+      {/* Profile Dropdown */}
+      {isDropdownOpen && (
+        <ProfileDropdown
+          isOpen={isDropdownOpen}
+          setIsOpen={setIsDropdownOpen}
+        />
+      )}
+    </button>
+
+    {/* Logout Button */}
+    <button
+      onClick={handleLogout} // Logout functionality for mobile
+      className="block w-full text-left text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium"
+    >
+      Logout
+    </button>
+  </>
             ) : (
               <>
                 <Link to="/login" className="block text-gray-800 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-base font-medium">Login</Link>
