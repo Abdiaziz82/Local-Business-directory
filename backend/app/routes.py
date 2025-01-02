@@ -27,6 +27,10 @@ def allowed_file(filename):
 main = Blueprint('main', __name__)
 CORS(main, supports_credentials=True, origins="http://localhost:5173")
 
+@main.route('/')
+def home():
+    return "Hello, World!"
+
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
 def business_owner_signup():
