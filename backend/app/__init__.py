@@ -26,8 +26,8 @@ def create_app():
     
     # Cookie and session security configurations
     app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # or 'None' if cross-origin required
-    app.config['SESSION_COOKIE_SECURE'] = False   # Set to True if using HTTPS in production
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'  
+    app.config['SESSION_COOKIE_SECURE'] = False   
 
     # Enable CORS for the app to handle cross-origin requests
     CORS(app, supports_credentials=True, origins=["http://localhost:5175"])
