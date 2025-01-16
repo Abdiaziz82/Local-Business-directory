@@ -58,7 +58,7 @@ function TestimonialCard() {
             <img src="https://readymadeui.com/team-3.webp" className="w-24 h-24 rounded-full shadow-xl border-2 border-white" />
             <div className="mt-4">
               <h4 className="text-sm font-extrabold text-gray-800">Mark Adair</h4>
-              <p className="text-xs text-blue-600 font-bold mt-1">CEO, Company</p>
+              <p className="text-xs text-blue-600 font-bold mt-1">owner of Gau</p>
             </div>
           </div>
 
@@ -100,7 +100,7 @@ function TestimonialCard() {
             <img src="https://readymadeui.com/team-4.webp" className="w-24 h-24 rounded-full shadow-xl border-2 border-white" />
             <div className="mt-4">
               <h4 className="text-sm font-extrabold text-gray-800">Simon Konecki</h4>
-              <p className="text-xs text-blue-600 font-bold mt-1">CEO, Company</p>
+              <p className="text-xs text-blue-600 font-bold mt-1">CEO, Empower</p>
             </div>
           </div>
 

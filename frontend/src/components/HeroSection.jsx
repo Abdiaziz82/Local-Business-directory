@@ -12,7 +12,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black to-transparent opacity-70" /> {/* Gradient overlay for better contrast */}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-        {/* Improved font sizes and line heights for better visibility */}
+      
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight sm:leading-snug shadow-lg">
           Discover & Promote Local Businesses
         </h1>

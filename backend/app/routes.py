@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session, make_response, url_for, current_app
-from app import db, bcrypt, mail  # Ensure `mail` instance is available here
+from app import db, bcrypt, mail  
 from app.models import User, BusinessInfo,Review , UserMessage
 from flask_cors import CORS ,cross_origin
 from flask_mail import Message
@@ -29,7 +29,7 @@ CORS(main, supports_credentials=True, origins="http://localhost:5173")
 
 @main.route('/')
 def home():
-    return "Hello, World!"
+    return "Home"
 
 @main.route("/api/signup/business-owner", methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -162,7 +162,7 @@ def login():
         return response, 200
     else:
         # Invalid credentials
-        return jsonify({'error': 'Invalid email or password'}), 401  # Changed to 401 for Unauthorized
+        return jsonify({'error': 'Invalid email or password'}), 401  #
 
 @main.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -175,7 +175,7 @@ def refresh():
 @main.route("/api/logout", methods=['POST'])
 @jwt_required()
 def logout():
-    # JWT is stateless, so no explicit server-side logout
+    
     # Inform the client to discard the token
     return jsonify({'message': 'Logout successful. Please discard your token.'}), 200
 
@@ -307,9 +307,9 @@ def contact():
         user_message = data.get('user_message')
 
         # Email configuration
-        sender_email = "abdiazizhared64@gmail.com"  # Replace with your email
-        app_password = "zgdj edcr dtnz zugp"    # Replace with your app password
-        recipient_email = "abdiazizhared64@gmail.com"  # Your Gmail to receive messages
+        sender_email = "abdiazizhared64@gmail.com"  
+        app_password = "zgdj edcr dtnz zugp"    
+        recipient_email = "abdiazizhared64@gmail.com"  
 
         # Create the email
         msg = MIMEMultipart()
