@@ -6,7 +6,7 @@ const About = () => {
       <div className="w-full max-w-full sm:max-w-5xl lg:max-w-7xl text-center">
         {/* Heading */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-snug">
-          About BizHub
+          About BizHubb
         </h2>
         {/* Paragraph */}
         <p className="mt-4 text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
